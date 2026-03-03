@@ -1,0 +1,26 @@
+---
+const categories: { slug: string; label: string; image: string }[] = [
+  { slug: 'portraits', label: 'Portrait', image: '/media/portfolio/portraits/cover.jpg' },
+  { slug: 'branding', label: 'Branding', image: '/media/portfolio/branding/cover.jpg' },
+  { slug: 'events', label: 'Retreats', image: '/media/portfolio/events/cover.jpg' },
+];
+---
+
+<section>
+  {categories.map(({ slug, label, image }) => (
+    <a href={`/portfolio/${slug}`} class="group relative block h-[50vh] min-h-[320px] overflow-hidden">
+      <img
+        src={image}
+        alt={label}
+        class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+        loading="lazy"
+      />
+      <div class="absolute inset-0 bg-[var(--sol-charcoal)]/40 group-hover:bg-[var(--sol-charcoal)]/20 transition-colors duration-500" />
+      <div class="relative h-full flex items-center justify-center">
+        <h2 class="font-display text-6xl md:text-8xl text-[var(--sol-cream)] tracking-wide">
+          {label}
+        </h2>
+      </div>
+    </a>
+  ))}
+</section>

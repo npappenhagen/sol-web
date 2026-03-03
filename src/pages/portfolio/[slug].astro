@@ -1,0 +1,50 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import GalleryGrid from '@/components/portfolio/GalleryGrid.tsx';
+import SectionLabel from '@/components/shared/SectionLabel.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const galleries = await getCollection('portfolio');
+  return galleries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { title, category, description, cover, images } = entry.data;
+
+// CMS images come from public/media/ as string paths; cover is a resolved asset
+const coverSrc = typeof cover === 'string' ? cover : cover.src;
+const gallerySrcs = (images ?? []).map((img: unknown) =>
+  typeof img === 'string' ? img : (img as { src: string }).src
+);
+---
+
+<Layout title={title} description={description}>
+  <!-- Hero -->
+  <section class="relative h-[60vh] min-h-[360px] overflow-hidden">
+    <img
+      src={coverSrc}
+      alt={title}
+      class="absolute inset-0 w-full h-full object-cover"
+      loading="eager"
+    />
+    <div class="absolute inset-0 bg-[var(--sol-charcoal)]/35" />
+    <div class="relative h-full flex items-end justify-center pb-14 px-6 text-center">
+      <div>
+        <SectionLabel>{category}</SectionLabel>
+        <h1 class="font-display text-5xl md:text-6xl text-[var(--sol-cream)] mt-3">{title}</h1>
+      </div>
+    </div>
+  </section>
+
+  {description && (
+    <p class="max-w-xl mx-auto px-6 pt-12 text-center font-serif text-[var(--sol-charcoal)]/80 leading-relaxed">
+      {description}
+    </p>
+  )}
+
+  <GalleryGrid client:load images={gallerySrcs} title={title} />
+</Layout>

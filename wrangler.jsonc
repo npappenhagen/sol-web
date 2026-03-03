@@ -1,0 +1,20 @@
+{
+	"main": "dist/_worker.js/index.js",
+	"name": "sol-web",
+  "compatibility_date": "2026-02-26",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+	"assets": {
+		"binding": "ASSETS",
+		"directory": "./dist"
+	},
+	"observability": {
+    "enabled": true
+  },
+  // Environment variables — set secrets in CF dashboard, not here
+  // Pages: Settings > Environment variables
+  // Required: RESEND_API_KEY, CONTACT_TO, CONTACT_FROM
+  "vars": {}
+}

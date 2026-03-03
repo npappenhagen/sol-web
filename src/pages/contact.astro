@@ -1,0 +1,21 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import SectionLabel from '@/components/shared/SectionLabel.astro';
+import ContactForm from '@/components/ContactForm';
+---
+
+<Layout title="Inquire" description="Get in touch with Sol Photography.">
+  <section class="max-w-3xl mx-auto px-6 py-20">
+    <div class="text-center mb-14">
+      <SectionLabel>Get in touch</SectionLabel>
+      <h1 class="font-display text-5xl md:text-6xl text-[var(--sol-charcoal)] mt-4 mb-6">
+        Let's work together
+      </h1>
+      <p class="font-serif text-lg text-[var(--sol-charcoal)]/70 max-w-md mx-auto leading-relaxed">
+        Tell me about your session, your timeline, or just say hello. I'd love to hear from you.
+      </p>
+    </div>
+
+    <ContactForm client:load />
+  </section>
+</Layout>

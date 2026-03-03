@@ -1,0 +1,24 @@
+---
+interface Props {
+  images: string[];
+  heading: string;
+}
+const { images, heading } = Astro.props;
+const primary = images[0] ?? '';
+---
+
+<section class="relative h-[92vh] min-h-[560px] overflow-hidden">
+  <img
+    src={primary}
+    alt=""
+    class="absolute inset-0 w-full h-full object-cover"
+    loading="eager"
+    fetchpriority="high"
+  />
+  <div class="absolute inset-0 bg-[var(--sol-charcoal)]/25" />
+  <div class="relative h-full flex items-end justify-center pb-20 px-6 text-center">
+    <h1 class="font-display text-5xl md:text-7xl text-[var(--sol-cream)] leading-tight max-w-2xl">
+      {heading}
+    </h1>
+  </div>
+</section>

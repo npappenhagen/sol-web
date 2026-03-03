@@ -1,0 +1,22 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Hero from '@/components/home/Hero.astro';
+import IntroBlock from '@/components/home/IntroBlock.astro';
+import StatsBar from '@/components/home/StatsBar.astro';
+import ServicePreview from '@/components/home/ServicePreview.astro';
+import { getEntry } from 'astro:content';
+
+const [home, servicesPage] = await Promise.all([
+  getEntry('pages', 'home'),
+  getEntry('pages', 'services'),
+]);
+const { hero_images, hero_heading, intro_label, intro_heading, intro_body, stats } = home.data;
+const { services } = servicesPage.data;
+---
+
+<Layout title="Home">
+  <Hero images={hero_images} heading={hero_heading} />
+  <IntroBlock label={intro_label} heading={intro_heading} body={intro_body} />
+  <StatsBar stats={stats} />
+  <ServicePreview services={services} />
+</Layout>

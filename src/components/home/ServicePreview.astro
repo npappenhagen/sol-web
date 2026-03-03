@@ -1,0 +1,37 @@
+---
+import SectionLabel from '@/components/shared/SectionLabel.astro';
+
+interface Service {
+  name: string;
+  image: string;
+  portfolio_slug?: string;
+}
+interface Props {
+  services: Service[];
+}
+const { services } = Astro.props;
+---
+
+<section class="py-20 px-6">
+  <div class="max-w-7xl mx-auto">
+    <SectionLabel class="text-center block mb-12">What I shoot</SectionLabel>
+    <ul class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {services.map(({ name, image, portfolio_slug }) => (
+        <li class="group relative aspect-[3/4] overflow-hidden">
+          <a href={portfolio_slug ? `/portfolio/${portfolio_slug}` : '/services'}>
+            <img
+              src={image}
+              alt={name}
+              class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              loading="lazy"
+            />
+            <div class="absolute inset-0 bg-[var(--sol-charcoal)]/30 group-hover:bg-[var(--sol-charcoal)]/10 transition-colors" />
+            <p class="absolute bottom-5 left-0 right-0 text-center font-sans text-xs tracking-widest uppercase text-[var(--sol-cream)]">
+              {name}
+            </p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,34 @@
+---
+const year = new Date().getFullYear();
+const navLinks = [
+  { href: '/', label: 'HOME' },
+  { href: '/about', label: 'ABOUT' },
+  { href: '/portfolio', label: 'PORTFOLIO' },
+  { href: '/services', label: 'SERVICES' },
+  { href: '/contact', label: 'INQUIRE' },
+];
+---
+
+<footer class="bg-[var(--sol-charcoal)] text-[var(--sol-cream)] mt-24">
+  <div class="max-w-7xl mx-auto px-6 py-16 flex flex-col items-center gap-10">
+    <a href="/" class="font-display text-xl tracking-[0.3em] uppercase opacity-80 hover:opacity-100 transition-opacity">
+      Sol Photography
+    </a>
+
+    <nav>
+      <ul class="flex flex-wrap justify-center gap-8">
+        {navLinks.map(({ href, label }) => (
+          <li>
+            <a href={href} class="text-xs tracking-widest font-sans text-[var(--sol-sage)] hover:text-[var(--sol-cream)] transition-colors">
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <p class="text-xs tracking-widest font-sans text-[var(--sol-sage)]/60">
+      &copy; {year} Sol Photography. All rights reserved.
+    </p>
+  </div>
+</footer>

@@ -1,0 +1,2 @@
+make check-secrets
+pnpm exec lint-staged

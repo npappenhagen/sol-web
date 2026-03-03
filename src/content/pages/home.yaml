@@ -1,0 +1,15 @@
+_page: home
+hero_images:
+  - /media/pages/home-hero.jpg
+hero_heading: "Light. Story. Memory."
+intro_label: "WHY SOL"
+intro_heading: "The moments you'll want to live in forever."
+intro_body: "Every session is designed around you — your light, your story, your people. I show up with intention so you can be fully present for what's happening right in front of you."
+stats:
+  - number: "5+"
+    label: "Years behind the lens"
+  - number: "300+"
+    label: "Sessions"
+  - number: "4"
+    label: "Specialties"
+featured_slugs: []

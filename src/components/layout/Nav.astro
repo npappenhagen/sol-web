@@ -1,0 +1,103 @@
+---
+const allLinks = [
+  { href: '/', label: 'HOME' },
+  { href: '/about', label: 'ABOUT' },
+  { href: '/portfolio', label: 'PORTFOLIO' },
+  { href: '/services', label: 'SERVICES' },
+  { href: '/contact', label: 'INQUIRE' },
+];
+const leftLinks = allLinks.slice(0, 3);
+const rightLinks = allLinks.slice(3);
+const currentPath = Astro.url.pathname;
+
+const linkClass = (href: string) => [
+  'text-xs tracking-widest font-sans transition-colors',
+  currentPath === href
+    ? 'text-[var(--sol-caramel)]'
+    : 'text-[var(--sol-charcoal)] hover:text-[var(--sol-caramel)]',
+].join(' ');
+
+const mobileLinkClass = (href: string) => [
+  'block text-sm tracking-widest font-sans py-3 transition-colors',
+  currentPath === href
+    ? 'text-[var(--sol-caramel)]'
+    : 'text-[var(--sol-charcoal)] hover:text-[var(--sol-caramel)]',
+].join(' ');
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-[var(--sol-cream)]/95 backdrop-blur-sm border-b border-[var(--sol-sage)]/40">
+  <!-- Desktop nav -->
+  <nav class="hidden md:grid max-w-7xl mx-auto px-6 h-16 grid-cols-3 items-center">
+    <ul class="flex gap-8">
+      {leftLinks.map(({ href, label }) => (
+        <li><a href={href} class={linkClass(href)}>{label}</a></li>
+      ))}
+    </ul>
+    <a href="/" class="text-center font-display text-sm tracking-[0.25em] uppercase text-[var(--sol-charcoal)] hover:text-[var(--sol-caramel)] transition-colors">
+      Sol Photography
+    </a>
+    <ul class="flex gap-8 justify-end">
+      {rightLinks.map(({ href, label }) => (
+        <li><a href={href} class={linkClass(href)}>{label}</a></li>
+      ))}
+    </ul>
+  </nav>
+
+  <!-- Mobile nav -->
+  <div class="md:hidden flex items-center justify-between px-6 h-14">
+    <a href="/" class="font-display text-sm tracking-[0.25em] uppercase text-[var(--sol-charcoal)]">
+      Sol Photography
+    </a>
+    <button
+      type="button"
+      id="nav-toggle"
+      aria-label="Toggle menu"
+      aria-expanded="false"
+      class="w-8 h-8 flex flex-col justify-center items-center gap-1.5"
+    >
+      <span class="block w-5 h-px bg-[var(--sol-charcoal)] transition-transform origin-center" id="bar1" />
+      <span class="block w-5 h-px bg-[var(--sol-charcoal)] transition-opacity" id="bar2" />
+      <span class="block w-5 h-px bg-[var(--sol-charcoal)] transition-transform origin-center" id="bar3" />
+    </button>
+  </div>
+
+  <!-- Mobile drawer -->
+  <nav
+    id="mobile-menu"
+    class="md:hidden hidden border-t border-[var(--sol-sage)]/40 bg-[var(--sol-cream)] px-6 pb-6"
+  >
+    <ul class="flex flex-col">
+      {allLinks.map(({ href, label }) => (
+        <li class="border-b border-[var(--sol-sage)]/20 last:border-0">
+          <a href={href} class={mobileLinkClass(href)}>{label}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<!-- Push content below fixed nav -->
+<div class="h-14 md:h-16" aria-hidden="true" />
+
+<script is:inline>
+  const toggle = document.getElementById('nav-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const bar1 = document.getElementById('bar1');
+  const bar2 = document.getElementById('bar2');
+  const bar3 = document.getElementById('bar3');
+  let open = false;
+  toggle?.addEventListener('click', () => {
+    open = !open;
+    menu?.classList.toggle('hidden', !open);
+    toggle.setAttribute('aria-expanded', String(open));
+    if (open) {
+      bar1.style.transform = 'rotate(45deg) translateY(4px)';
+      bar2.style.opacity = '0';
+      bar3.style.transform = 'rotate(-45deg) translateY(-4px)';
+    } else {
+      bar1.style.transform = '';
+      bar2.style.opacity = '';
+      bar3.style.transform = '';
+    }
+  });
+</script>

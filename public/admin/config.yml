@@ -1,0 +1,103 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+
+backend:
+  name: github
+  repo: npappenhagen/sol-web
+
+media_folder: public/media
+public_folder: /media
+
+collections:
+  # ── Page singletons ──────────────────────────────────────────────────────────
+  # Layout = code. Copy + images = CMS. Edit these to update page content.
+  - name: pages
+    label: Pages
+    files:
+      - name: home
+        label: Home Page
+        file: src/content/pages/home.yaml
+        fields:
+          - label: Page identifier
+            name: _page
+            widget: hidden
+            default: home
+          - label: Hero Images
+            name: hero_images
+            widget: list
+            field: { label: Image, name: image, widget: image }
+          - { label: Hero Heading, name: hero_heading, widget: string }
+          - { label: Intro Eyebrow Label, name: intro_label, widget: string, hint: 'e.g. "WHY SOL"' }
+          - { label: Intro Heading, name: intro_heading, widget: string }
+          - { label: Intro Body, name: intro_body, widget: text }
+          - label: Stats
+            name: stats
+            widget: list
+            fields:
+              - { label: Number, name: number, widget: string, hint: 'e.g. "5+" or "300+"' }
+              - { label: Label, name: label, widget: string, hint: 'e.g. "Years shooting"' }
+          - label: Featured Gallery Slugs
+            name: featured_slugs
+            widget: list
+            field: { label: Portfolio slug, name: slug, widget: string }
+
+      - name: about
+        label: About Page
+        file: src/content/pages/about.yaml
+        fields:
+          - label: Page identifier
+            name: _page
+            widget: hidden
+            default: about
+          - { label: Hero Image, name: hero_image, widget: image }
+          - { label: Heading, name: heading, widget: string, hint: 'e.g. "Meet Sarah"' }
+          - { label: Subheading, name: subheading, widget: string }
+          - { label: Bio, name: bio, widget: text }
+          - { label: Headshot, name: headshot, widget: image }
+
+      - name: services
+        label: Services Page
+        file: src/content/pages/services.yaml
+        fields:
+          - label: Page identifier
+            name: _page
+            widget: hidden
+            default: services
+          - { label: Page Heading, name: page_heading, widget: string }
+          - { label: Page Intro, name: page_intro, widget: text, required: false }
+          - label: Services
+            name: services
+            widget: list
+            fields:
+              - { label: Name, name: name, widget: string, hint: 'e.g. "Family", "Wedding"' }
+              - { label: Description, name: description, widget: text }
+              - { label: Starting note, name: starting_note, widget: string, required: false, hint: 'e.g. "Starting at $500"' }
+              - { label: Image, name: image, widget: image }
+              - { label: Portfolio slug, name: portfolio_slug, widget: string, required: false, hint: 'Links "View Portfolio" to /portfolio/[slug]' }
+
+  # ── Portfolio galleries ───────────────────────────────────────────────────────
+  - name: portfolio
+    label: Portfolio Galleries
+    folder: src/content/portfolio
+    create: true
+    extension: md
+    fields:
+      - { label: Title, name: title, widget: string }
+      - label: Category
+        name: category
+        widget: select
+        options: [portraits, branding, events, architecture]
+      - { label: Date, name: date, widget: datetime }
+      - { label: Description, name: description, widget: text, required: false }
+      - { label: Cover Image, name: cover, widget: image }
+      - label: Gallery Images
+        name: images
+        widget: list
+        required: false
+        field: { label: Image, name: image, widget: image }
+      - label: Tags
+        name: tags
+        widget: list
+        required: false
+        field: { label: Tag, name: tag, widget: string }
+        hint: "Lightroom keywords — family, couples, maternity, retreat, etc."
+      - { label: Featured, name: featured, widget: boolean, default: false }

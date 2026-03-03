@@ -1,0 +1,21 @@
+---
+interface Stat {
+  number: string;
+  label: string;
+}
+interface Props {
+  stats: Stat[];
+}
+const { stats } = Astro.props;
+---
+
+<section class="bg-[var(--sol-forest)] py-14">
+  <ul class="max-w-4xl mx-auto px-6 flex flex-wrap justify-center gap-x-16 gap-y-8">
+    {stats.map(({ number, label }) => (
+      <li class="text-center">
+        <p class="font-display text-4xl text-[var(--sol-cream)]">{number}</p>
+        <p class="font-sans text-xs tracking-widest uppercase text-[var(--sol-sage)] mt-1">{label}</p>
+      </li>
+    ))}
+  </ul>
+</section>

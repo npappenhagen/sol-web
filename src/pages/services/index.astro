@@ -1,0 +1,58 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import SectionLabel from '@/components/shared/SectionLabel.astro';
+import { getEntry } from 'astro:content';
+
+const page = await getEntry('pages', 'services');
+const { page_heading, page_intro, services } = page.data;
+---
+
+<Layout title="Services" description={page_intro}>
+  <section class="max-w-7xl mx-auto px-6 py-20">
+    <div class="text-center mb-16">
+      <SectionLabel>What I offer</SectionLabel>
+      <h1 class="font-display text-5xl md:text-6xl text-[var(--sol-charcoal)] mt-4">{page_heading}</h1>
+      {page_intro && (
+        <p class="font-serif text-lg text-[var(--sol-charcoal)]/70 mt-6 max-w-xl mx-auto leading-relaxed">
+          {page_intro}
+        </p>
+      )}
+    </div>
+
+    <ul class="space-y-20">
+      {services.map(({ name, description, starting_note, image, portfolio_slug }, idx) => (
+        <li class:list={['grid md:grid-cols-2 gap-12 items-center', idx % 2 !== 0 && 'md:[&>*:first-child]:order-last']}>
+          <img
+            src={image}
+            alt={name}
+            class="w-full aspect-[4/3] object-cover"
+            loading="lazy"
+          />
+          <div>
+            <h2 class="font-display text-4xl text-[var(--sol-charcoal)] mb-4">{name}</h2>
+            {starting_note && (
+              <p class="font-sans text-xs tracking-widest uppercase text-[var(--sol-caramel)] mb-4">{starting_note}</p>
+            )}
+            <p class="font-serif text-[var(--sol-charcoal)]/80 leading-relaxed text-lg mb-8">{description}</p>
+            <div class="flex gap-4 flex-wrap">
+              {portfolio_slug && (
+                <a
+                  href={`/portfolio/${portfolio_slug}`}
+                  class="font-sans text-xs tracking-widest uppercase px-6 py-2.5 border border-[var(--sol-charcoal)] text-[var(--sol-charcoal)] hover:bg-[var(--sol-charcoal)] hover:text-[var(--sol-cream)] transition-colors"
+                >
+                  View Portfolio
+                </a>
+              )}
+              <a
+                href="/contact"
+                class="font-sans text-xs tracking-widest uppercase px-6 py-2.5 bg-[var(--sol-caramel)] text-[var(--sol-cream)] hover:bg-[var(--sol-forest)] transition-colors"
+              >
+                Inquire
+              </a>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>

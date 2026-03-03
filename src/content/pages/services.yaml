@@ -1,0 +1,23 @@
+_page: services
+page_heading: "How we work together"
+page_intro: "Every session is custom — designed around your story, your space, your light. Here's where we start."
+services:
+  - name: Portrait
+    description: "Unhurried sessions that capture your people as they actually are — messy, laughing, real. Family, maternity, couples, and everything in between."
+    starting_note: "Starting at $X"
+    image: /media/pages/service-portrait.jpg
+    portfolio_slug: portraits
+  - name: Branding
+    description: "Personal brand imagery that actually looks like you — for the creative, the founder, the maker who's ready to show up online."
+    starting_note: "Starting at $X"
+    image: /media/pages/service-branding.jpg
+    portfolio_slug: branding
+  - name: Retreats
+    description: "Retreats, gatherings, and the energy of people coming together — documented with warmth and intention."
+    starting_note: "Starting at $X"
+    image: /media/pages/service-retreats.jpg
+    portfolio_slug: events
+  - name: Architecture
+    description: "Spaces photographed with patience and light — interiors, exteriors, and the details that make a place feel alive."
+    starting_note: "Starting at $X"
+    image: /media/pages/service-architecture.jpg
