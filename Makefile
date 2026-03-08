@@ -1,4 +1,4 @@
-.PHONY: help setup dev build lint preview deploy deploy-preview check-env check-secrets sync-photos sync-photos-force sync-photos-fresh sync-cleanup process-cms verify-images
+.PHONY: help setup dev build lint preview deploy deploy-preview check-env check-secrets sync-photos sync-photos-force sync-photos-fresh sync-cleanup clean-jpegs process-cms verify-images
 
 REQUIRED_VARS := $(shell grep -oE '^[A-Z_]+=' .env.example | sed 's/=$$//')
 
@@ -72,6 +72,13 @@ sync-photos-fresh: ## DELETE all portfolio images and sync from scratch
 
 sync-cleanup: ## Remove orphaned images where source no longer exists
 	python3 scripts/sync-photos.py --cleanup
+
+clean-jpegs: ## Remove original JPEGs from portfolio (keep WebP variants only)
+	@echo "Removing original JPEGs from public/media/portfolio..."
+	@find public/media/portfolio -name "*.jpg" -o -name "*.jpeg" | wc -l | xargs -I {} echo "Found {} JPEGs to remove"
+	@find public/media/portfolio -name "*.jpg" -delete
+	@find public/media/portfolio -name "*.jpeg" -delete
+	@echo "Done. Only WebP variants remain."
 
 process-cms: ## Generate WebP variants for CMS-uploaded images
 	node scripts/process-cms-images.mjs

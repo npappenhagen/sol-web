@@ -1,5 +1,17 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import type { CarouselImage } from '@/lib/carousel-images'
+import { getVariantUrl, hasVariants } from '@/lib/image-url'
+
+/**
+ * Convert image src to WebP variant for portfolio images.
+ * Non-portfolio images (pages, mood) are returned unchanged.
+ * Already-converted WebP paths are returned unchanged.
+ */
+function getHeroSrc(src: string): string {
+  // Skip if already a WebP variant
+  if (src.endsWith('.webp')) return src
+  return hasVariants(src) ? getVariantUrl(src, 1920) : src
+}
 
 interface Props {
   slides: CarouselImage[]
@@ -226,7 +238,7 @@ export default function HeroCarousel({
             className="snap-center shrink-0 w-full h-full relative"
           >
             <img
-              src={slide.src}
+              src={getHeroSrc(slide.src)}
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
               style={{
@@ -256,7 +268,7 @@ export default function HeroCarousel({
             style={{ width: getSlideWidth(idx, slides.length) }}
           >
             <img
-              src={slide.src}
+              src={getHeroSrc(slide.src)}
               alt=""
               draggable={false}
               className="absolute inset-0 w-full h-full object-cover pointer-events-none"

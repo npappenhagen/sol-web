@@ -39,6 +39,10 @@ MANIFEST_PATH = MEDIA_DIR / ".manifest.json"
 VARIANT_WIDTHS = [400, 800, 1200, 1920]
 WEBP_QUALITY = 80
 
+# JPEG optimization settings
+JPEG_MAX_WIDTH = 1920       # Max width for stored JPEGs (resize larger originals)
+JPEG_QUALITY = 92           # High quality (92-95 is visually lossless for photos)
+
 SOURCES = {
     "portraits": Path("/Volumes/sol/portrait-portfolio/web size"),
     "family": Path("/Volumes/sol/family-portfolio"),
@@ -583,7 +587,10 @@ def sync_category(category: str, manifest: dict, dry_run: bool = False, force: b
         processed += 1
 
         if not dry_run:
-            shutil.copy2(f, target)
+            # For gallery JPEGs, we only need WebP variants (originals are 10-18MB and unused)
+            # For non-gallery images (logos, mood) or non-JPEGs, copy the original
+            if not (is_gallery and f.suffix.lower() in (".jpg", ".jpeg")):
+                shutil.copy2(f, target)
 
         # Generate responsive variants for gallery images (not logos)
         if not dry_run and is_gallery and f.suffix.lower() in (".jpg", ".jpeg"):

@@ -8,13 +8,13 @@ hero_focal_x: 50
 hero_focal_y: 30
 hero_carousel_speed: 6
 hero_images:
-  - image: /media/portfolio/events/2026-retreat-portfolio-05.jpg
+  - image: /media/portfolio/events/2026-retreat-portfolio-5.jpg
     focal_x: 50
     focal_y: 40
-  - image: /media/portfolio/branding/2026-branding-portfolio-001.jpg
+  - image: /media/portfolio/branding/2026-branding-portfolio-1.jpg
     focal_x: 50
     focal_y: 35
-  - image: /media/portfolio/portraits/2026-portrait-portfolio-067.jpg
+  - image: /media/portfolio/portraits/2026-portrait-portfolio-67.jpg
     focal_x: 50
     focal_y: 30
   - image: /media/portfolio/events/2026-retreat-portfolio-23.jpg
