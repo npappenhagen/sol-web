@@ -13,19 +13,39 @@ export interface CarouselImage {
 const ALL_MOOD_IMAGES = Array.from({ length: 53 }, (_, i) => i + 1)
 
 /**
+ * Get ALL mood images for client-side random selection.
+ * Returns all 53 mood images without any selection or shuffling.
+ * The client picks which ones to display, so only selected images download.
+ *
+ * Note: Mood images only exist as WebP variants (no original JPGs).
+ * We return the 1920w variant as it's the largest/best quality for heroes.
+ */
+export function getAllMoodImages(): CarouselImage[] {
+  return ALL_MOOD_IMAGES.map((num) => ({
+    src: `/media/mood/2026-mood-portfolio-${String(num).padStart(2, '0')}-1920w.webp`,
+    focal_x: 50,
+    focal_y: 40,
+  }))
+}
+
+/**
  * Get random mood images for hero/background contexts.
  * Uses stratified sampling to ensure variety - picks from different "buckets"
  * across the image range so we don't get clusters of similar images.
+ *
+ * Note: Mood images only exist as WebP variants (no original JPGs).
  */
 export function getMoodImages(count = 3, shuffle = true): CarouselImage[] {
   const available = [...ALL_MOOD_IMAGES]
 
+  const toCarouselImage = (num: number): CarouselImage => ({
+    src: `/media/mood/2026-mood-portfolio-${String(num).padStart(2, '0')}-1920w.webp`,
+    focal_x: 50,
+    focal_y: 40,
+  })
+
   if (!shuffle) {
-    return available.slice(0, count).map((num) => ({
-      src: `/media/mood/2026-mood-portfolio-${String(num).padStart(2, '0')}.jpg`,
-      focal_x: 50,
-      focal_y: 40,
-    }))
+    return available.slice(0, count).map(toCarouselImage)
   }
 
   // Stratified sampling: divide into buckets and pick one from each
@@ -48,11 +68,7 @@ export function getMoodImages(count = 3, shuffle = true): CarouselImage[] {
     ;[selected[i], selected[j]] = [selected[j], selected[i]]
   }
 
-  return selected.map((num) => ({
-    src: `/media/mood/2026-mood-portfolio-${String(num).padStart(2, '0')}.jpg`,
-    focal_x: 50,
-    focal_y: 40,
-  }))
+  return selected.map(toCarouselImage)
 }
 
 export interface GetCarouselImagesOptions {
@@ -66,6 +82,35 @@ export interface GetCarouselImagesOptions {
    * Set to false ONLY for non-carousel contexts that can handle any orientation.
    */
   portraitOnly?: boolean
+}
+
+/**
+ * Get ALL portrait images from specified categories for client-side random selection.
+ * Returns all matching images without any count limit or shuffling.
+ */
+export async function getAllPortraitImages(
+  categories?: string[]
+): Promise<CarouselImage[]> {
+  const portfolios = await getCollection('portfolio')
+
+  // Filter by categories if specified
+  const filtered = categories?.length
+    ? portfolios.filter((p) => categories.includes(p.data.category))
+    : portfolios
+
+  // Extract all portrait/hero-safe images
+  return filtered.flatMap((p) =>
+    (p.data.images ?? [])
+      .filter((img) => {
+        if (img.hidden) return false
+        return img.orientation === 'portrait' || img.hero_safe === true
+      })
+      .map((img) => ({
+        src: img.src,
+        focal_x: undefined,
+        focal_y: undefined,
+      }))
+  )
 }
 
 /**

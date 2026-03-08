@@ -79,9 +79,13 @@ export function getDefaultSrc(src: string, context: 'gallery' | 'hero' | 'lightb
 }
 
 /**
- * Check if an image path is a portfolio image that has variants.
- * Only portfolio images have variants generated.
+ * Check if an image path has WebP variants that need to be generated.
+ * Portfolio and mood images have responsive WebP variants.
+ *
+ * Returns false if already a WebP (no further processing needed).
  */
 export function hasVariants(src: string): boolean {
-  return src.startsWith('/media/portfolio/')
+  // Already a WebP variant - no further processing needed
+  if (src.endsWith('.webp')) return false
+  return src.startsWith('/media/portfolio/') || src.startsWith('/media/mood/')
 }

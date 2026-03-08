@@ -1,6 +1,14 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import type { CarouselImage } from '@/lib/carousel-images'
 import { getVariantUrl, hasVariants } from '@/lib/image-url'
+import { schedulePreloads } from '@/lib/image-preloader'
+
+declare global {
+  interface Window {
+    __heroSelection?: CarouselImage[]
+    __heroPageId?: string
+  }
+}
 
 /**
  * Convert image src to WebP variant for portfolio images.
@@ -22,6 +30,12 @@ interface Props {
   variant?: 'home' | 'about' | 'portfolio'
   // Optional: pre-built hero images per sub-category filter (for portraits page)
   subcategoryHeroMap?: Record<string, CarouselImage[]>
+  // Number of slides to display (client picks randomly from pool)
+  displayCount?: number
+  // Use pre-selection from inline script (reads window.__heroSelection)
+  usePreSelection?: boolean
+  // Page identifier to ensure selection is page-specific
+  pageId?: string
 }
 
 /**
@@ -65,6 +79,24 @@ function generateShuffledOrder(length: number): number[] {
   return order
 }
 
+/**
+ * Randomly select `count` unique indices from a pool of `total` items.
+ * Uses Fisher-Yates partial shuffle for efficiency.
+ */
+function generateRandomSelection(total: number, count: number): number[] {
+  const indices = Array.from({ length: total }, (_, i) => i)
+  const selected: number[] = []
+  const selectCount = Math.min(count, total)
+
+  for (let i = 0; i < selectCount; i++) {
+    const randomIdx = i + Math.floor(Math.random() * (indices.length - i))
+    ;[indices[i], indices[randomIdx]] = [indices[randomIdx], indices[i]]
+    selected.push(indices[i])
+  }
+
+  return selected
+}
+
 export default function HeroCarousel({
   slides: defaultSlides,
   heading,
@@ -72,7 +104,12 @@ export default function HeroCarousel({
   fallbackFocalY = 50,
   variant = 'home',
   subcategoryHeroMap,
+  displayCount,
+  usePreSelection = false,
+  pageId = 'default',
 }: Props) {
+  // Track pre-selected slides from inline script
+  const [preSelectedSlides, setPreSelectedSlides] = useState<CarouselImage[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isVisible, setIsVisible] = useState(false)
   const [isDesktop, setIsDesktop] = useState(false)
@@ -83,10 +120,34 @@ export default function HeroCarousel({
   const [slideOrder, setSlideOrder] = useState<number[]>([])
   // Desktop images start hidden, shuffle while hidden, then fade in
   const [desktopReady, setDesktopReady] = useState(false)
+  // Indices of slides selected for display (only used when NOT using pre-selection)
+  const [selectedIndices, setSelectedIndices] = useState<Set<number> | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const touchStartX = useRef<number | null>(null)
   const dragStartX = useRef<number | null>(null)
   const prefersReducedMotion = useRef(false)
+
+  // Read pre-selected slides from window after hydration
+  // Also re-read on View Transitions navigation
+  useEffect(() => {
+    if (!usePreSelection) return
+
+    const readSelection = () => {
+      if (window.__heroSelection && window.__heroPageId === pageId) {
+        setPreSelectedSlides(window.__heroSelection)
+      }
+    }
+
+    // Read immediately on mount
+    readSelection()
+
+    // Re-read on View Transitions navigation (inline script may have run with new selection)
+    document.addEventListener('astro:page-load', readSelection)
+
+    return () => {
+      document.removeEventListener('astro:page-load', readSelection)
+    }
+  }, [usePreSelection, pageId])
 
   // Sync filter from URL (for dynamic hero images on portraits page)
   useEffect(() => {
@@ -109,13 +170,27 @@ export default function HeroCarousel({
     }
   }, [subcategoryHeroMap])
 
-  // Pick slides based on active filter
-  const slides = useMemo(() => {
+  // Pick slides based on active filter or pre-selection
+  const allSlides = useMemo(() => {
+    // If using pre-selection, ONLY use pre-selected slides (even if empty)
+    // This prevents falling back to defaultSlides (all 53 images) during SSR/early hydration
+    if (usePreSelection) {
+      return preSelectedSlides
+    }
     if (subcategoryHeroMap && activeFilter && subcategoryHeroMap[activeFilter]) {
       return subcategoryHeroMap[activeFilter]
     }
     return defaultSlides
-  }, [defaultSlides, subcategoryHeroMap, activeFilter])
+  }, [usePreSelection, preSelectedSlides, defaultSlides, subcategoryHeroMap, activeFilter])
+
+  // Filter to only selected slides (for per-visit variety)
+  // When using pre-selection or selectedIndices is null, show all slides
+  const slides = useMemo(() => {
+    if (usePreSelection || selectedIndices === null) {
+      return allSlides
+    }
+    return allSlides.filter((_, idx) => selectedIndices.has(idx))
+  }, [usePreSelection, allSlides, selectedIndices])
 
   // Detect tablet+ breakpoint (768px) and reduced motion preference
   // Switch to strip layout at md to prevent over-cropping on tablets
@@ -126,6 +201,18 @@ export default function HeroCarousel({
     window.addEventListener('resize', checkDesktop)
     return () => window.removeEventListener('resize', checkDesktop)
   }, [])
+
+  // Client-side random selection: pick which slides to display from the pool
+  // Skip if using pre-selection (inline script already selected)
+  useEffect(() => {
+    if (usePreSelection) return // Pre-selection already handled
+    if (displayCount == null || allSlides.length <= displayCount) {
+      setSelectedIndices(null)
+      return
+    }
+    const indices = generateRandomSelection(allSlides.length, displayCount)
+    setSelectedIndices(new Set(indices))
+  }, [usePreSelection, allSlides.length, displayCount])
 
   // Entrance animation
   useEffect(() => {
@@ -141,6 +228,18 @@ export default function HeroCarousel({
     const timer = setTimeout(() => setDesktopReady(true), 50)
     return () => clearTimeout(timer)
   }, [slides.length])
+
+  // Schedule idle-time preloading of additional images for future navigations
+  useEffect(() => {
+    if (!usePreSelection) return
+    if (slides.length === 0) return
+
+    // Extract src URLs for preloader
+    const poolSrcs = defaultSlides.map(s => s.src)
+    const selectedSrcs = slides.map(s => s.src)
+
+    schedulePreloads(poolSrcs, selectedSrcs)
+  }, [usePreSelection, defaultSlides, slides])
 
   // Handle scroll snap detection (mobile only)
   useEffect(() => {
@@ -240,6 +339,23 @@ export default function HeroCarousel({
   const heightClass = variant === 'portfolio'
     ? 'h-[60vh] md:h-[70vh]'
     : 'h-screen'
+
+  // Loading state: when using pre-selection but slides not yet loaded
+  // Show placeholder with heading to prevent layout shift
+  if (usePreSelection && slides.length === 0) {
+    return (
+      <section className={`relative ${heightClass} overflow-hidden bg-[var(--sol-cream)]`}>
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
+        {/* Heading */}
+        <div className="absolute inset-x-0 bottom-24 md:bottom-32 z-10 px-6 text-center">
+          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-light italic text-[var(--sol-charcoal)]/30 tracking-wide hero-headline">
+            {heading}
+          </h1>
+        </div>
+      </section>
+    )
+  }
 
   // Get width pattern based on slide count
   const getSlideWidth = (index: number, total: number): string => {
