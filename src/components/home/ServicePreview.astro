@@ -1,35 +1,83 @@
 ---
-import SectionLabel from '@/components/shared/SectionLabel.astro';
+import SectionLabel from '@/components/shared/SectionLabel.astro'
+import { getSrcSet, getDefaultSrc, hasVariants } from '@/lib/image-url'
 
 interface Service {
-  name: string;
-  image: string;
-  portfolio_slug?: string;
+  name: string
+  image: string
+  portfolio_slug?: string
 }
 interface Props {
-  services: Service[];
+  services: Service[]
 }
-const { services } = Astro.props;
+const { services } = Astro.props
+
+// Service taglines for emotional storytelling
+const taglines: Record<string, string> = {
+  'Portrait': 'Moments that matter',
+  'Portraits': 'Moments that matter',
+  'Branding': 'How you want to be seen',
+  'Retreats': 'Capture the journey',
+  'Events': 'Capture the journey',
+};
 ---
 
-<section class="py-20 px-6">
+<section class="py-24 px-6">
   <div class="max-w-7xl mx-auto">
     <SectionLabel class="text-center block mb-12">What I shoot</SectionLabel>
-    <ul class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <ul class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
       {services.map(({ name, image, portfolio_slug }) => (
         <li class="group relative aspect-[3/4] overflow-hidden">
           <a href={portfolio_slug ? `/portfolio/${portfolio_slug}` : '/services'}>
-            <img
-              src={image}
-              alt={name}
-              class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              loading="lazy"
-            />
-            <div class="absolute inset-0 bg-[var(--sol-charcoal)]/30 group-hover:bg-[var(--sol-charcoal)]/10 transition-colors" />
-            <p class="absolute bottom-5 left-0 right-0 text-center font-sans text-xs tracking-widest uppercase text-[var(--sol-cream)]">
-              {name}
-            </p>
+            {/* Responsive image with WebP support when variants available */}
+            {hasVariants(image) ? (
+              <picture class="absolute inset-0">
+                <source
+                  type="image/webp"
+                  srcset={getSrcSet(image)}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                />
+                <img
+                  src={getDefaultSrc(image, 'gallery')}
+                  alt={name}
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
+            ) : (
+              <img
+                src={image}
+                alt={name}
+                class="absolute inset-0 w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            )}
+
+            {/* Overlay - darkens on hover */}
+            <div class="absolute inset-0 bg-black/25 group-hover:bg-black/40 transition-colors duration-300" />
+
+            {/* Text content */}
+            <div class="absolute inset-0 flex flex-col items-center justify-end pb-5 gap-1">
+              <p class="font-sans text-xs tracking-widest uppercase text-[var(--sol-cream)]">
+                {name}
+              </p>
+              {taglines[name] && (
+                <p class="font-serif text-sm italic text-[var(--sol-cream)]/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  {taglines[name]}
+                </p>
+              )}
+            </div>
           </a>
+          {portfolio_slug && (
+            <a
+              href={`#inquiry?context=${portfolio_slug}`}
+              class="absolute top-4 right-4 font-sans text-[10px] tracking-widest uppercase px-3 py-1.5 bg-[var(--sol-cream)]/90 text-[var(--sol-charcoal)] hover:bg-[var(--sol-cream)] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            >
+              Inquire
+            </a>
+          )}
         </li>
       ))}
     </ul>

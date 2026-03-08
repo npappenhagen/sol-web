@@ -1,261 +1,732 @@
 ---
-title: Portrait
+title: Portraits
 category: portraits
 date: 2026-01-01
 description: "People photographed with patience and intention — family, maternity, couples, and everything in between."
-cover: /media/portfolio/portraits/2026-portrait-portfolio-001.jpg
+cover: /media/portfolio/portraits/2026-portrait-portfolio-1.jpg
+cover_position: top
+carousel_mode: auto
+carousel_count: 4
+hero_carousel_speed: 6
+sort_mode: session_spread # 'manual', 'date_desc', 'rainbow_reverse', 'random', 'session_spread', 'color_spread.
 images:
-  - /media/portfolio/portraits/2026-portrait-portfolio-001.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-002.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-003.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-004.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-005.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-006.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-007.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-008.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-009.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-010.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-011.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-012.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-013.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-014.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-015.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-016.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-017.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-018.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-019.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-020.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-021.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-022.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-023.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-024.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-025.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-026.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-027.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-028.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-029.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-030.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-031.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-032.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-033.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-034.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-035.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-036.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-037.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-038.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-039.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-040.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-041.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-042.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-043.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-044.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-045.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-046.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-047.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-048.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-049.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-050.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-051.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-052.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-053.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-054.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-055.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-056.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-057.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-058.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-059.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-060.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-061.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-062.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-063.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-064.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-065.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-066.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-067.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-068.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-069.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-070.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-071.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-072.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-073.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-074.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-075.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-076.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-077.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-078.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-079.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-080.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-081.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-082.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-083.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-084.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-085.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-086.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-087.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-088.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-089.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-090.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-091.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-092.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-093.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-094.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-095-2.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-095.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-096.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-097.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-098.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-099.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-100.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-101.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-102.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-103.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-104.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-105.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-106.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-107.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-108.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-109.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-110.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-111.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-112.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-113.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-114.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-115.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-116.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-117.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-118.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-119.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-120.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-121.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-122.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-123.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-124.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-125.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-126.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-127.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-128.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-129.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-130.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-131.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-132.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-133.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-134.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-135.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-136.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-137.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-138.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-139.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-140.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-141.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-142.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-143.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-144.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-145.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-146.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-147.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-148.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-149.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-150.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-151.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-152.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-153.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-154.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-155.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-156.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-157.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-158.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-159.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-160.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-161.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-162.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-163.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-164.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-165.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-166.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-167.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-168.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-169.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-170.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-171.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-172.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-173.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-174.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-175.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-176.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-177.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-178.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-179.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-180.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-181.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-182.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-183.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-184.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-185.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-186.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-187.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-188.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-189.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-190.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-191.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-192.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-193.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-194.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-195.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-196.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-197.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-198.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-199.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-200.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-201.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-202.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-203.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-204.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-205.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-206.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-207.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-208.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-209.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-210.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-211.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-212.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-213.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-214.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-215.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-216.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-217.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-218.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-219.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-220.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-221.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-222.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-223.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-224.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-225.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-226.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-227.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-228.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-229.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-230.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-231.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-232.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-233.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-234.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-235.jpg
-  - /media/portfolio/portraits/2026-portrait-portfolio-236.jpg
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-1.jpg
+    hidden: false
+    date_taken: "2023-05-04"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - fave
+      - lp
+      - maternity portfolio
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-10.jpg
+    hidden: false
+    date_taken: "2023-07-11"
+    hue: 18
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - sneak peeks
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-11.jpg
+    hidden: false
+    date_taken: "2024-10-18"
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-12.jpg
+    hidden: false
+    date_taken: "2024-10-18"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-13.jpg
+    hidden: false
+    date_taken: "2024-10-18"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-14.jpg
+    hidden: false
+    date_taken: "2024-11-16"
+    hue: 69
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-15.jpg
+    hidden: false
+    date_taken: "2024-11-16"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-16.jpg
+    hidden: false
+    date_taken: "2024-11-16"
+    hue: 56
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-17.jpg
+    hidden: false
+    date_taken: "2024-11-16"
+    hue: 31
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-18.jpg
+    hidden: false
+    date_taken: "2024-12-22"
+    hue: 17
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-19.jpg
+    hidden: false
+    date_taken: "2025-01-04"
+    hue: 23
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-2.jpg
+    hidden: false
+    date_taken: "2023-05-07"
+    hue: 47
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - family
+      - maternity
+      - maternity portfolio
+      - recess
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-20.jpg
+    hidden: false
+    date_taken: "2025-01-04"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-21.jpg
+    hidden: false
+    date_taken: "2025-01-31"
+    hue: 57
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-22.jpg
+    hidden: false
+    date_taken: "2025-01-31"
+    hue: 22
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-23.jpg
+    hidden: false
+    date_taken: "2025-02-23"
+    hue: 31
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-24.jpg
+    hidden: false
+    date_taken: "2025-02-23"
+    hue: 25
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - fave
+      - lp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-25.jpg
+    hidden: false
+    date_taken: "2025-02-25"
+    hue: 22
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - fave
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-26.jpg
+    hidden: false
+    date_taken: "2025-03-07"
+    hue: 18
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-27.jpg
+    hidden: false
+    date_taken: "2025-03-07"
+    hue: 18
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-28.jpg
+    hidden: false
+    date_taken: "2025-03-08"
+    hue: 51
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-29.jpg
+    hidden: false
+    date_taken: "2025-03-08"
+    hue: 17
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - fave
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-3.jpg
+    hidden: false
+    date_taken: "2023-05-07"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - family
+      - maternity
+      - maternity portfolio
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-30.jpg
+    hidden: false
+    date_taken: "2025-03-08"
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - fave
+      - lp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-31.jpg
+    hidden: false
+    date_taken: "2025-03-13"
+    hue: 16
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-32.jpg
+    hidden: false
+    date_taken: "2025-05-11"
+    hue: 21
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-33.jpg
+    hidden: false
+    date_taken: "2025-05-11"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-34.jpg
+    hidden: false
+    date_taken: "2025-05-20"
+    hue: 27
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+      - social
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-35.jpg
+    hidden: false
+    date_taken: "2025-05-20"
+    hue: 28
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-36.jpg
+    hidden: false
+    date_taken: "2025-06-15"
+    hue: 190
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-37.jpg
+    hidden: false
+    date_taken: "2025-06-28"
+    hue: 25
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-38.jpg
+    hidden: false
+    date_taken: "2025-06-28"
+    hue: 22
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-39.jpg
+    hidden: false
+    date_taken: "2025-06-28"
+    hue: 21
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-4.jpg
+    hidden: false
+    date_taken: "2023-07-11"
+    hue: 24
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-40.jpg
+    hidden: false
+    date_taken: "2025-06-28"
+    hue: 19
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-41.jpg
+    hidden: false
+    date_taken: "2025-08-01"
+    hue: 25
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-42.jpg
+    hidden: false
+    date_taken: "2025-08-01"
+    hue: 20
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-43.jpg
+    hidden: false
+    date_taken: "2025-08-01"
+    hue: 23
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-44.jpg
+    hidden: false
+    date_taken: "2025-08-01"
+    hue: 24
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-45.jpg
+    hidden: false
+    date_taken: "2025-08-01"
+    hue: 32
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-46.jpg
+    hidden: false
+    date_taken: "2025-08-17"
+    hue: 21
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-47.jpg
+    hidden: false
+    date_taken: "2025-08-17"
+    hue: 15
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-48.jpg
+    hidden: false
+    date_taken: "2025-11-15"
+    hue: 34
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - lp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-49.jpg
+    hidden: false
+    date_taken: "2025-11-29"
+    hue: 31
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-5.jpg
+    hidden: false
+    date_taken: "2023-07-11"
+    hue: 24
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-50.jpg
+    hidden: false
+    date_taken: "2025-12-09"
+    hue: 212
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-51.jpg
+    hidden: false
+    date_taken: "2025-12-09"
+    hue: 16
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-52.jpg
+    hidden: false
+    date_taken: "2025-12-10"
+    hue: 39
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-53.jpg
+    hidden: false
+    date_taken: "2025-12-10"
+    hue: 30
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-54.jpg
+    hidden: false
+    date_taken: "2025-12-23"
+    hue: 36
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-55.jpg
+    hidden: false
+    date_taken: "2025-12-23"
+    hue: 27
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-56.jpg
+    hidden: false
+    date_taken: "2025-12-23"
+    hue: 33
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-57.jpg
+    hidden: false
+    date_taken: "2025-12-23"
+    hue: 13
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-58.jpg
+    hidden: false
+    date_taken: "2025-12-23"
+    hue: 14
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-59.jpg
+    hidden: false
+    date_taken: "2025-12-23"
+    hue: 11
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-6.jpg
+    hidden: false
+    date_taken: "2023-07-11"
+    hue: 20
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-60.jpg
+    hidden: false
+    date_taken: "2025-12-27"
+    hue: 196
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-61.jpg
+    hidden: false
+    date_taken: "2025-12-27"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-62.jpg
+    hidden: false
+    date_taken: "2025-12-27"
+    hue: 31
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-63.jpg
+    hidden: false
+    date_taken: "2025-12-29"
+    hue: 23
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-64.jpg
+    hidden: false
+    date_taken: "2025-12-29"
+    hue: 37
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-65.jpg
+    hidden: false
+    date_taken: "2025-12-29"
+    hue: 18
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-66.jpg
+    hidden: false
+    date_taken: "2025-12-29"
+    hue: 23
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-67.jpg
+    hidden: false
+    date_taken: "2025-12-30"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-68.jpg
+    hidden: false
+    date_taken: "2025-12-30"
+    hue: 32
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-69.jpg
+    hidden: false
+    date_taken: "2026-01-18"
+    hue: 20
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-7.jpg
+    hidden: false
+    date_taken: "2023-07-11"
+    hue: 28
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-70.jpg
+    hidden: false
+    date_taken: "2026-01-18"
+    hue: 20
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-71.jpg
+    hidden: false
+    date_taken: "2026-01-18"
+    hue: 16
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-72.jpg
+    hidden: false
+    date_taken: "2026-01-18"
+    hue: 16
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-73.jpg
+    hidden: false
+    date_taken: "2026-01-18"
+    hue: 26
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-74.jpg
+    hidden: false
+    date_taken: "2026-01-18"
+    hue: 26
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-75.jpg
+    hidden: false
+    date_taken: "2026-02-27"
+    hue: 31
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-76.jpg
+    hidden: false
+    date_taken: "2026-02-27"
+    hue: 27
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-77.jpg
+    hidden: false
+    date_taken: "2026-02-28"
+    hue: 28
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-78.jpg
+    hidden: false
+    date_taken: "2026-03-03"
+    hue: 79
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-8.jpg
+    hidden: false
+    date_taken: "2023-07-11"
+    hue: 26
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/portraits/2026-portrait-portfolio-9.jpg
+    hidden: false
+    date_taken: "2023-07-11"
+    hue: 21
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - sneak peeks
 tags:
-  - baby
-  - beach
+  - bp
   - family
   - fave
-  - feminine
+  - lp
   - maternity
   - maternity portfolio
   - recess
-  - retreat
-  - senior
   - sneak peeks
   - social
-  - sunset
 featured: true
 ---
 

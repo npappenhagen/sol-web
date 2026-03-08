@@ -1,22 +1,25 @@
 ---
-import '../styles/global.css';
-import Nav from '@/components/layout/Nav.astro';
-import Footer from '@/components/layout/Footer.astro';
+import { ViewTransitions } from 'astro:transitions'
+import '../styles/global.css'
+import Nav from '@/components/layout/Nav.astro'
+import Footer from '@/components/layout/Footer.astro'
+import InquiryWidget from '@/components/InquiryWidget'
+import CalProvider from '@/components/CalProvider'
 
 interface Props {
-  title: string;
-  description?: string;
-  image?: string;
+  title: string
+  description?: string
+  image?: string
 }
 
 const {
   title,
-  description = 'Sol Photography — family, wedding, architecture, and branding photography.',
+  description = 'Sol Photography — portrait, branding, and event photography.',
   image = '/media/site/og-image.jpg',
-} = Astro.props;
+} = Astro.props
 
-const fullTitle = title === 'Home' ? 'Sol Photography' : `${title} | Sol Photography`;
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const fullTitle = title === 'Home' ? 'Sol Photography' : `${title} | Sol Photography`
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site)
 const ogImageUrl = new URL(image, Astro.site);
 ---
 
@@ -27,6 +30,10 @@ const ogImageUrl = new URL(image, Astro.site);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonicalUrl.href} />
     <meta name="theme-color" content="#F5F0E8" />
+
+    <!-- Preconnect to third-party origins for faster resource loading -->
+    <link rel="preconnect" href="https://app.cal.com" crossorigin />
+    <link rel="dns-prefetch" href="https://app.cal.com" />
 
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
@@ -45,24 +52,126 @@ const ogImageUrl = new URL(image, Astro.site);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl.href} />
 
+    <!-- View Transitions with fade animation -->
+    <ViewTransitions />
+
+    <style is:global>
+      /* View Transition: Cinematic fade with gentle movement */
+      @keyframes fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes fade-out {
+        from { opacity: 1; }
+        to { opacity: 0; }
+      }
+      @keyframes content-enter {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes content-exit {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(-8px);
+        }
+      }
+
+      /* Root transition: smooth cross-fade */
+      ::view-transition-old(root) {
+        animation: fade-out 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      }
+      ::view-transition-new(root) {
+        animation: fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      }
+
+      /* Main content: elegant slide with overlap for continuity */
+      ::view-transition-old(main-content) {
+        animation: content-exit 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      }
+      ::view-transition-new(main-content) {
+        animation: content-enter 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s forwards;
+        opacity: 0;
+      }
+
+      /* Nav stays stable during transition */
+      ::view-transition-old(nav-bar),
+      ::view-transition-new(nav-bar) {
+        animation: none;
+        mix-blend-mode: normal;
+      }
+
+      /* Respect reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        ::view-transition-old(root),
+        ::view-transition-new(root),
+        ::view-transition-old(main-content),
+        ::view-transition-new(main-content) {
+          animation: none;
+        }
+      }
+    </style>
+
     <!-- Structured data -->
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'ProfessionalService',
       name: 'Sol Photography',
       url: 'https://solphotography.net',
-      description: 'Family, wedding, architecture, and branding photography.',
+      description: 'Portrait, branding, and event photography.',
       image: ogImageUrl.href,
       priceRange: '$$',
       '@id': 'https://solphotography.net/#business',
-      serviceType: ['Family Photography', 'Wedding Photography', 'Architecture Photography', 'Branding Photography'],
+      serviceType: ['Portrait Photography', 'Branding Photography', 'Event Photography'],
     })} />
   </head>
   <body>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-[var(--sol-cream)] focus:px-4 focus:py-2 focus:text-sm focus:font-sans focus:tracking-widest">
+      Skip to content
+    </a>
     <Nav />
-    <main>
+    <main id="main" style="view-transition-name: main-content;">
       <slot />
     </main>
+    <CalProvider client:only="react" />
+    <InquiryWidget client:only="react" />
     <Footer />
+
+    <!-- Scroll-triggered animation observer -->
+    <script is:inline>
+      function initScrollAnimations() {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible')
+          observer.unobserve(entry.target)
+        }
+            })
+    },
+          { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+        )
+  document.querySelectorAll('.animate-on-scroll').forEach((el) => {
+          // Reset visibility for fresh animations on page transitions
+          el.classList.remove('is-visible')
+    observer.observe(el)
+  })
+      }
+
+      // Run on initial page load
+      initScrollAnimations()
+
+// Re-run after View Transitions complete
+document.addEventListener('astro:page-load', initScrollAnimations)
+    </script>
   </body>
 </html>

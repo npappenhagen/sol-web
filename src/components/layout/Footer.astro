@@ -1,25 +1,37 @@
 ---
+import { getEntry } from 'astro:content'
+import { NAV_LINKS } from '@/lib/navigation'
+import ShadowFooter from './ShadowFooter'
+
+const site = await getEntry('pages', 'site')
+const logoSrc = site.data.footer_logo || site.data.nav_logo
+const logoAlt = site.data.logo_alt
+
 const year = new Date().getFullYear();
-const navLinks = [
-  { href: '/', label: 'HOME' },
-  { href: '/about', label: 'ABOUT' },
-  { href: '/portfolio', label: 'PORTFOLIO' },
-  { href: '/services', label: 'SERVICES' },
-  { href: '/contact', label: 'INQUIRE' },
-];
 ---
 
-<footer class="bg-[var(--sol-charcoal)] text-[var(--sol-cream)] mt-24">
-  <div class="max-w-7xl mx-auto px-6 py-16 flex flex-col items-center gap-10">
-    <a href="/" class="font-display text-xl tracking-[0.3em] uppercase opacity-80 hover:opacity-100 transition-opacity">
-      Sol Photography
+<ShadowFooter
+  client:visible
+  animation={{ scale: 100, speed: 90 }}
+  noise={{ opacity: 0.8, scale: 1.2 }}
+>
+  <div class="max-w-7xl mx-auto px-6 pt-48 pb-20 flex flex-col items-center gap-10 text-[var(--sol-cream)]">
+    <!-- Logo at the horizon with warm glow -->
+    <a href="/" class="relative block hover:scale-[1.03] transition-transform nav-logo-hover group">
+      <!-- Glow behind logo -->
+      <div
+        class="absolute -inset-8 blur-2xl opacity-50 group-hover:opacity-70 transition-opacity"
+        style="background: radial-gradient(ellipse at center, var(--sol-blush) 0%, var(--sol-caramel) 30%, transparent 70%);"
+        aria-hidden="true"
+      ></div>
+      <img src={logoSrc} alt={logoAlt} class="relative h-36 md:h-48 w-auto mx-auto" loading="lazy" />
     </a>
 
-    <nav>
+    <nav aria-label="Footer navigation">
       <ul class="flex flex-wrap justify-center gap-8">
-        {navLinks.map(({ href, label }) => (
+        {NAV_LINKS.map(({ href, label }) => (
           <li>
-            <a href={href} class="text-xs tracking-widest font-sans text-[var(--sol-sage)] hover:text-[var(--sol-cream)] transition-colors">
+            <a href={href} class="footer-link text-xs tracking-widest font-sans text-[var(--sol-sage)] hover:text-[var(--sol-cream)] transition-colors">
               {label}
             </a>
           </li>
@@ -27,8 +39,19 @@ const navLinks = [
       </ul>
     </nav>
 
-    <p class="text-xs tracking-widest font-sans text-[var(--sol-sage)]/60">
+    <a
+      href="https://www.instagram.com/sol__photography_/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center gap-2 text-xs tracking-widest font-sans text-[var(--sol-sage)] social-icon-hover"
+      aria-label="Sol Photography on Instagram"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      @sol__photography_
+    </a>
+
+    <p class="text-xs tracking-widest font-sans text-[var(--sol-sage)]/60 mt-4">
       &copy; {year} Sol Photography. All rights reserved.
     </p>
   </div>
-</footer>
+</ShadowFooter>

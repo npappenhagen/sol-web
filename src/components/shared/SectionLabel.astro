@@ -1,6 +1,16 @@
 ---
 // Eyebrow label: small uppercase tracking text above headings
+interface Props {
+  class?: string
+  variant?: 'caramel' | 'blush'
+}
+const { class: className, variant = 'caramel' } = Astro.props
+const baseClass = ['flex flex-col gap-2', className?.includes('text-center') ? 'items-center' : 'items-start', className].filter(Boolean).join(' ')
+const colorClass = variant === 'blush' ? 'text-[var(--sol-blush)]' : 'text-[var(--sol-caramel)]';
 ---
-<p class="font-sans text-xs tracking-widest uppercase text-[var(--sol-caramel)]">
-  <slot />
-</p>
+<div class={baseClass}>
+  <p class:list={['font-sans text-xs md:text-sm tracking-[0.2em] uppercase', colorClass]}>
+    <slot />
+  </p>
+  <span class="block w-8 h-px bg-[var(--sol-sage)]/60" aria-hidden="true" />
+</div>

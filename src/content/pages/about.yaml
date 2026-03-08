@@ -1,6 +1,26 @@
 _page: about
-hero_image: /media/pages/about-hero.jpg
-heading: "Meet [Name]"
+carousel_mode: auto
+carousel_count: 4
+hero_position: top
+hero_carousel_speed: 7
+hero_images:
+  - image: /media/pages/about-hero.jpg
+    focal_x: 50
+    focal_y: 30
+  - image: /media/portfolio/portraits/2026-portrait-portfolio-068.jpg
+    focal_x: 50
+    focal_y: 35
+  - image: /media/portfolio/portraits/2026-portrait-portfolio-079.jpg
+    focal_x: 50
+    focal_y: 30
+  - image: /media/portfolio/branding/2026-branding-portfolio-1.jpg
+    focal_x: 50
+    focal_y: 40
+heading: "Meet Laurel"
 subheading: "Photographer, mother, lover of golden hour."
-bio: "My first memory behind a camera was my grandfather's — that curiosity has carried me through every season since. I believe everyone has a story worth celebrating, and I'm here to capture yours with care, intention, and a lot of good light."
-headshot: /media/pages/headshot.jpg
+bio: "I picked up a camera to hold onto the things that slip away too fast. Now I help families freeze the moments that matter — the belly that's about to become a baby, the toddler who won't stay this small, the way you two still look at each other after all these years. Based in Guanacaste, usually sandy, always chasing the light."
+headshot: /media/pages/Laurel-headshot-2.jpg
+headshots:
+  - /media/pages/Laurel-headshot-1.jpg
+  - /media/pages/Laurel-headshot-2.jpg
+  - /media/pages/Laurel-headshot-3.jpg

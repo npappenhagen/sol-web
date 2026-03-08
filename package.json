@@ -8,14 +8,14 @@
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint . --max-warnings 0",
-    "prepare": "husky",
-    "dev:full": "concurrently -n astro,axon \"astro dev\" \"axon serve --watch\""
+    "prepare": "husky"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.12",
     "@astrojs/mdx": "^4.3.13",
     "@astrojs/react": "^4.4.2",
     "@astrojs/sitemap": "^3.7.0",
+    "@calcom/embed-react": "^1.5.3",
     "@fontsource-variable/montserrat": "^5.2.8",
     "@fontsource/cormorant-garamond": "^5.2.11",
     "@fontsource/lora": "^5.2.8",
@@ -25,6 +25,7 @@
     "astro": "^5.17.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.35.0",
     "lucide-react": "^0.575.0",
     "radix-ui": "^1.4.3",
     "react": "^19.2.4",
@@ -37,7 +38,7 @@
     "*.{js,ts,mjs,astro,tsx}": "eslint --max-warnings 0"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "eslint": "^10.0.2",
     "eslint-plugin-astro": "^1.6.0",
     "husky": "^9.1.7",

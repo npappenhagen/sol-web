@@ -1,4 +1,4 @@
-.PHONY: help setup dev build lint preview deploy deploy-preview check-env check-secrets sync-photos
+.PHONY: help setup dev build lint preview deploy deploy-preview check-env check-secrets sync-photos sync-photos-force sync-photos-fresh sync-cleanup process-cms verify-images
 
 REQUIRED_VARS := $(shell grep -oE '^[A-Z_]+=' .env.example | sed 's/=$$//')
 
@@ -24,10 +24,13 @@ check-secrets: ## Scan staged files for leaked secrets
 setup: ## Install deps + create .env + media dirs
 	pnpm install
 	@test -f .env || (cp .env.example .env && echo "Created .env from .env.example -- fill in your values")
-	@mkdir -p public/media/portfolio/{portraits,branding,events,architecture} public/media/{mood,pages,site}
+	@mkdir -p public/media/portfolio/{portraits,family,maternity,couples,branding,events,architecture} public/media/{mood,pages,site}
 
 dev: check-env ## Start dev server (Astro + Axon)
-	pnpm dev:full
+	pnpm dev
+
+dev-http: check-env ## Start dev server over HTTP (use if dynamic imports fail over HTTPS)
+	SKIP_HTTPS=1 pnpm dev
 
 lint: ## Run linter
 	pnpm lint
@@ -46,3 +49,32 @@ deploy-preview: build ## Deploy preview branch to Cloudflare Pages
 
 sync-photos: ## Sync photos from SMB share → public/media + update frontmatter
 	python3 scripts/sync-photos.py
+
+sync-photos-force: ## Force reprocess all photos (ignores manifest)
+	python3 scripts/sync-photos.py --force
+
+sync-photos-fresh: ## DELETE all portfolio images and sync from scratch
+	@echo "⚠️  This will DELETE all images in public/media/portfolio and resync from SMB"
+	@read -p "Are you sure? [y/N] " confirm && [ "$$confirm" = "y" ] || exit 1
+	@echo "Removing manifest..."
+	rm -f public/media/.manifest.json
+	@echo "Removing portfolio images..."
+	rm -rf public/media/portfolio/portraits/*
+	rm -rf public/media/portfolio/family/*
+	rm -rf public/media/portfolio/maternity/*
+	rm -rf public/media/portfolio/couples/*
+	rm -rf public/media/portfolio/branding/*
+	rm -rf public/media/portfolio/events/*
+	rm -rf public/media/portfolio/architecture/*
+	rm -rf public/media/mood/*
+	@echo "Running fresh sync..."
+	python3 scripts/sync-photos.py --force
+
+sync-cleanup: ## Remove orphaned images where source no longer exists
+	python3 scripts/sync-photos.py --cleanup
+
+process-cms: ## Generate WebP variants for CMS-uploaded images
+	node scripts/process-cms-images.mjs
+
+verify-images: ## Check all portfolio JPEGs have WebP variants
+	./scripts/verify-images.sh

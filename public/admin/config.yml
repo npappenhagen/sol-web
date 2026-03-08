@@ -21,14 +21,93 @@ collections:
             name: _page
             widget: hidden
             default: home
+          - label: Carousel Mode
+            name: carousel_mode
+            widget: select
+            default: auto
+            options:
+              - { label: "Auto (random from portfolios)", value: auto }
+              - { label: "Manual (curated list below)", value: manual }
+          - label: Auto-source categories
+            name: carousel_categories
+            widget: select
+            multiple: true
+            required: false
+            options: [portraits, family, maternity, couples, branding, events]
+            hint: "Which portfolios to pull from (all if empty)"
+          - label: Auto-source count
+            name: carousel_count
+            widget: number
+            default: 8
+            value_type: int
+            min: 3
+            max: 15
+            required: false
+            hint: "Number of images when using auto mode"
           - label: Hero Images
             name: hero_images
             widget: list
-            field: { label: Image, name: image, widget: image }
+            fields:
+              - { label: Image, name: image, widget: image }
+              - label: Focal X %
+                name: focal_x
+                widget: number
+                required: false
+                value_type: int
+                min: 0
+                max: 100
+                hint: "0=left, 50=center, 100=right"
+              - label: Focal Y %
+                name: focal_y
+                widget: number
+                required: false
+                value_type: int
+                min: 0
+                max: 100
+                hint: "0=top, 50=center, 100=bottom"
+          - label: Carousel speed (seconds)
+            name: hero_carousel_speed
+            widget: number
+            default: 6
+            value_type: int
+            min: 3
+            max: 15
+            hint: "When multiple hero images, time per slide"
+          - label: Hero focal point
+            name: hero_position
+            widget: select
+            default: top
+            options:
+              - { label: Top, value: top }
+              - { label: Center, value: center }
+              - { label: Bottom, value: bottom }
+              - { label: Left, value: left }
+              - { label: Right, value: right }
+          - label: Focal X %
+            name: hero_focal_x
+            widget: number
+            required: false
+            value_type: int
+            min: 0
+            max: 100
+            hint: "Leave empty to use preset above. Set both X and Y to override with precise position."
+          - label: Focal Y %
+            name: hero_focal_y
+            widget: number
+            required: false
+            value_type: int
+            min: 0
+            max: 100
+            hint: "Leave empty to use preset above. Set both X and Y to override with precise position."
           - { label: Hero Heading, name: hero_heading, widget: string }
           - { label: Intro Eyebrow Label, name: intro_label, widget: string, hint: 'e.g. "WHY SOL"' }
           - { label: Intro Heading, name: intro_heading, widget: string }
           - { label: Intro Body, name: intro_body, widget: text }
+          - label: Intro Headshot
+            name: intro_headshot
+            widget: image
+            required: false
+            hint: "Optional headshot shown above 'Work with me' button"
           - label: Stats
             name: stats
             widget: list
@@ -48,7 +127,86 @@ collections:
             name: _page
             widget: hidden
             default: about
-          - { label: Hero Image, name: hero_image, widget: image }
+          - label: Carousel Mode
+            name: carousel_mode
+            widget: select
+            default: auto
+            options:
+              - { label: "Auto (random from portfolios)", value: auto }
+              - { label: "Manual (curated list below)", value: manual }
+          - label: Auto-source categories
+            name: carousel_categories
+            widget: select
+            multiple: true
+            required: false
+            options: [portraits, family, maternity, couples, branding, events]
+            hint: "Which portfolios to pull from (all if empty)"
+          - label: Auto-source count
+            name: carousel_count
+            widget: number
+            default: 4
+            value_type: int
+            min: 3
+            max: 15
+            required: false
+            hint: "Number of images when using auto mode"
+          - label: Hero Images
+            name: hero_images
+            widget: list
+            min: 1
+            max: 6
+            fields:
+              - { label: Image, name: image, widget: image }
+              - label: Focal X %
+                name: focal_x
+                widget: number
+                required: false
+                value_type: int
+                min: 0
+                max: 100
+                hint: "0=left, 50=center, 100=right"
+              - label: Focal Y %
+                name: focal_y
+                widget: number
+                required: false
+                value_type: int
+                min: 0
+                max: 100
+                hint: "0=top, 50=center, 100=bottom"
+          - label: Carousel speed (seconds)
+            name: hero_carousel_speed
+            widget: number
+            default: 7
+            value_type: int
+            min: 3
+            max: 15
+            hint: "When multiple hero images, time per slide"
+          - label: Hero focal point
+            name: hero_position
+            widget: select
+            default: top
+            options:
+              - { label: Top, value: top }
+              - { label: Center, value: center }
+              - { label: Bottom, value: bottom }
+              - { label: Left, value: left }
+              - { label: Right, value: right }
+          - label: Focal X %
+            name: hero_focal_x
+            widget: number
+            required: false
+            value_type: int
+            min: 0
+            max: 100
+            hint: "Leave empty to use preset above. Set both X and Y to override with precise position."
+          - label: Focal Y %
+            name: hero_focal_y
+            widget: number
+            required: false
+            value_type: int
+            min: 0
+            max: 100
+            hint: "Leave empty to use preset above. Set both X and Y to override with precise position."
           - { label: Heading, name: heading, widget: string, hint: 'e.g. "Meet Sarah"' }
           - { label: Subheading, name: subheading, widget: string }
           - { label: Bio, name: bio, widget: text }
@@ -64,15 +222,153 @@ collections:
             default: services
           - { label: Page Heading, name: page_heading, widget: string }
           - { label: Page Intro, name: page_intro, widget: text, required: false }
+          # Location section
+          - label: Location
+            name: location
+            widget: object
+            collapsed: true
+            fields:
+              - { label: Heading, name: heading, widget: string, default: "Based in Costa Rica" }
+              - { label: Description, name: description, widget: text, hint: "Where you're based and travel radius" }
+              - label: Service Areas
+                name: areas
+                widget: list
+                required: false
+                field: { label: Area, name: area, widget: string }
+                hint: "List of areas you serve"
+          # Process section
+          - label: Process / How It Works
+            name: process
+            widget: object
+            collapsed: true
+            fields:
+              - { label: Heading, name: heading, widget: string, default: "The journey" }
+              - label: Steps
+                name: steps
+                widget: list
+                max: 6
+                fields:
+                  - { label: Number, name: number, widget: string, hint: 'e.g. "01"' }
+                  - { label: Title, name: title, widget: string }
+                  - { label: Description, name: description, widget: text }
+          # Services list
           - label: Services
             name: services
             widget: list
             fields:
-              - { label: Name, name: name, widget: string, hint: 'e.g. "Family", "Wedding"' }
+              - { label: Name, name: name, widget: string, hint: 'e.g. "Portrait", "Branding"' }
+              - { label: Tagline, name: tagline, widget: string, required: false, hint: 'Short punchy line, e.g. "Families. Couples. Maternity."' }
               - { label: Description, name: description, widget: text }
-              - { label: Starting note, name: starting_note, widget: string, required: false, hint: 'e.g. "Starting at $500"' }
-              - { label: Image, name: image, widget: image }
-              - { label: Portfolio slug, name: portfolio_slug, widget: string, required: false, hint: 'Links "View Portfolio" to /portfolio/[slug]' }
+              - label: Ideal For
+                name: ideal_for
+                widget: list
+                required: false
+                field: { label: Audience, name: audience, widget: string }
+                hint: 'Who this service is for, e.g. "Families visiting Costa Rica"'
+              - label: Packages
+                name: packages
+                widget: list
+                required: false
+                collapsed: true
+                hint: "Session packages with pricing"
+                fields:
+                  - { label: Package Name, name: name, widget: string, hint: 'e.g. "Golden Hour", "Half Session"' }
+                  - { label: Duration, name: duration, widget: string, hint: 'e.g. "30 min", "4 hours"' }
+                  - label: Starting Price
+                    name: starting_price
+                    widget: number
+                    required: false
+                    value_type: int
+                    hint: "In USD. Leave empty for custom quote."
+                  - { label: Price Note, name: price_note, widget: string, required: false, hint: 'Override price display, e.g. "Custom quote"' }
+                  - label: What's Included
+                    name: includes
+                    widget: list
+                    field: { label: Item, name: item, widget: string }
+                    hint: 'e.g. "15+ edited images", "Online gallery"'
+              - { label: What to Expect, name: what_to_expect, widget: text, required: false, hint: "Describe the session experience" }
+              - label: Subcategories
+                name: subcategories
+                widget: list
+                required: false
+                hint: "Filterable sub-types (Portrait → Family, Couples, Maternity)"
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: Filter slug, name: filter, widget: string, hint: "URL param for filtering" }
+              - { label: Image, name: image, widget: image, hint: 'Fallback image if no carousel' }
+              - label: Carousel Mode
+                name: carousel_mode
+                widget: select
+                default: auto
+                options:
+                  - { label: "Auto (from linked portfolio)", value: auto }
+                  - { label: "Manual (curated list below)", value: manual }
+              - label: Auto-source count
+                name: carousel_count
+                widget: number
+                default: 8
+                value_type: int
+                min: 3
+                max: 12
+                required: false
+                hint: "Number of images when using auto mode"
+              - label: Carousel Images
+                name: carousel_images
+                widget: list
+                required: false
+                max: 12
+                collapsed: true
+                hint: "Manual mode only. Leave empty to use auto-sourced images."
+                fields:
+                  - { label: Image, name: src, widget: image }
+                  - label: Focal X %
+                    name: focal_x
+                    widget: number
+                    required: false
+                    value_type: int
+                    min: 0
+                    max: 100
+                    hint: "0=left, 50=center, 100=right"
+                  - label: Focal Y %
+                    name: focal_y
+                    widget: number
+                    required: false
+                    value_type: int
+                    min: 0
+                    max: 100
+                    hint: "0=top, 50=center, 100=bottom"
+              - { label: Portfolio slug, name: portfolio_slug, widget: string, required: false, hint: 'Links to /portfolio/[slug]. Leave empty to hide service.' }
+          # Closing CTA
+          - label: Closing CTA
+            name: closing
+            widget: object
+            collapsed: true
+            fields:
+              - { label: Heading, name: heading, widget: string, default: "Ready to tell your story?" }
+              - { label: Subheading, name: subheading, widget: string, required: false }
+              - { label: Button Text, name: cta_text, widget: string, default: "Get in touch" }
+
+      - name: site
+        label: Site Settings
+        file: src/content/pages/site.yaml
+        fields:
+          - label: Page identifier
+            name: _page
+            widget: hidden
+            default: site
+          - label: Nav Logo
+            name: nav_logo
+            widget: image
+            hint: "Logo displayed in navigation bar (PNG with transparency recommended)"
+          - label: Footer Logo
+            name: footer_logo
+            widget: image
+            required: false
+            hint: "Logo for footer (optional — uses Nav Logo if not set)"
+          - label: Logo Alt Text
+            name: logo_alt
+            widget: string
+            default: Sol Photography
 
   # ── Portfolio galleries ───────────────────────────────────────────────────────
   - name: portfolio
@@ -85,15 +381,94 @@ collections:
       - label: Category
         name: category
         widget: select
-        options: [portraits, branding, events, architecture]
+        options: [portraits, family, maternity, couples, branding, events, architecture]
       - { label: Date, name: date, widget: datetime }
       - { label: Description, name: description, widget: text, required: false }
       - { label: Cover Image, name: cover, widget: image }
+      - label: Cover focal point
+        name: cover_position
+        widget: select
+        default: top
+        options:
+          - { label: Top, value: top }
+          - { label: Center, value: center }
+          - { label: Bottom, value: bottom }
+          - { label: Left, value: left }
+          - { label: Right, value: right }
+      - label: Cover Focal X %
+        name: cover_focal_x
+        widget: number
+        required: false
+        value_type: int
+        min: 0
+        max: 100
+        hint: "Leave empty to use preset above. Set both X and Y to override with precise position."
+      - label: Cover Focal Y %
+        name: cover_focal_y
+        widget: number
+        required: false
+        value_type: int
+        min: 0
+        max: 100
+        hint: "Leave empty to use preset above. Set both X and Y to override with precise position."
+      - label: Hero Carousel Mode
+        name: carousel_mode
+        widget: select
+        default: auto
+        options:
+          - { label: "Auto (portrait images from gallery)", value: auto }
+          - { label: "Manual (use hero images below)", value: manual }
+        hint: "Auto pulls portrait-orientation images from the gallery. Manual uses the hero images list."
+      - label: Hero Carousel Count
+        name: carousel_count
+        widget: number
+        default: 4
+        value_type: int
+        min: 2
+        max: 8
+        required: false
+        hint: "Number of images when using auto mode"
+      - label: Hero Images (manual mode)
+        name: hero_images
+        widget: list
+        required: false
+        max: 5
+        hint: "Only used when carousel mode is 'manual'. Leave empty to use auto mode."
+        fields:
+          - { label: Image, name: src, widget: image }
+          - label: Focal X %
+            name: focal_x
+            widget: number
+            required: false
+            value_type: int
+            min: 0
+            max: 100
+            hint: "0=left, 50=center, 100=right"
+          - label: Focal Y %
+            name: focal_y
+            widget: number
+            required: false
+            value_type: int
+            min: 0
+            max: 100
+            hint: "0=top, 50=center, 100=bottom"
+      - label: Hero Carousel Speed (seconds)
+        name: hero_carousel_speed
+        widget: number
+        default: 6
+        value_type: int
+        min: 3
+        max: 15
+        required: false
+        hint: "Time per slide when using hero carousel"
       - label: Gallery Images
         name: images
         widget: list
         required: false
-        field: { label: Image, name: image, widget: image }
+        hint: "Images uploaded here are auto-processed (~2 min). WebP variants generated automatically."
+        fields:
+          - { label: Image, name: src, widget: image }
+          - { label: Hide from gallery, name: hidden, widget: boolean, default: false }
       - label: Tags
         name: tags
         widget: list
@@ -101,3 +476,15 @@ collections:
         field: { label: Tag, name: tag, widget: string }
         hint: "Lightroom keywords — family, couples, maternity, retreat, etc."
       - { label: Featured, name: featured, widget: boolean, default: false }
+      - label: Sort Mode
+        name: sort_mode
+        widget: select
+        default: manual
+        options:
+          - { label: Manual (as ordered), value: manual }
+          - { label: Date (newest first), value: date_desc }
+          - { label: Rainbow Reverse (color groups), value: rainbow_reverse }
+          - { label: Random, value: random }
+          - { label: Session Spread (separate subjects), value: session_spread }
+          - { label: Color Spread (smooth transitions), value: color_spread }
+        hint: "How to sort gallery images. Session spread separates photos from the same shoot."

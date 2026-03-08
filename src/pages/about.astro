@@ -1,47 +1,90 @@
 ---
-import Layout from '@/layouts/Layout.astro';
-import SectionLabel from '@/components/shared/SectionLabel.astro';
-import { getEntry } from 'astro:content';
+import Layout from '@/layouts/Layout.astro'
+import Hero from '@/components/home/Hero.astro'
+import { getEntry } from 'astro:content'
+import { getMoodImages } from '@/lib/carousel-images'
 
-const about = await getEntry('pages', 'about');
-const { hero_image, heading, subheading, bio, headshot } = about.data;
+const about = await getEntry('pages', 'about')
+const {
+  carousel_count = 4,
+  hero_position = 'center',
+  hero_focal_x,
+  hero_focal_y,
+  hero_carousel_speed = 7,
+  heading,
+  subheading,
+  bio,
+  headshot,
+  headshots,
+} = about.data
+
+// Use headshots array if available, otherwise fall back to single headshot
+const collageImages = headshots && headshots.length >= 3 ? headshots.slice(0, 3) : null
+
+// Use mood images for hero - lifestyle/atmosphere shots that let the headshots below pop
+const heroSlides = getMoodImages(carousel_count, true);
 ---
 
 <Layout title="About" description={subheading}>
-  <!-- Hero banner -->
-  <section class="relative h-[70vh] min-h-[420px] overflow-hidden">
-    <img
-      src={hero_image}
-      alt=""
-      class="absolute inset-0 w-full h-full object-cover"
-      loading="eager"
-    />
-    <div class="absolute inset-0 bg-[var(--sol-charcoal)]/35" />
-    <div class="relative h-full flex items-end justify-center pb-16 px-6 text-center">
-      <div>
-        <SectionLabel>About</SectionLabel>
-        <h1 class="font-display text-5xl md:text-7xl text-[var(--sol-cream)] mt-3">{heading}</h1>
-      </div>
-    </div>
-  </section>
+  <!-- Hero banner with carousel support -->
+  <Hero
+    slides={heroSlides}
+    heading={heading}
+    position={hero_position}
+    focalX={hero_focal_x}
+    focalY={hero_focal_y}
+    carouselSpeed={hero_carousel_speed}
+  />
 
   <!-- Bio -->
-  <section class="max-w-4xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-16 items-center">
-    <img
-      src={headshot}
-      alt={heading}
-      class="w-full aspect-[3/4] object-cover"
-      loading="lazy"
-    />
-    <div>
+  <section class="max-w-5xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+    {collageImages ? (
+      <div class="relative animate-on-scroll">
+        <div class="grid grid-cols-12 gap-3">
+          <!-- Primary image - larger, anchored -->
+          <div class="col-span-8 col-start-1">
+            <img
+              src={collageImages[1]}
+              alt={heading}
+              class="w-full aspect-[3/4] object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <!-- Secondary image - smaller, offset down -->
+          <div class="col-span-5 col-start-8 -mt-[20%] relative z-10">
+            <img
+              src={collageImages[0]}
+              alt=""
+              class="w-full aspect-[3/4] object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </div>
+    ) : (
+      <img
+        src={headshot}
+        alt={heading}
+        class="w-full aspect-[3/4] object-cover animate-on-scroll"
+        loading="lazy"
+        decoding="async"
+      />
+    )}
+    <div class="animate-on-scroll" style="transition-delay: 0.1s;">
       <p class="font-sans text-xs tracking-widest uppercase text-[var(--sol-caramel)] mb-4">{subheading}</p>
       <p class="font-serif text-lg text-[var(--sol-charcoal)]/85 leading-relaxed">{bio}</p>
       <a
-        href="/contact"
-        class="inline-block mt-10 font-sans text-xs tracking-widest uppercase px-8 py-3 border border-[var(--sol-caramel)] text-[var(--sol-caramel)] hover:bg-[var(--sol-caramel)] hover:text-[var(--sol-cream)] transition-colors"
+        href="#inquiry"
+        class="cta-underline cta-arrow inline-flex items-center gap-2 mt-10"
       >
         Inquire
+        <svg viewBox="0 0 24 24" class="w-4 h-4 stroke-current stroke-[1.5]" fill="none">
+          <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
       </a>
     </div>
   </section>
+
 </Layout>

@@ -1,52 +1,98 @@
 ---
-const allLinks = [
-  { href: '/', label: 'HOME' },
-  { href: '/about', label: 'ABOUT' },
-  { href: '/portfolio', label: 'PORTFOLIO' },
-  { href: '/services', label: 'SERVICES' },
-  { href: '/contact', label: 'INQUIRE' },
-];
-const leftLinks = allLinks.slice(0, 3);
-const rightLinks = allLinks.slice(3);
-const currentPath = Astro.url.pathname;
+import { NAV_LINKS } from '@/lib/navigation'
+import NavDropdown from './NavDropdown'
+
+const currentPath = Astro.url.pathname
+const currentUrl = Astro.url.pathname + Astro.url.search
+
+const isActive = (href: string) => currentPath === href || (href !== '/' && currentPath.startsWith(href))
 
 const linkClass = (href: string) => [
-  'text-xs tracking-widest font-sans transition-colors',
-  currentPath === href
-    ? 'text-[var(--sol-caramel)]'
+  'nav-link nav-link-expand text-sm tracking-widest font-sans transition-colors',
+  isActive(href)
+    ? 'text-[var(--sol-caramel)] nav-link-active-pill'
     : 'text-[var(--sol-charcoal)] hover:text-[var(--sol-caramel)]',
-].join(' ');
+].join(' ')
 
 const mobileLinkClass = (href: string) => [
   'block text-sm tracking-widest font-sans py-3 transition-colors',
-  currentPath === href
+  isActive(href)
     ? 'text-[var(--sol-caramel)]'
     : 'text-[var(--sol-charcoal)] hover:text-[var(--sol-caramel)]',
-].join(' ');
+].join(' ')
+
+// Dropdown items for Portfolio and Services
+// `indent` marks sub-categories that belong under a parent
+const portfolioItems = [
+  { href: '/portfolio/portraits', label: 'Portraits' },
+  { href: '/portfolio/portraits?filter=family', label: 'Family', indent: true },
+  { href: '/portfolio/portraits?filter=maternity', label: 'Maternity', indent: true },
+  { href: '/portfolio/portraits?filter=couples', label: 'Couples', indent: true },
+  { href: '/portfolio/branding', label: 'Branding' },
+  { href: '/portfolio/events', label: 'Retreats' },
+]
+
+const serviceItems = [
+  { href: '/services#portraits', label: 'Portraits' },
+  { href: '/services#branding', label: 'Branding' },
+  { href: '/services#events', label: 'Retreats' },
+]
+
+// Split links for layout
+const leftLinks = NAV_LINKS.slice(0, 3) // HOME, ABOUT, PORTFOLIO
+const rightLinks = NAV_LINKS.slice(3); // SERVICES, INQUIRE
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 bg-[var(--sol-cream)]/95 backdrop-blur-sm border-b border-[var(--sol-sage)]/40">
+<header class="fixed top-0 left-0 right-0 z-50 bg-[var(--sol-cream)]/95 backdrop-blur-sm border-b border-[var(--sol-sage)]/40" style="view-transition-name: nav-bar;">
   <!-- Desktop nav -->
-  <nav class="hidden md:grid max-w-7xl mx-auto px-6 h-16 grid-cols-3 items-center">
+  <nav aria-label="Main navigation" class="hidden md:grid max-w-7xl mx-auto px-6 h-24 grid-cols-3 items-center">
     <ul class="flex gap-8">
-      {leftLinks.map(({ href, label }) => (
-        <li><a href={href} class={linkClass(href)}>{label}</a></li>
+      {leftLinks.map(({ href, label, reload }) => (
+        <li>
+          {label === 'PORTFOLIO' ? (
+            <NavDropdown
+              client:only="react"
+              label={label}
+              href={href}
+              items={portfolioItems}
+              isActive={isActive(href)}
+              currentUrl={currentUrl}
+            />
+          ) : (
+            <a href={href} class={linkClass(href)} {...(reload && { 'data-astro-reload': true })} {...(isActive(href) && { 'aria-current': 'page' })}>{label}</a>
+          )}
+        </li>
       ))}
     </ul>
-    <a href="/" class="text-center font-display text-sm tracking-[0.25em] uppercase text-[var(--sol-charcoal)] hover:text-[var(--sol-caramel)] transition-colors">
-      Sol Photography
+    <a href="/" class="flex flex-col items-center nav-logo-hover group">
+      <span class="font-display text-2xl tracking-[0.4em] text-[var(--sol-charcoal)] group-hover:text-[var(--sol-caramel)] transition-colors">SOL</span>
+      <span class="font-sans text-[10px] tracking-[0.35em] text-[var(--sol-charcoal)]/70 -mt-0.5">PHOTOGRAPHY</span>
     </a>
     <ul class="flex gap-8 justify-end">
-      {rightLinks.map(({ href, label }) => (
-        <li><a href={href} class={linkClass(href)}>{label}</a></li>
+      {rightLinks.map(({ href, label, reload }) => (
+        <li>
+          {label === 'SERVICES' ? (
+            <NavDropdown
+              client:only="react"
+              label={label}
+              href={href}
+              items={serviceItems}
+              isActive={isActive(href)}
+              currentUrl={currentUrl}
+            />
+          ) : (
+            <a href={href} class={linkClass(href)} {...(reload && { 'data-astro-reload': true })} {...(isActive(href) && { 'aria-current': 'page' })}>{label}</a>
+          )}
+        </li>
       ))}
     </ul>
   </nav>
 
   <!-- Mobile nav -->
   <div class="md:hidden flex items-center justify-between px-6 h-14">
-    <a href="/" class="font-display text-sm tracking-[0.25em] uppercase text-[var(--sol-charcoal)]">
-      Sol Photography
+    <a href="/" class="flex items-center gap-1.5 nav-logo-hover">
+      <span class="font-display text-lg tracking-[0.3em] text-[var(--sol-charcoal)]">SOL</span>
+      <span class="font-sans text-[9px] tracking-[0.25em] text-[var(--sol-charcoal)]/70">PHOTOGRAPHY</span>
     </a>
     <button
       type="button"
@@ -61,43 +107,143 @@ const mobileLinkClass = (href: string) => [
     </button>
   </div>
 
+  <!-- Mobile backdrop (covers inquiry widget and page content) -->
+  <div
+    id="mobile-backdrop"
+    class="md:hidden fixed inset-0 top-14 bg-[var(--sol-cream)]/98 backdrop-blur-sm z-40 hidden transition-opacity duration-200"
+    aria-hidden="true"
+  ></div>
+
   <!-- Mobile drawer -->
   <nav
     id="mobile-menu"
-    class="md:hidden hidden border-t border-[var(--sol-sage)]/40 bg-[var(--sol-cream)] px-6 pb-6"
+    aria-label="Mobile navigation"
+    class="md:hidden hidden border-t border-[var(--sol-sage)]/40 bg-[var(--sol-cream)] px-6 pb-6 relative z-50"
   >
     <ul class="flex flex-col">
-      {allLinks.map(({ href, label }) => (
-        <li class="border-b border-[var(--sol-sage)]/20 last:border-0">
-          <a href={href} class={mobileLinkClass(href)}>{label}</a>
-        </li>
+      {NAV_LINKS.map(({ href, label, reload }) => (
+        <>
+          <li class="border-b border-[var(--sol-sage)]/20 mobile-menu-item">
+            <a href={href} class={mobileLinkClass(href)} {...(reload && { 'data-astro-reload': true })} {...(isActive(href) && { 'aria-current': 'page' })}>{label}</a>
+          </li>
+          {/* Portfolio sub-links */}
+          {label === 'PORTFOLIO' && (
+            <li class="border-b border-[var(--sol-sage)]/20">
+              <div class="pl-4 flex flex-col">
+                {portfolioItems.map((item) => (
+                  <a
+                    href={item.href}
+                    class:list={[
+                      "text-xs tracking-widest font-sans py-2 transition-colors",
+                      item.indent ? "pl-3 opacity-60" : "",
+                      currentUrl === item.href
+                        ? "text-[var(--sol-caramel)] opacity-100"
+                        : "text-[var(--sol-charcoal)]/70 hover:text-[var(--sol-caramel)] hover:opacity-100"
+                    ]}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            </li>
+          )}
+          {/* Services sub-links */}
+          {label === 'SERVICES' && (
+            <li class="border-b border-[var(--sol-sage)]/20">
+              <div class="pl-4 flex flex-col">
+                {serviceItems.map((item) => (
+                  <a
+                    href={item.href}
+                    class:list={[
+                      "text-xs tracking-widest font-sans py-2 transition-colors",
+                      currentUrl === item.href
+                        ? "text-[var(--sol-caramel)]"
+                        : "text-[var(--sol-charcoal)]/70 hover:text-[var(--sol-caramel)]"
+                    ]}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            </li>
+          )}
+        </>
       ))}
     </ul>
   </nav>
 </header>
 
 <!-- Push content below fixed nav -->
-<div class="h-14 md:h-16" aria-hidden="true" />
+<div class="h-14 md:h-24" aria-hidden="true" />
 
 <script is:inline>
-  const toggle = document.getElementById('nav-toggle');
-  const menu = document.getElementById('mobile-menu');
-  const bar1 = document.getElementById('bar1');
-  const bar2 = document.getElementById('bar2');
-  const bar3 = document.getElementById('bar3');
-  let open = false;
-  toggle?.addEventListener('click', () => {
-    open = !open;
-    menu?.classList.toggle('hidden', !open);
-    toggle.setAttribute('aria-expanded', String(open));
-    if (open) {
-      bar1.style.transform = 'rotate(45deg) translateY(4px)';
-      bar2.style.opacity = '0';
-      bar3.style.transform = 'rotate(-45deg) translateY(-4px)';
-    } else {
-      bar1.style.transform = '';
-      bar2.style.opacity = '';
-      bar3.style.transform = '';
+  (function() {
+    function initMobileMenu() {
+      const toggle = document.getElementById('nav-toggle')
+    const menu = document.getElementById('mobile-menu')
+    const backdrop = document.getElementById('mobile-backdrop')
+    const bar1 = document.getElementById('bar1')
+    const bar2 = document.getElementById('bar2')
+    const bar3 = document.getElementById('bar3')
+
+    if (!toggle || !menu) return
+
+    // Reset menu state on page navigation
+    let open = false
+    menu.classList.add('hidden')
+    menu.classList.remove('mobile-menu-open')
+    backdrop?.classList.add('hidden')
+    toggle.setAttribute('aria-expanded', 'false')
+    if (bar1) bar1.style.transform = ''
+    if (bar2) bar2.style.opacity = ''
+    if (bar3) bar3.style.transform = ''
+
+    // Clone to remove any existing listeners, then re-query
+    const freshToggle = toggle.cloneNode(true)
+    toggle.parentNode?.replaceChild(freshToggle, toggle)
+    const newToggle = document.getElementById('nav-toggle')
+
+    const closeMenu = () => {
+        open = false
+      menu.classList.add('hidden')
+      menu.classList.remove('mobile-menu-open')
+      backdrop?.classList.add('hidden')
+      newToggle?.setAttribute('aria-expanded', 'false')
+      if (bar1) bar1.style.transform = ''
+      if (bar2) bar2.style.opacity = ''
+      if (bar3) bar3.style.transform = ''
     }
-  });
+
+      newToggle?.addEventListener('click', () => {
+        open = !open
+      menu.classList.toggle('hidden', !open)
+      menu.classList.toggle('mobile-menu-open', open)
+      backdrop?.classList.toggle('hidden', !open)
+      newToggle.setAttribute('aria-expanded', String(open))
+      if (open) {
+          bar1.style.transform = 'rotate(45deg) translateY(4px)'
+        bar2.style.opacity = '0'
+        bar3.style.transform = 'rotate(-45deg) translateY(-4px)'
+      } else {
+          bar1.style.transform = ''
+        bar2.style.opacity = ''
+        bar3.style.transform = ''
+      }
+      })
+
+    // Close menu when clicking backdrop
+    backdrop?.addEventListener('click', closeMenu)
+
+    // Close menu when any link inside mobile menu is clicked
+    menu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu)
+    })
+    }
+
+    // Run on initial load
+    initMobileMenu()
+
+  // Re-run after View Transitions navigation
+  document.addEventListener('astro:page-load', initMobileMenu)
+})()
 </script>

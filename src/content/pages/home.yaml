@@ -1,10 +1,30 @@
 _page: home
+# Hero images should be landscape-oriented or have significant breathing room.
+# Avoid tightly-cropped portrait shots - they get awkwardly cropped on wide screens.
+carousel_mode: auto # manual or auto
+carousel_count: 4
+hero_position: top
+hero_focal_x: 50
+hero_focal_y: 30
+hero_carousel_speed: 6
 hero_images:
-  - /media/pages/home-hero.jpg
+  - image: /media/portfolio/events/2026-retreat-portfolio-05.jpg
+    focal_x: 50
+    focal_y: 40
+  - image: /media/portfolio/branding/2026-branding-portfolio-001.jpg
+    focal_x: 50
+    focal_y: 35
+  - image: /media/portfolio/portraits/2026-portrait-portfolio-067.jpg
+    focal_x: 50
+    focal_y: 30
+  - image: /media/portfolio/events/2026-retreat-portfolio-23.jpg
+    focal_x: 50
+    focal_y: 35
 hero_heading: "Light. Story. Memory."
 intro_label: "WHY SOL"
-intro_heading: "The moments you'll want to live in forever."
-intro_body: "Every session is designed around you — your light, your story, your people. I show up with intention so you can be fully present for what's happening right in front of you."
+intro_heading: "Because some moments deserve to be held."
+intro_body: "I'm Laurel — a Costa Rica-based photographer who believes the best images come from real connection, not perfect poses. Whether it's the chaos of family mornings, the quiet of a couple at golden hour, or the energy of a creative building their brand — I'm here to witness it with you. My approach is simple: slow down, stay present, and let the light do its work. The result? Photos that feel like coming home."
+intro_headshot: /media/pages/Laurel-headshot-3.jpg
 stats:
   - number: "5+"
     label: "Years behind the lens"

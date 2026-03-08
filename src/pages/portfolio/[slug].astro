@@ -1,50 +1,298 @@
 ---
-import Layout from '@/layouts/Layout.astro';
-import GalleryGrid from '@/components/portfolio/GalleryGrid.tsx';
-import SectionLabel from '@/components/shared/SectionLabel.astro';
-import { getCollection } from 'astro:content';
+import Layout from '@/layouts/Layout.astro'
+import GalleryGrid from '@/components/portfolio/GalleryGrid.tsx'
+import HeroCarousel from '@/components/home/HeroCarousel'
+import SectionLabel from '@/components/shared/SectionLabel.astro'
+import { getCollection, getEntry } from 'astro:content'
+
+// Sub-categories that redirect to portraits with filter
+const PORTRAIT_SUBCATEGORIES = ['family', 'couples', 'maternity']
 
 export async function getStaticPaths() {
-  const galleries = await getCollection('portfolio');
-  return galleries.map(entry => ({
-    params: { slug: entry.slug },
-    props: { entry },
-  }));
+  // Duplicated here because Astro hoists getStaticPaths and constants aren't in scope
+  const subcategories = ['family', 'couples', 'maternity']
+  const galleries = await getCollection('portfolio')
+  // Exclude sub-categories - they redirect to /portfolio/portraits?filter=X
+  return galleries
+    .filter(entry => !subcategories.includes(entry.slug))
+    .map(entry => ({
+      params: { slug: entry.slug },
+      props: { entry },
+    }))
 }
 
-const { entry } = Astro.props;
-const { title, category, description, cover, images } = entry.data;
+const { entry } = Astro.props
+const {
+  title,
+  category,
+  description,
+  cover,
+  cover_position = 'center',
+  cover_focal_x,
+  cover_focal_y,
+  carousel_mode = 'auto',
+  carousel_count = 4,
+  hero_images,
+  hero_carousel_speed = 6,
+  images,
+  sort_mode,
+} = entry.data
+const presetMap: Record<string, string> = { top: 'center top', center: 'center center', bottom: 'center bottom', left: 'left center', right: 'right center' }
+const x = cover_focal_x != null ? Number(cover_focal_x) : null
+const y = cover_focal_y != null ? Number(cover_focal_y) : null
+const _objPos = x != null && y != null ? `${x}% ${y}%` : (presetMap[cover_position] ?? 'center center')
+void _objPos // Reserved for future cover positioning
 
 // CMS images come from public/media/ as string paths; cover is a resolved asset
-const coverSrc = typeof cover === 'string' ? cover : cover.src;
-const gallerySrcs = (images ?? []).map((img: unknown) =>
-  typeof img === 'string' ? img : (img as { src: string }).src
-);
+const coverSrc = typeof cover === 'string' ? cover : cover.src
+
+// Hero carousel: auto-pull from gallery or use manual hero_images
+type HeroSlide = { src: string, focal_x?: number | string, focal_y?: number | string }
+let defaultHeroSlides: HeroSlide[]
+
+if (carousel_mode === 'auto' && images && images.length > 0) {
+  // Auto-select portrait-only images from this gallery
+  const portraitImages = images
+    .filter((img: { hidden?: boolean, orientation?: string }) =>
+      !img.hidden && img.orientation === 'portrait'
+    )
+    .sort(() => Math.random() - 0.5) // shuffle at build time
+    .slice(0, carousel_count)
+    .map((img: { src: string }) => ({ src: img.src }))
+
+  defaultHeroSlides = portraitImages.length > 0
+    ? portraitImages
+    : [{ src: coverSrc, focal_x: cover_focal_x, focal_y: cover_focal_y }]
+} else if (carousel_mode === 'manual' && hero_images && hero_images.length > 0) {
+  // Use explicitly defined hero_images from CMS
+  defaultHeroSlides = hero_images.map(img => ({
+    src: img.src,
+    focal_x: img.focal_x,
+    focal_y: img.focal_y,
+  }))
+} else {
+  // Fallback to cover image
+  defaultHeroSlides = [{
+    src: coverSrc,
+    focal_x: cover_focal_x,
+    focal_y: cover_focal_y,
+  }]
+}
+
+// For portraits page, pre-build hero image sets for each sub-category (4 portrait images each)
+// This is lightweight - just URLs, actual images lazy load
+type HeroSlide = { src: string, focal_x?: number | string, focal_y?: number | string }
+let subcategoryHeroMap: Record<string, HeroSlide[]> | null = null
+
+if (entry.slug === 'portraits') {
+  subcategoryHeroMap = {}
+  for (const subcat of PORTRAIT_SUBCATEGORIES) {
+    const subcatEntry = await getEntry('portfolio', subcat)
+    if (subcatEntry?.data.images) {
+      // Pick 4 portrait-only images, shuffle for variety
+      const portraitImages = subcatEntry.data.images
+        .filter((img: { hidden?: boolean, orientation?: string }) =>
+          !img.hidden && img.orientation === 'portrait'
+        )
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 4)
+        .map((img: { src: string }) => ({ src: img.src }))
+      subcategoryHeroMap[subcat] = portraitImages.length > 0 ? portraitImages : defaultHeroSlides
+    }
+  }
+}
+
+const isCarousel = defaultHeroSlides.length > 1 || subcategoryHeroMap !== null
+
+// Filter visible images and pass full metadata for sorting and filtering
+type ImageData = {
+  src: string
+  hidden?: boolean
+  date_taken?: string
+  hue?: number
+  tags?: string[]
+  width?: number
+  height?: number
+  orientation?: 'landscape' | 'portrait' | 'square'
+  category?: string
+}
+
+// Helper to process images from a collection entry
+function processImages(imgs: unknown[], categoryTag: string): ImageData[] {
+  return (imgs ?? [])
+    .filter((img: unknown) =>
+      typeof img === 'string' ? true : !(img as ImageData).hidden,
+    )
+    .map((img: unknown) => {
+      if (typeof img === 'string') {
+        return { src: img, category: categoryTag }
+      }
+      const typed = img as ImageData
+      return {
+        src: typed.src,
+        date_taken: typed.date_taken,
+        hue: typed.hue,
+        tags: typed.tags,
+        width: typed.width,
+        height: typed.height,
+        orientation: typed.orientation,
+        category: categoryTag,
+      }
+    })
+}
+
+// Initial filter is null - GalleryGrid reads from URL client-side
+const initialFilter: string | null = null
+
+// For portraits page, load images from all sub-category files
+let galleryImages: ImageData[] = []
+if (entry.slug === 'portraits') {
+  // Base portraits images (shown for ALL filter)
+  galleryImages = processImages(images ?? [], 'portraits')
+
+  // Load sub-category images
+  for (const subcat of PORTRAIT_SUBCATEGORIES) {
+    const subcatEntry = await getEntry('portfolio', subcat)
+    if (subcatEntry?.data.images) {
+      const subcatImages = processImages(subcatEntry.data.images, subcat)
+      galleryImages = galleryImages.concat(subcatImages)
+    }
+  }
+} else {
+  // Regular gallery - just use its own images
+  galleryImages = processImages(images ?? [], category)
+}
 ---
 
 <Layout title={title} description={description}>
-  <!-- Hero -->
-  <section class="relative h-[60vh] min-h-[360px] overflow-hidden">
-    <img
-      src={coverSrc}
-      alt={title}
-      class="absolute inset-0 w-full h-full object-cover"
-      loading="eager"
+  <!-- Hero with optional carousel -->
+  {isCarousel ? (
+    <HeroCarousel
+      client:load
+      slides={defaultHeroSlides}
+      heading={title}
+      speedSeconds={hero_carousel_speed}
+      fallbackFocalX={x ?? 50}
+      fallbackFocalY={y ?? 30}
+      variant="portfolio"
+      subcategoryHeroMap={subcategoryHeroMap}
     />
-    <div class="absolute inset-0 bg-[var(--sol-charcoal)]/35" />
-    <div class="relative h-full flex items-end justify-center pb-14 px-6 text-center">
-      <div>
-        <SectionLabel>{category}</SectionLabel>
-        <h1 class="font-display text-5xl md:text-6xl text-[var(--sol-cream)] mt-3">{title}</h1>
+  ) : (
+    <section class="relative min-h-[60vh] md:min-h-[70vh] overflow-hidden bg-[var(--sol-cream)]">
+      {/* Subtle texture */}
+      <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E&quot;);"></div>
+
+      {/* Featured image as print */}
+      <div class="absolute inset-0 flex items-center justify-center px-8 md:px-16 lg:px-24 pt-8 pb-28">
+        <div class="relative max-w-3xl w-full animate-fade-in-up">
+          <div class="relative bg-white p-1 md:p-1.5 shadow-xl" style="transform: rotate(-0.5deg);">
+            <img
+              src={coverSrc}
+              alt={title}
+              class="w-full h-auto block"
+              loading="eager"
+            />
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+
+      {/* Gradient for text legibility */}
+      <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[var(--sol-cream)] via-[var(--sol-cream)]/80 to-transparent pointer-events-none z-[15]"></div>
+
+      {/* Heading */}
+      <div class="absolute inset-x-0 bottom-0 z-[20] px-6 pb-12 md:pb-16 text-center">
+        <div class="hero-text-eyebrow mb-2">
+          <SectionLabel>{category}</SectionLabel>
+        </div>
+        <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-light text-[var(--sol-charcoal)] hero-text-heading">{title}</h1>
+      </div>
+    </section>
+  )}
 
   {description && (
-    <p class="max-w-xl mx-auto px-6 pt-12 text-center font-serif text-[var(--sol-charcoal)]/80 leading-relaxed">
+    <p class="max-w-xl mx-auto px-6 pt-12 text-center font-serif text-[var(--sol-charcoal)]/80 leading-relaxed hero-text-body">
       {description}
     </p>
   )}
 
-  <GalleryGrid client:load images={gallerySrcs} title={title} />
+  <!-- Inquiry CTA with context and arrow - updates dynamically for portrait filters -->
+  <div class="text-center pt-8 hero-text-cta">
+    <a
+      id="inquiry-cta"
+      href={`#inquiry?context=${entry.slug}`}
+      class="cta-underline cta-arrow"
+      data-base-slug={entry.slug}
+      data-base-title={title.toLowerCase()}
+    >
+      Inquire about {title.toLowerCase()}
+      <svg viewBox="0 0 24 24" class="w-4 h-4 stroke-current stroke-[1.5]" fill="none">
+        <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+  </div>
+
+  {/* Update CTA when portrait filter changes */}
+  <script is:inline>
+    (function() {
+      const cta = document.getElementById('inquiry-cta')
+  if (!cta) return
+
+  const baseSlug = cta.dataset.baseSlug
+  const baseTitle = cta.dataset.baseTitle
+
+  // Pretty names for sub-categories
+  const filterNames = {
+        family: 'family sessions',
+        couples: 'couples sessions',
+        maternity: 'maternity sessions',
+      }
+
+  function updateCTA() {
+        const params = new URLSearchParams(window.location.search)
+    const filter = params.get('filter')
+
+    if (filter && filterNames[filter]) {
+          cta.href = '#inquiry?context=' + filter
+      cta.childNodes[0].textContent = 'Inquire about ' + filterNames[filter] + ' '
+    } else {
+          cta.href = '#inquiry?context=' + baseSlug
+      cta.childNodes[0].textContent = 'Inquire about ' + baseTitle + ' '
+    }
+      }
+
+      // Update on page load
+      updateCTA()
+
+  // Update when filter changes (GalleryGrid dispatches this)
+  window.addEventListener('urlchange', updateCTA)
+  window.addEventListener('popstate', updateCTA)
+})()
+  </script>
+
+  <script is:inline>
+    (function() {
+      // Parallax effect for gallery hero
+      const container = document.getElementById('gallery-parallax')
+  if (!container) return
+
+  // Respect reduced motion
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+  window.addEventListener('scroll', function parallaxScroll() {
+        const rect = container.getBoundingClientRect()
+    if (rect.bottom > 0) {
+          container.style.setProperty('--scroll-y', window.scrollY + 'px')
+    }
+      }, { passive: true })
+})()
+  </script>
+
+  <GalleryGrid
+    client:load
+    images={galleryImages}
+    title={title}
+    sortMode={sort_mode ?? 'manual'}
+    category={category}
+    initialFilter={initialFilter}
+  />
 </Layout>

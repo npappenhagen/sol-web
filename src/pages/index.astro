@@ -1,22 +1,68 @@
 ---
-import Layout from '@/layouts/Layout.astro';
-import Hero from '@/components/home/Hero.astro';
-import IntroBlock from '@/components/home/IntroBlock.astro';
-import StatsBar from '@/components/home/StatsBar.astro';
-import ServicePreview from '@/components/home/ServicePreview.astro';
-import { getEntry } from 'astro:content';
+import Layout from '@/layouts/Layout.astro'
+import Hero from '@/components/home/Hero.astro'
+import IntroBlock from '@/components/home/IntroBlock.astro'
+import ServicePreview from '@/components/home/ServicePreview.astro'
+import { getEntry } from 'astro:content'
+import { getCarouselImages } from '@/lib/carousel-images'
 
 const [home, servicesPage] = await Promise.all([
   getEntry('pages', 'home'),
   getEntry('pages', 'services'),
-]);
-const { hero_images, hero_heading, intro_label, intro_heading, intro_body, stats } = home.data;
-const { services } = servicesPage.data;
+])
+const {
+  carousel_mode = 'auto',
+  carousel_categories,
+  carousel_count = 8,
+  hero_images,
+  hero_heading,
+  hero_position,
+  hero_focal_x,
+  hero_focal_y,
+  hero_carousel_speed,
+  intro_label,
+  intro_heading,
+  intro_body,
+  intro_headshot,
+} = home.data
+
+// Auto-source carousel images or use manual list
+// portraitOnly is enabled by default - carousels never show landscape images
+const heroSlides = carousel_mode === 'auto'
+  ? await getCarouselImages({
+      categories: carousel_categories,
+      count: carousel_count,
+      shuffle: true,
+    })
+  : hero_images?.map((img: { image: string, focal_x?: number, focal_y?: number }) => ({
+      src: img.image,
+      focal_x: img.focal_x,
+      focal_y: img.focal_y,
+    })) ?? []
+
+const activeServices = servicesPage.data.services.filter((s: { portfolio_slug?: string }) => s.portfolio_slug);
 ---
 
 <Layout title="Home">
-  <Hero images={hero_images} heading={hero_heading} />
-  <IntroBlock label={intro_label} heading={intro_heading} body={intro_body} />
-  <StatsBar stats={stats} />
-  <ServicePreview services={services} />
+  <Hero slides={heroSlides} heading={hero_heading} position={hero_position} focalX={hero_focal_x} focalY={hero_focal_y} carouselSpeed={hero_carousel_speed} />
+  <div class="section-divider my-0" data-divider aria-hidden="true" />
+  <IntroBlock label={intro_label} heading={intro_heading} body={intro_body} headshot={intro_headshot} />
+  <div class="section-divider" data-divider aria-hidden="true" />
+  <ServicePreview services={activeServices} />
 </Layout>
+
+<script>
+  // Animate section dividers on scroll
+  const dividers = document.querySelectorAll('[data-divider]')
+const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible')
+      }
+      })
+  },
+    { threshold: 0.5 }
+  )
+dividers.forEach((el) => observer.observe(el))
+</script>

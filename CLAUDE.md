@@ -4,6 +4,64 @@ Photography portfolio + business site for Sol Photography.
 
 **Domain:** `solphotography.net`
 
+---
+
+## Context Hygiene — MANDATORY
+
+**Token bloat kills sessions.** Use Axon MCP tools + smart-tree to stay surgical. Raw file reads and grep sprawl are the last resort.
+
+### Decision Tree (follow in order)
+
+```
+Need to understand code?
+  └─► axon_query "symbol or concept"     # Hybrid search — BM25 + vector + fuzzy
+       └─► axon_context "SymbolName"     # 360° view: callers, callees, types, dead code status
+            └─► axon_impact "SymbolName" # Blast radius before any change
+                 └─► ONLY THEN read specific lines if needed
+
+Need to see project structure?
+  └─► mcp__smart-tree__overview          # Compact, AI-friendly directory view
+       └─► mcp__smart-tree__analyze      # Deep analysis (semantic, git_status)
+            └─► ONLY THEN glob/read if you need file contents
+
+Planning a change?
+  └─► axon_impact FIRST                  # Know what breaks before touching anything
+```
+
+### Axon MCP Tools
+
+Axon provides these MCP tools (auto-configured via `.mcp.json`):
+
+| Tool | Use |
+|------|-----|
+| `axon_query` | Hybrid search (BM25 + vector + fuzzy) grouped by execution flow |
+| `axon_context` | 360° view: callers, callees, type refs, dead code status |
+| `axon_impact` | Blast radius by depth — direct (will break), indirect (may break), transitive |
+| `axon_dead_code` | All unreachable symbols grouped by file |
+| `axon_detect_changes` | Map a git diff to affected symbols and flows |
+| `axon_cypher` | Read-only Cypher queries against the knowledge graph |
+
+Each tool response includes **next-step hints** guiding the investigation workflow.
+
+**Note**: Axon uses kuzu (embedded DB) which only allows one connection. First Claude Code session gets Axon; additional sessions won't have it available.
+
+### Anti-Patterns (DO NOT)
+
+- **Reading entire files** to find one function → use `axon_query`
+- **Grepping the whole codebase** → use `axon_query` or smart-tree first
+- **Reading multiple files** to understand relationships → use `axon_context`
+- **Guessing what a change affects** → use `axon_impact`
+- **Using `ls -la` or `find`** for structure → use `mcp__smart-tree__overview`
+
+### When Raw Reads ARE Appropriate
+
+- Editing a specific file (you need the exact content)
+- Reading config files (package.json, tsconfig, etc.)
+- Viewing content files (YAML, markdown for CMS)
+- After `axon_query`/`axon_context` or smart-tree narrowed down exactly what to read
+
+---
+
 ## Stack
 
 - **Astro 5** — static output (default); individual routes opt into SSR with `export const prerender = false`
@@ -194,12 +252,31 @@ The sync script (`scripts/sync-photos.py`) reads `dc:subject` XMP tags from each
 - Tailwind utility classes + CSS vars. No inline styles, no CSS-in-JS.
 - No `any` in TypeScript. Infer from Zod schemas when possible.
 
-## Code Intelligence — Use Axon MCP First
+## Tools Reference
 
-When exploring the codebase, refactoring, or planning changes:
+### Axon (code intelligence graph)
 
-1. `axon_query` — search by name or concept
-2. `axon_context` — full picture of a symbol (callers, callees, types)
-3. `axon_impact` — blast radius before changing anything
+Axon MCP server auto-starts via `.mcp.json` with `--watch` for live re-indexing.
 
-Run `pnpm dev:full` (Astro + Axon watch). First time: `pip install axoniq && axon analyze .`
+**First-time setup:** `axon analyze .` (indexes the codebase)
+
+**Re-index after major changes:** `axon clean && axon analyze .`
+
+| Tool | Use |
+|------|-----|
+| `axon_query` | Hybrid search (BM25 + vector + fuzzy) grouped by execution flow |
+| `axon_context` | 360° view: callers, callees, type refs, dead code status |
+| `axon_impact` | Blast radius by depth — direct / indirect / transitive |
+| `axon_dead_code` | All unreachable symbols grouped by file |
+| `axon_detect_changes` | Map git diff to affected symbols |
+| `axon_cypher` | Read-only Cypher queries |
+
+### Smart-Tree (MCP)
+
+| Tool | Use |
+|------|-----|
+| `mcp__smart-tree__overview` | AI-optimized directory tree — compact, semantic |
+| `mcp__smart-tree__analyze` | Deep analysis (statistics, git_status, semantic grouping) |
+| `mcp__smart-tree__find` | Find files by type (code, tests, config, docs, recent) |
+| `mcp__smart-tree__search` | Search file contents with line numbers and context |
+| `mcp__smart-tree__read` | AST-aware file reading (collapses function bodies to signatures) |

@@ -1,27 +1,49 @@
 ---
-import SectionLabel from '@/components/shared/SectionLabel.astro';
+import SectionLabel from '@/components/shared/SectionLabel.astro'
 
 interface Props {
-  label: string;
-  heading: string;
-  body: string;
-  ctaHref?: string;
-  ctaText?: string;
+  label: string
+  heading: string
+  body: string
+  headshot?: string
+  ctaHref?: string
+  ctaText?: string
 }
-const { label, heading, body, ctaHref = '/contact', ctaText = 'Work with me' } = Astro.props;
+const { label, heading, body, headshot, ctaHref = '#inquiry', ctaText = 'Work with me' } = Astro.props;
 ---
 
-<section class="max-w-2xl mx-auto px-6 py-24 text-center">
+<section class="max-w-2xl mx-auto px-6 py-24 text-center animate-on-scroll" data-animate>
   <SectionLabel>{label}</SectionLabel>
-  <h2 class="font-display text-4xl md:text-5xl text-[var(--sol-charcoal)] mt-4 mb-6 leading-tight">
+  <h2 class="font-display text-5xl md:text-6xl font-light text-[var(--sol-forest)] mt-4 mb-6 leading-[1.15]">
     {heading}
   </h2>
-  <p class="font-serif text-[var(--sol-charcoal)]/80 leading-relaxed text-lg mb-10">
+  <p class="font-serif text-[var(--sol-charcoal)]/80 leading-[1.7] text-lg mb-10">
     {body}
   </p>
+
+  {headshot && (
+    <div class="mb-10 flex justify-center">
+      <div class="relative w-64 h-80 md:w-80 md:h-96">
+        {/* Triangle clip mask */}
+        <img
+          src={headshot}
+          alt="Laurel — Sol Photography"
+          class="w-full h-full object-cover object-top"
+          style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"
+          loading="lazy"
+        />
+        {/* Subtle border effect */}
+        <div
+          class="absolute inset-0 pointer-events-none"
+          style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%); box-shadow: inset 0 0 0 2px rgba(168, 197, 197, 0.3);"
+        />
+      </div>
+    </div>
+  )}
+
   <a
     href={ctaHref}
-    class="inline-block font-sans text-xs tracking-widest uppercase px-8 py-3 border border-[var(--sol-caramel)] text-[var(--sol-caramel)] hover:bg-[var(--sol-caramel)] hover:text-[var(--sol-cream)] transition-colors"
+    class="cta-underline"
   >
     {ctaText}
   </a>

@@ -1,24 +1,88 @@
 ---
+import HeroCarousel from './HeroCarousel'
+import type { CarouselImage } from '@/lib/carousel-images'
+
 interface Props {
-  images: string[];
-  heading: string;
+  slides: CarouselImage[]
+  heading: string
+  position?: 'top' | 'center' | 'bottom' | 'left' | 'right'
+  focalX?: number | string
+  focalY?: number | string
+  carouselSpeed?: number
 }
-const { images, heading } = Astro.props;
-const primary = images[0] ?? '';
+
+const { slides, heading, position = 'center', focalX, focalY, carouselSpeed = 6 } = Astro.props
+const primary = slides[0]
+const isCarousel = slides.length > 1
+
+const presetToPercent: Record<string, [number, number]> = { top: [50, 0], center: [50, 50], bottom: [50, 100], left: [0, 50], right: [100, 50] }
+const [fallbackX, fallbackY] = focalX != null && focalY != null ? [Number(focalX), Number(focalY)] : (presetToPercent[position] ?? [50, 50])
+const focalPosition = `${primary?.focal_x ?? fallbackX}% ${primary?.focal_y ?? fallbackY}%`;
 ---
 
-<section class="relative h-[92vh] min-h-[560px] overflow-hidden">
-  <img
-    src={primary}
-    alt=""
-    class="absolute inset-0 w-full h-full object-cover"
-    loading="eager"
-    fetchpriority="high"
-  />
-  <div class="absolute inset-0 bg-[var(--sol-charcoal)]/25" />
-  <div class="relative h-full flex items-end justify-center pb-20 px-6 text-center">
-    <h1 class="font-display text-5xl md:text-7xl text-[var(--sol-cream)] leading-tight max-w-2xl">
-      {heading}
-    </h1>
-  </div>
-</section>
+{isCarousel ? (
+  <HeroCarousel client:load slides={slides} heading={heading} speedSeconds={carouselSpeed} fallbackFocalX={fallbackX} fallbackFocalY={fallbackY} />
+) : primary ? (
+  <section class="relative h-screen overflow-hidden" id="hero-section">
+    {/* Full-bleed hero image with focal point */}
+    <img
+      src={primary.src}
+      alt=""
+      class="absolute inset-0 w-full h-full object-cover"
+      style={`object-position: ${focalPosition}`}
+      loading="eager"
+      fetchpriority="high"
+    />
+
+    {/* Gradient for text legibility */}
+    <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+
+    {/* Heading */}
+    <div class="absolute inset-x-0 bottom-24 md:bottom-32 z-10 px-6 text-center hero-content">
+      <h1 class="font-display text-5xl md:text-7xl lg:text-8xl font-light italic text-[var(--sol-cream)] tracking-wide hero-headline">
+        {heading}
+      </h1>
+    </div>
+
+    {/* Scroll hint */}
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 scroll-indicator opacity-50" id="scroll-hint" aria-hidden="true">
+      <svg viewBox="0 0 24 24" class="w-5 h-5 stroke-white" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 9l6 6 6-6" />
+      </svg>
+    </div>
+
+    <script is:inline>
+      (function() {
+        window.addEventListener('scroll', function hideScrollHint() {
+          if (window.scrollY > 50) {
+            document.getElementById('scroll-hint')?.classList.add('opacity-0')
+      window.removeEventListener('scroll', hideScrollHint)
+    }
+        }, { passive: true })
+})()
+    </script>
+  </section>
+) : null}
+
+<style>
+  .hero-content {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: heroFadeIn 0.8s ease-out 0.3s forwards;
+  }
+
+  @keyframes heroFadeIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-content {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

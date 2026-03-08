@@ -3,119 +3,443 @@ title: Branding
 category: branding
 date: 2026-01-01
 description: "Personal brand imagery that actually looks like you — for the creative, the founder, the maker."
-cover: /media/portfolio/branding/2026-branding-portfolio-001.jpg
+cover: /media/portfolio/branding/2026-branding-portfolio-1.jpg
+cover_position: top
+carousel_mode: auto
+carousel_count: 4
+hero_carousel_speed: 6
+sort_mode: session_spread # 'manual', 'date_desc', 'rainbow_reverse', 'random', 'session_spread', 'color_spread.
 images:
-  - /media/portfolio/branding/2026-branding-portfolio-001.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-002.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-003.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-004.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-005.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-006.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-007.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-008.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-009.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-010.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-011.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-012.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-013.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-014.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-015.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-016.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-017.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-018.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-019.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-020.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-021.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-022.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-023.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-024.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-025.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-026.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-027.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-028.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-029.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-030.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-031.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-032.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-033.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-034.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-035.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-036.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-037.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-038.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-039.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-040.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-041.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-042.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-043.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-044.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-045.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-046.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-047.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-048.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-049.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-050.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-051.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-052.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-053.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-054.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-055.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-056.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-057.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-058.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-059.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-060.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-061.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-062.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-063.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-064.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-065.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-066.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-067.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-068.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-069.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-070.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-071.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-072.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-073.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-074.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-075.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-076.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-077.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-078.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-079.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-080.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-081.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-082.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-083.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-084.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-085.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-086.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-087.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-088.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-089.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-090.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-091.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-092.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-093.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-094.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-095.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-096.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-097.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-098.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-099.jpg
-  - /media/portfolio/branding/2026-branding-portfolio-100.jpg
+  - src: /media/portfolio/branding/2026-branding-portfolio-1.jpg
+    hidden: false
+    date_taken: "2023-04-09"
+    hue: 42
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - beach
+      - bp
+      - recess
+      - surf
+  - src: /media/portfolio/branding/2026-branding-portfolio-10.jpg
+    hidden: false
+    date_taken: "2023-04-27"
+    hue: 35
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-11.jpg
+    hidden: false
+    date_taken: "2023-07-11"
+    hue: 25
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-12.jpg
+    hidden: false
+    date_taken: "2023-07-11"
+    hue: 24
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-13.jpg
+    hidden: false
+    date_taken: "2023-07-11"
+    hue: 20
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-14.jpg
+    hidden: false
+    date_taken: "2023-07-20"
+    hue: 35
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-15.jpg
+    hidden: false
+    date_taken: "2023-07-20"
+    hue: 27
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - senior
+  - src: /media/portfolio/branding/2026-branding-portfolio-16.jpg
+    hidden: false
+    date_taken: "2024-05-11"
+    hue: 39
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - senior
+  - src: /media/portfolio/branding/2026-branding-portfolio-17.jpg
+    hidden: false
+    date_taken: "2024-05-11"
+    hue: 31
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - senior
+  - src: /media/portfolio/branding/2026-branding-portfolio-18.jpg
+    hidden: false
+    date_taken: "2024-06-01"
+    hue: 17
+    width: 3334
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-19.jpg
+    hidden: false
+    date_taken: "2024-06-01"
+    hue: 13
+    width: 3334
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-2.jpg
+    hidden: false
+    date_taken: "2023-04-09"
+    hue: 40
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - beach
+      - bp
+      - surf
+  - src: /media/portfolio/branding/2026-branding-portfolio-20.jpg
+    hidden: false
+    date_taken: "2025-03-27"
+    hue: 24
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-21.jpg
+    hidden: false
+    date_taken: "2025-03-27"
+    hue: 33
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+  - src: /media/portfolio/branding/2026-branding-portfolio-22.jpg
+    hidden: false
+    date_taken: "2025-05-16"
+    hue: 22
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-23.jpg
+    hidden: false
+    date_taken: "2025-05-17"
+    hue: 35
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-24.jpg
+    hidden: false
+    date_taken: "2025-05-17"
+    hue: 190
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+  - src: /media/portfolio/branding/2026-branding-portfolio-25.jpg
+    hidden: false
+    date_taken: "2025-05-17"
+    hue: 28
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-26.jpg
+    hidden: false
+    date_taken: "2025-05-17"
+    hue: 29
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-27.jpg
+    hidden: false
+    date_taken: "2025-05-17"
+    hue: 29
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+      - retreat
+  - src: /media/portfolio/branding/2026-branding-portfolio-28.jpg
+    hidden: false
+    date_taken: "2025-05-17"
+    hue: 30
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - retreat portfoliio
+  - src: /media/portfolio/branding/2026-branding-portfolio-29.jpg
+    hidden: false
+    date_taken: "2025-05-17"
+    hue: 188
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-3.jpg
+    hidden: false
+    date_taken: "2023-04-09"
+    hue: 37
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - beach
+      - bp
+      - surf
+  - src: /media/portfolio/branding/2026-branding-portfolio-30.jpg
+    hidden: false
+    date_taken: "2025-05-17"
+    hue: 21
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - feminine
+      - lp
+  - src: /media/portfolio/branding/2026-branding-portfolio-31.jpg
+    hidden: false
+    date_taken: "2025-05-17"
+    hue: 20
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-32.jpg
+    hidden: false
+    date_taken: "2025-11-15"
+    hue: 29
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+      - lp
+  - src: /media/portfolio/branding/2026-branding-portfolio-33.jpg
+    hidden: false
+    date_taken: "2025-11-15"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - lp
+  - src: /media/portfolio/branding/2026-branding-portfolio-34.jpg
+    hidden: false
+    date_taken: "2026-01-30"
+    hue: 28
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-35.jpg
+    hidden: false
+    date_taken: "2026-01-30"
+    hue: 29
+    width: 5000
+    height: 3334
+    orientation: landscape
+    tags:
+      - bp
+      - lp
+  - src: /media/portfolio/branding/2026-branding-portfolio-36.jpg
+    hidden: false
+    date_taken: "2026-01-30"
+    hue: 25
+    width: 3334
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+  - src: /media/portfolio/branding/2026-branding-portfolio-37.jpg
+    hidden: false
+    date_taken: "2026-01-30"
+    hue: 28
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - lp
+  - src: /media/portfolio/branding/2026-branding-portfolio-38.jpg
+    hidden: false
+    date_taken: "2026-01-30"
+    hue: 26
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - lp
+  - src: /media/portfolio/branding/2026-branding-portfolio-39.jpg
+    hidden: false
+    date_taken: "2026-01-30"
+    width: 3334
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-4.jpg
+    hidden: false
+    date_taken: "2023-04-09"
+    hue: 24
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - beach
+      - bp
+      - surf
+  - src: /media/portfolio/branding/2026-branding-portfolio-40.jpg
+    hidden: false
+    date_taken: "2026-01-30"
+    hue: 192
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - lp
+  - src: /media/portfolio/branding/2026-branding-portfolio-41.jpg
+    hidden: false
+    date_taken: "2026-01-30"
+    hue: 28
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+  - src: /media/portfolio/branding/2026-branding-portfolio-42.jpg
+    hidden: false
+    date_taken: "2023-04-03"
+    hue: 44
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - baby
+      - beach
+      - family
+      - lp
+      - sunset
+  - src: /media/portfolio/branding/2026-branding-portfolio-5.jpg
+    hidden: false
+    date_taken: "2023-04-09"
+    hue: 31
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - beach
+      - bp
+      - surf
+  - src: /media/portfolio/branding/2026-branding-portfolio-6.jpg
+    hidden: false
+    date_taken: "2023-04-09"
+    hue: 19
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - beach
+      - bp
+      - recess
+      - surf
+  - src: /media/portfolio/branding/2026-branding-portfolio-7.jpg
+    hidden: false
+    date_taken: "2023-04-10"
+    hue: 35
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - beach
+      - bp
+      - surf
+  - src: /media/portfolio/branding/2026-branding-portfolio-8.jpg
+    hidden: false
+    date_taken: "2023-04-27"
+    hue: 136
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+  - src: /media/portfolio/branding/2026-branding-portfolio-9.jpg
+    hidden: false
+    date_taken: "2023-04-27"
+    hue: 39
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - molel extras
+      - recess
 tags:
+  - baby
   - beach
-  - fave
+  - bp
+  - family
   - feminine
+  - lp
   - molel extras
   - recess
   - retreat
   - retreat portfoliio
   - senior
+  - sunset
   - surf
-  - yoco promo
 featured: true
 ---
+
+
+
+
+
 
