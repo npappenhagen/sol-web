@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import type { CarouselImage } from '@/lib/carousel-images'
-import { getVariantUrl, hasVariants } from '@/lib/image-url'
+import { getVariantUrl, hasVariants, IMAGE_WIDTHS } from '@/lib/image-url'
 import { schedulePreloads } from '@/lib/image-preloader'
 import { selectFromPool } from '@/lib/image-pool'
 
@@ -16,10 +16,22 @@ declare global {
  * Non-portfolio images (pages, mood) are returned unchanged.
  * Already-converted WebP paths are returned unchanged.
  */
-function getHeroSrc(src: string): string {
+function getHeroSrc(src: string, width: 400 | 800 | 1200 | 1920 = 1920): string {
   // Skip if already a WebP variant
   if (src.endsWith('.webp')) return src
-  return hasVariants(src) ? getVariantUrl(src, 1920) : src
+  return hasVariants(src) ? getVariantUrl(src, width) : src
+}
+
+/**
+ * Generate srcset for hero images with multiple widths.
+ * Returns empty string for non-variant images.
+ */
+function getHeroSrcSet(src: string): string {
+  if (src.endsWith('.webp')) return ''
+  if (!hasVariants(src)) return ''
+  return IMAGE_WIDTHS
+    .map((w) => `${getVariantUrl(src, w)} ${w}w`)
+    .join(', ')
 }
 
 interface Props {
@@ -226,6 +238,10 @@ export default function HeroCarousel({
     return allSlides.filter((_, idx) => selectedIndices.has(idx))
   }, [usePreSelection, allSlides, selectedIndices])
 
+  // When pre-selection is loading, use defaultSlides to maintain DOM structure
+  // This prevents CLS from placeholder → actual content swap
+  const displaySlides = slides.length > 0 ? slides : defaultSlides.slice(0, displayCount ?? 4)
+
   // Detect tablet+ breakpoint (768px) and reduced motion preference
   // Switch to strip layout at md to prevent over-cropping on tablets
   useEffect(() => {
@@ -257,11 +273,11 @@ export default function HeroCarousel({
   // Desktop: shuffle order while hidden, then fade in (avoids visible reorder flash)
   useEffect(() => {
     // Shuffle immediately (images hidden via opacity 0)
-    setSlideOrder(generateShuffledOrder(slides.length))
+    setSlideOrder(generateShuffledOrder(displaySlides.length))
     // Small delay to ensure shuffle applied before fade-in
     const timer = setTimeout(() => setDesktopReady(true), 50)
     return () => clearTimeout(timer)
-  }, [slides.length])
+  }, [displaySlides.length])
 
   // Schedule idle-time preloading of additional images for future navigations
   useEffect(() => {
@@ -300,14 +316,14 @@ export default function HeroCarousel({
   }, [])
 
   const prev = useCallback(() => {
-    const newIndex = currentIndex === 0 ? slides.length - 1 : currentIndex - 1
+    const newIndex = currentIndex === 0 ? displaySlides.length - 1 : currentIndex - 1
     scrollToSlide(newIndex)
-  }, [currentIndex, slides.length, scrollToSlide])
+  }, [currentIndex, displaySlides.length, scrollToSlide])
 
   const next = useCallback(() => {
-    const newIndex = currentIndex === slides.length - 1 ? 0 : currentIndex + 1
+    const newIndex = currentIndex === displaySlides.length - 1 ? 0 : currentIndex + 1
     scrollToSlide(newIndex)
-  }, [currentIndex, slides.length, scrollToSlide])
+  }, [currentIndex, displaySlides.length, scrollToSlide])
 
   // Keyboard navigation (mobile only)
   useEffect(() => {
@@ -374,23 +390,6 @@ export default function HeroCarousel({
     ? 'h-[60vh] md:h-[70vh]'
     : 'h-screen'
 
-  // Loading state: when using pre-selection but slides not yet loaded
-  // Show placeholder with heading to prevent layout shift
-  if (usePreSelection && slides.length === 0) {
-    return (
-      <section className={`relative ${heightClass} overflow-hidden bg-[var(--sol-cream)]`}>
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
-        {/* Heading */}
-        <div className="absolute inset-x-0 bottom-24 md:bottom-32 z-10 px-6 text-center">
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-light italic text-[var(--sol-charcoal)]/30 tracking-wide hero-headline">
-            {heading}
-          </h1>
-        </div>
-      </section>
-    )
-  }
-
   // Get width pattern based on slide count
   const getSlideWidth = (index: number, total: number): string => {
     const count = Math.min(total, 6) as keyof typeof widthPatterns
@@ -408,24 +407,31 @@ export default function HeroCarousel({
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {slides.map((slide, idx) => (
-          <div
-            key={slide.src}
-            className="snap-center shrink-0 w-full h-full relative"
-          >
-            <img
-              src={getHeroSrc(slide.src)}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{
-                objectPosition: getFocalPosition(slide, fallbackFocalX, fallbackFocalY),
-              }}
-              loading={idx === 0 ? 'eager' : 'lazy'}
-              decoding={idx === 0 ? 'sync' : 'async'}
-              fetchPriority={idx === 0 ? 'high' : undefined}
-            />
-          </div>
-        ))}
+        {displaySlides.map((slide, idx) => {
+          const srcSet = getHeroSrcSet(slide.src)
+          return (
+            <div
+              key={slide.src}
+              className="snap-center shrink-0 w-full h-full relative"
+            >
+              <img
+                src={getHeroSrc(slide.src)}
+                srcSet={srcSet || undefined}
+                sizes={srcSet ? '100vw' : undefined}
+                alt=""
+                width={1920}
+                height={1080}
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{
+                  objectPosition: getFocalPosition(slide, fallbackFocalX, fallbackFocalY),
+                }}
+                loading={idx === 0 ? 'eager' : 'lazy'}
+                decoding={idx === 0 ? 'sync' : 'async'}
+                fetchPriority={idx === 0 ? 'high' : undefined}
+              />
+            </div>
+          )
+        })}
       </div>
 
       {/* Tablet+: Horizontal strip with asymmetric widths + peek interaction */}
@@ -442,35 +448,46 @@ export default function HeroCarousel({
         onMouseUp={onMouseUp}
         onMouseLeave={onMouseLeave}
       >
-        {slides.map((slide, idx) => (
-          <div
-            key={slide.src}
-            className="relative h-full shrink-0"
-            style={{
-              width: getSlideWidth(idx, slides.length),
-              // CSS order shuffle - images already loaded, instant visual reorder
-              order: slideOrder[idx] ?? idx,
-            }}
-          >
-            <img
-              src={getHeroSrc(slide.src)}
-              alt=""
-              draggable={false}
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        {displaySlides.map((slide, idx) => {
+          const srcSet = getHeroSrcSet(slide.src)
+          // Desktop strip: use actual slide width for sizes so browser picks optimal variant
+          const slideWidth = getSlideWidth(idx, displaySlides.length)
+          return (
+            <div
+              key={slide.src}
+              className="relative h-full shrink-0"
               style={{
-                objectPosition: getFocalPosition(slide, fallbackFocalX, fallbackFocalY, focalShift),
-                transition: isDragging ? 'none' : 'object-position 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                width: slideWidth,
+                // CSS order shuffle - images already loaded, instant visual reorder
+                order: slideOrder[idx] ?? idx,
               }}
-              // All desktop hero images are above-fold, eager load them all
-              loading="eager"
-              decoding="async"
-            />
-            {/* Subtle separator line */}
-            {idx < slides.length - 1 && (
-              <div className="absolute top-0 bottom-0 right-0 w-px bg-white/10" />
-            )}
-          </div>
-        ))}
+            >
+              <img
+                src={getHeroSrc(slide.src)}
+                srcSet={srcSet || undefined}
+                sizes={srcSet ? slideWidth : undefined}
+                alt=""
+                width={1920}
+                height={1080}
+                draggable={false}
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                style={{
+                  objectPosition: getFocalPosition(slide, fallbackFocalX, fallbackFocalY, focalShift),
+                  transition: isDragging ? 'none' : 'object-position 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                }}
+                // All desktop hero images are above-fold, eager load them all
+                // First gets high priority for LCP optimization
+                loading="eager"
+                decoding={idx === 0 ? 'sync' : 'async'}
+                fetchPriority={idx === 0 ? 'high' : 'low'}
+              />
+              {/* Subtle separator line */}
+              {idx < displaySlides.length - 1 && (
+                <div className="absolute top-0 bottom-0 right-0 w-px bg-white/10" />
+              )}
+            </div>
+          )
+        })}
       </div>
 
       {/* Gradient overlay for text legibility */}
@@ -504,7 +521,7 @@ export default function HeroCarousel({
       </div>
 
       {/* Navigation arrows - mobile only */}
-      {!isDesktop && slides.length > 1 && (
+      {!isDesktop && displaySlides.length > 1 && (
         <>
           <button
             type="button"
@@ -530,9 +547,9 @@ export default function HeroCarousel({
       )}
 
       {/* Dot indicators - mobile only */}
-      {!isDesktop && slides.length > 1 && (
+      {!isDesktop && displaySlides.length > 1 && (
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex gap-2">
-          {slides.map((_, idx) => (
+          {displaySlides.map((_, idx) => (
             <button
               key={idx}
               type="button"

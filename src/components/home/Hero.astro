@@ -2,7 +2,7 @@
 import HeroCarousel from './HeroCarousel'
 import type { CarouselImage } from '@/lib/carousel-images'
 import { generateSelectionScript } from '@/lib/hero-selection'
-import { getVariantUrl, hasVariants } from '@/lib/image-url'
+import { getVariantUrl, hasVariants, getSrcSet } from '@/lib/image-url'
 
 interface Props {
   slides: CarouselImage[]
@@ -75,8 +75,12 @@ const focalPosition = `${primary?.focal_x ?? fallbackX}% ${primary?.focal_y ?? f
   <section class="relative h-screen overflow-hidden" id="hero-section">
     {/* Full-bleed hero image with focal point */}
     <img
-      src={primary.src}
+      src={hasVariants(primary.src) ? getVariantUrl(primary.src, 1920) : primary.src}
+      srcset={hasVariants(primary.src) ? getSrcSet(primary.src) : undefined}
+      sizes={hasVariants(primary.src) ? '100vw' : undefined}
       alt=""
+      width={1920}
+      height={1080}
       class="absolute inset-0 w-full h-full object-cover"
       style={`object-position: ${focalPosition}`}
       loading="eager"
