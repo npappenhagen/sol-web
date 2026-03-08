@@ -5,7 +5,7 @@ import BookingButton from '@/components/BookingButton'
 import ServiceCarousel from '@/components/shared/ServiceCarousel'
 import ServiceBento from '@/components/services/ServiceBento'
 import { getEntry, getCollection } from 'astro:content'
-import { getMoodImages } from '@/lib/carousel-images'
+import { getAllMoodImages } from '@/lib/carousel-images'
 
 const page = await getEntry('pages', 'services')
 const portfolios = await getCollection('portfolio')
@@ -19,8 +19,9 @@ const {
   hero_carousel_speed = 8,
 } = page.data
 
-// Auto-source hero images from mood photos (randomized at build time)
-const heroSlides = getMoodImages(3, true)
+// Get FULL mood image pool for client-side selection
+// All 53 mood images are passed to Hero; the client selects which 4 to display
+const allMoodImages = getAllMoodImages()
 
 // Build a map of portfolio slug → images for auto-sourcing
 type CarouselImg = { src: string, focal_x?: number, focal_y?: number }
@@ -61,10 +62,14 @@ function formatPrice(price: number | null | undefined, priceNote?: string): stri
 <Layout title="Services" description={page_intro}>
   {/* Hero section */}
   <Hero
-    slides={heroSlides}
+    slides={allMoodImages}
     heading={page_heading}
     position="center"
     carouselSpeed={hero_carousel_speed}
+    usePreSelection={true}
+    poolId="hero-services-pool"
+    pageId="services"
+    displayCount={4}
   />
 
   {/* Location block */}
@@ -211,17 +216,12 @@ function formatPrice(price: number | null | undefined, priceNote?: string): stri
                             <span class="text-sm text-[var(--sol-charcoal)]/60">{pkg.duration}</span>
                           </div>
                           <ul class="mt-2 text-sm text-[var(--sol-charcoal)]/70 space-y-0.5">
-                            {pkg.includes.slice(0, 3).map((item) => (
+                            {pkg.includes.map((item) => (
                               <li class="flex items-center gap-2">
                                 <span class="w-1 h-1 bg-[var(--sol-sage)] rounded-full flex-shrink-0" />
                                 {item}
                               </li>
                             ))}
-                            {pkg.includes.length > 3 && (
-                              <li class="text-[var(--sol-charcoal)]/50 italic">
-                                +{pkg.includes.length - 3} more
-                              </li>
-                            )}
                           </ul>
                         </div>
                       ))}

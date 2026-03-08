@@ -1,9 +1,13 @@
 import { getCollection } from 'astro:content'
+import fs from 'node:fs'
+import path from 'node:path'
 
 export interface CarouselImage {
   src: string
   focal_x?: number | string
   focal_y?: number | string
+  /** Session identifier (date_taken) for grouping images from the same photo shoot */
+  session?: string
 }
 
 /**
@@ -13,18 +17,40 @@ export interface CarouselImage {
 const ALL_MOOD_IMAGES = Array.from({ length: 53 }, (_, i) => i + 1)
 
 /**
+ * Load mood metadata from the sync-generated JSON file.
+ * Maps image numbers to their session (date_taken) values.
+ */
+function loadMoodMetadata(): Record<string, { session: string }> {
+  try {
+    const metadataPath = path.join(process.cwd(), 'public/media/mood/metadata.json')
+    if (fs.existsSync(metadataPath)) {
+      const content = fs.readFileSync(metadataPath, 'utf-8')
+      return JSON.parse(content)
+    }
+  } catch {
+    // Fall back to unique sessions if metadata unavailable
+  }
+  return {}
+}
+
+/**
  * Get ALL mood images for client-side random selection.
  * Returns all 53 mood images without any selection or shuffling.
  * The client picks which ones to display, so only selected images download.
  *
  * Note: Mood images only exist as WebP variants (no original JPGs).
  * We return the 1920w variant as it's the largest/best quality for heroes.
+ * Session data comes from sync-photos.py extracted date_taken metadata.
  */
 export function getAllMoodImages(): CarouselImage[] {
+  const metadata = loadMoodMetadata()
+
   return ALL_MOOD_IMAGES.map((num) => ({
     src: `/media/mood/2026-mood-portfolio-${String(num).padStart(2, '0')}-1920w.webp`,
     focal_x: 50,
     focal_y: 40,
+    // Use date_taken from metadata, fallback to unique key per image
+    session: metadata[String(num)]?.session || `mood-${num}`,
   }))
 }
 
@@ -87,6 +113,7 @@ export interface GetCarouselImagesOptions {
 /**
  * Get ALL portrait images from specified categories for client-side random selection.
  * Returns all matching images without any count limit or shuffling.
+ * Includes session (date_taken) for session-aware selection that prevents same-shoot adjacency.
  */
 export async function getAllPortraitImages(
   categories?: string[]
@@ -98,7 +125,7 @@ export async function getAllPortraitImages(
     ? portfolios.filter((p) => categories.includes(p.data.category))
     : portfolios
 
-  // Extract all portrait/hero-safe images
+  // Extract all portrait/hero-safe images with session info
   return filtered.flatMap((p) =>
     (p.data.images ?? [])
       .filter((img) => {
@@ -109,6 +136,7 @@ export async function getAllPortraitImages(
         src: img.src,
         focal_x: undefined,
         focal_y: undefined,
+        session: img.date_taken,
       }))
   )
 }

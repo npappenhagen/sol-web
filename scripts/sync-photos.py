@@ -34,6 +34,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MEDIA_DIR = PROJECT_ROOT / "public" / "media"
 CONTENT_DIR = PROJECT_ROOT / "src" / "content" / "portfolio"
 MANIFEST_PATH = MEDIA_DIR / ".manifest.json"
+MOOD_METADATA_PATH = MEDIA_DIR / "mood" / "metadata.json"
 
 # Image variant sizes for responsive srcset
 VARIANT_WIDTHS = [400, 800, 1200, 1920]
@@ -592,8 +593,8 @@ def sync_category(category: str, manifest: dict, dry_run: bool = False, force: b
             if not (is_gallery and f.suffix.lower() in (".jpg", ".jpeg")):
                 shutil.copy2(f, target)
 
-        # Generate responsive variants for gallery images (not logos)
-        if not dry_run and is_gallery and f.suffix.lower() in (".jpg", ".jpeg"):
+        # Generate responsive variants for gallery and mood images (not logos/headshots)
+        if not dry_run and category not in ("logos", "headshots") and f.suffix.lower() in (".jpg", ".jpeg"):
             dest_base = dest / f.stem
             variants = generate_variants(f, dest_base, force=force)
             variants_generated += len(variants)
@@ -660,8 +661,21 @@ def sync_category(category: str, manifest: dict, dry_run: bool = False, force: b
         print(f"  Logos: {len(image_data)} files synced to {dest.relative_to(PROJECT_ROOT)}")
     elif category == "headshots":
         print(f"  Headshots: {len(image_data)} images synced to {dest.relative_to(PROJECT_ROOT)}")
-    else:
-        print(f"  Mood: {len(image_data)} images synced (no frontmatter to update)")
+    elif category == "mood":
+        # Save mood metadata JSON for frontend session-aware selection
+        mood_metadata = {}
+        for img in image_data:
+            # Extract image number from filename (e.g., "2026-mood-portfolio-01.jpg" -> 1)
+            match = re.search(r"-(\d+)\.jpg", img["src"], re.IGNORECASE)
+            if match:
+                num = int(match.group(1))
+                mood_metadata[str(num)] = {
+                    "session": img.get("date_taken", f"unknown-{num}"),
+                }
+        MOOD_METADATA_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with open(MOOD_METADATA_PATH, "w") as f:
+            json.dump(mood_metadata, f, indent=2)
+        print(f"  Mood: {len(image_data)} images synced, metadata saved to {MOOD_METADATA_PATH.relative_to(PROJECT_ROOT)}")
 
 
 def count_orphans(manifest: dict) -> int:

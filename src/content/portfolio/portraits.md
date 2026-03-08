@@ -89,15 +89,6 @@ images:
     orientation: portrait
     tags:
       - lp
-  - src: /media/portfolio/portraits/2026-portrait-portfolio-18.jpg
-    hidden: false
-    date_taken: "2024-12-22"
-    hue: 17
-    width: 3333
-    height: 5000
-    orientation: portrait
-    tags:
-      - bp
   - src: /media/portfolio/portraits/2026-portrait-portfolio-19.jpg
     hidden: false
     date_taken: "2025-01-04"
@@ -729,4 +720,5 @@ tags:
   - social
 featured: true
 ---
+
 

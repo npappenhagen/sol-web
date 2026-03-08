@@ -1,4 +1,4 @@
-.PHONY: help setup dev build lint preview deploy deploy-preview check-env check-secrets sync-photos sync-photos-force sync-photos-fresh sync-cleanup clean-jpegs process-cms verify-images
+.PHONY: help setup dev build lint preview deploy deploy-preview check-env check-secrets sync-photos sync-photos-force sync-photos-fresh sync-cleanup clean-jpegs process-cms verify-images validate-images validate-images-fix
 
 REQUIRED_VARS := $(shell grep -oE '^[A-Z_]+=' .env.example | sed 's/=$$//')
 
@@ -85,3 +85,9 @@ process-cms: ## Generate WebP variants for CMS-uploaded images
 
 verify-images: ## Check all portfolio JPEGs have WebP variants
 	./scripts/verify-images.sh
+
+validate-images: ## Validate all frontmatter image refs exist on disk
+	python3 scripts/validate-images.py
+
+validate-images-fix: ## Validate and auto-fix missing images by re-syncing
+	python3 scripts/validate-images.py --fix

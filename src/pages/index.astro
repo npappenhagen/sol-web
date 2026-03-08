@@ -4,17 +4,13 @@ import Hero from '@/components/home/Hero.astro'
 import IntroBlock from '@/components/home/IntroBlock.astro'
 import ServicePreview from '@/components/home/ServicePreview.astro'
 import { getEntry } from 'astro:content'
-import { getCarouselImages } from '@/lib/carousel-images'
+import { getAllPortraitImages } from '@/lib/carousel-images'
 
 const [home, servicesPage] = await Promise.all([
   getEntry('pages', 'home'),
   getEntry('pages', 'services'),
 ])
 const {
-  carousel_mode = 'auto',
-  carousel_categories,
-  carousel_count = 8,
-  hero_images,
   hero_heading,
   hero_position,
   hero_focal_x,
@@ -26,25 +22,26 @@ const {
   intro_headshot,
 } = home.data
 
-// Auto-source carousel images or use manual list
-// portraitOnly is enabled by default - carousels never show landscape images
-const heroSlides = carousel_mode === 'auto'
-  ? await getCarouselImages({
-      categories: carousel_categories,
-      count: carousel_count,
-      shuffle: true,
-    })
-  : hero_images?.map((img: { image: string, focal_x?: number, focal_y?: number }) => ({
-      src: img.image,
-      focal_x: img.focal_x,
-      focal_y: img.focal_y,
-    })) ?? []
+// Get FULL portrait image pool for client-side selection
+// Pull from portraits category for best variety on home page
+const allPortraitImages = await getAllPortraitImages(['portraits'])
 
 const activeServices = servicesPage.data.services.filter((s: { portfolio_slug?: string }) => s.portfolio_slug);
 ---
 
 <Layout title="Home">
-  <Hero slides={heroSlides} heading={hero_heading} position={hero_position} focalX={hero_focal_x} focalY={hero_focal_y} carouselSpeed={hero_carousel_speed} />
+  <Hero
+    slides={allPortraitImages}
+    heading={hero_heading}
+    position={hero_position}
+    focalX={hero_focal_x}
+    focalY={hero_focal_y}
+    carouselSpeed={hero_carousel_speed}
+    usePreSelection={true}
+    poolId="hero-home-pool"
+    pageId="home"
+    displayCount={4}
+  />
   <div class="section-divider my-0" data-divider aria-hidden="true" />
   <IntroBlock label={intro_label} heading={intro_heading} body={intro_body} headshot={intro_headshot} />
   <div class="section-divider" data-divider aria-hidden="true" />

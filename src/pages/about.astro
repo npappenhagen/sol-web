@@ -2,11 +2,10 @@
 import Layout from '@/layouts/Layout.astro'
 import Hero from '@/components/home/Hero.astro'
 import { getEntry } from 'astro:content'
-import { getMoodImages } from '@/lib/carousel-images'
+import { getAllMoodImages } from '@/lib/carousel-images'
 
 const about = await getEntry('pages', 'about')
 const {
-  carousel_count = 4,
   hero_position = 'center',
   hero_focal_x,
   hero_focal_y,
@@ -21,19 +20,24 @@ const {
 // Use headshots array if available, otherwise fall back to single headshot
 const collageImages = headshots && headshots.length >= 3 ? headshots.slice(0, 3) : null
 
-// Use mood images for hero - lifestyle/atmosphere shots that let the headshots below pop
-const heroSlides = getMoodImages(carousel_count, true);
+// Get FULL mood image pool for client-side selection
+// All 53 mood images are passed to Hero; the client selects which 4 to display
+const allMoodImages = getAllMoodImages()
 ---
 
 <Layout title="About" description={subheading}>
   <!-- Hero banner with carousel support -->
   <Hero
-    slides={heroSlides}
+    slides={allMoodImages}
     heading={heading}
     position={hero_position}
     focalX={hero_focal_x}
     focalY={hero_focal_y}
     carouselSpeed={hero_carousel_speed}
+    usePreSelection={true}
+    poolId="hero-about-pool"
+    pageId="about"
+    displayCount={4}
   />
 
   <!-- Bio -->

@@ -4,6 +4,7 @@
  * Tracks which images have been shown and preloaded to enable:
  * - Variety: Avoid repeating recently shown images
  * - Speed: Prefer images that were preloaded during idle time
+ * - Session spread: Prevent images from the same photo shoot appearing adjacent
  *
  * State resets when the browser tab closes (sessionStorage).
  */
@@ -14,6 +15,11 @@ const MAX_HISTORY = 20
 export interface PoolState {
   shown: string[]      // Last N images displayed (FIFO)
   preloaded: string[]  // Images preloaded during idle
+}
+
+export interface PoolImage {
+  src: string
+  session?: string  // date_taken - groups images from the same photo shoot
 }
 
 /**
@@ -89,20 +95,80 @@ export function selectFromPool(pool: string[], count: number): string[] {
 }
 
 /**
- * Generate minified inline JS for pool-aware selection.
+ * Session-aware selection from an image pool.
+ *
+ * Groups images by session (date_taken) and round-robin selects from each group.
+ * This prevents images from the same photo shoot appearing adjacent in the carousel.
+ *
+ * Algorithm:
+ * 1. Group images by session
+ * 2. Shuffle images within each session group
+ * 3. Round-robin pick from each session to fill the selection
+ *
+ * Returns selected images with same-shoot adjacency impossible.
+ */
+export function selectFromPoolSessionAware(
+  pool: PoolImage[],
+  count: number
+): PoolImage[] {
+  if (pool.length === 0) return []
+  if (pool.length <= count) return pool
+
+  // Group by session (date_taken)
+  // Images without session get unique keys to prevent same-group adjacency
+  const sessions = new Map<string, PoolImage[]>()
+  let unknownCounter = 0
+  for (const img of pool) {
+    const key = img.session || `unknown-${unknownCounter++}`
+    if (!sessions.has(key)) sessions.set(key, [])
+    sessions.get(key)!.push(img)
+  }
+
+  // Shuffle within each session group
+  for (const imgs of sessions.values()) {
+    for (let i = imgs.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[imgs[i], imgs[j]] = [imgs[j], imgs[i]]
+    }
+  }
+
+  // Round-robin pick from each session (prevents adjacency)
+  const sessionArrays = [...sessions.values()]
+  const selected: PoolImage[] = []
+  let sessionIdx = Math.floor(Math.random() * sessionArrays.length)
+
+  while (selected.length < count && sessionArrays.some(a => a.length > 0)) {
+    const session = sessionArrays[sessionIdx % sessionArrays.length]
+    if (session.length > 0) {
+      selected.push(session.shift()!)
+    }
+    sessionIdx++
+  }
+
+  // Update shown history
+  const state = getPoolState()
+  updatePoolState({
+    shown: [...state.shown, ...selected.map(s => s.src)].slice(-MAX_HISTORY),
+  })
+
+  return selected
+}
+
+/**
+ * Generate minified inline JS for session-aware pool selection.
  * This runs BEFORE React hydration to prevent flash.
  *
- * The inline script:
- * 1. Reads sessionStorage for shown/preloaded state
- * 2. Scores images: +10 preloaded, -5 recently shown, +random
- * 3. Selects top N by score
+ * Session-aware algorithm:
+ * 1. Groups images by session (date_taken)
+ * 2. Shuffles within each session group
+ * 3. Round-robin picks from each session (prevents same-shoot adjacency)
  * 4. Updates sessionStorage.shown
  * 5. Preloads first image for LCP
  */
 export function generatePoolSelectionScript(poolId: string, count: number, pageId: string): string {
   return `
 (function(){
-  var K='sol-image-pool',M=20;
+  var K='sol-image-pool',M=20,PID='${poolId}',N=${count},PAGE='${pageId}';
   function gs(){
     try{
       var r=sessionStorage.getItem(K);
@@ -114,30 +180,64 @@ export function generatePoolSelectionScript(poolId: string, count: number, pageI
   function us(s){
     try{var c=gs();sessionStorage.setItem(K,JSON.stringify(Object.assign(c,s)));}catch(e){}
   }
-  var el=document.getElementById('${poolId}');
-  if(!el)return;
-  try{
-    var pool=JSON.parse(el.textContent||'[]');
-    var n=${count};
-    if(pool.length<=n){window.__heroSelection=pool;window.__heroPageId='${pageId}';return;}
-    var st=gs();
-    var shown=new Set(st.shown);
-    var pre=new Set(st.preloaded);
-    var scored=pool.map(function(img){
-      var s=img.src;
-      return{img:img,score:(pre.has(s)?10:0)+(shown.has(s)?-5:0)+Math.random()*3};
-    });
-    scored.sort(function(a,b){return b.score-a.score;});
-    var sel=scored.slice(0,n).map(function(x){return x.img;});
-    window.__heroSelection=sel;
-    window.__heroPageId='${pageId}';
-    us({shown:st.shown.concat(sel.map(function(x){return x.src;})).slice(-M)});
-    if(sel.length>0){
-      var link=document.createElement('link');
-      link.rel='preload';link.as='image';link.href=sel[0].src;
-      document.head.appendChild(link);
+  function runSelection(){
+    var el=document.getElementById(PID);
+    if(!el)return;
+    try{
+      var pool=JSON.parse(el.textContent||'[]');
+      if(pool.length<=N){window.__heroSelection=pool;window.__heroPageId=PAGE;return;}
+      var st=gs();
+      var shown=new Set(st.shown);
+      // Group by session (date_taken) - images without session get unique keys
+      var sess={},uc=0;
+      pool.forEach(function(img){
+        var k=img.session||('u'+uc++);
+        if(!sess[k])sess[k]=[];
+        sess[k].push(img);
+      });
+      // Shuffle each session array
+      Object.keys(sess).forEach(function(k){
+        var arr=sess[k];
+        for(var i=arr.length-1;i>0;i--){
+          var j=Math.floor(Math.random()*(i+1));
+          var t=arr[i];arr[i]=arr[j];arr[j]=t;
+        }
+      });
+      // Penalize recently shown images by moving to end of session array
+      Object.keys(sess).forEach(function(k){
+        var arr=sess[k];
+        var notShown=[],wasShown=[];
+        arr.forEach(function(img){
+          if(shown.has(img.src))wasShown.push(img);
+          else notShown.push(img);
+        });
+        sess[k]=notShown.concat(wasShown);
+      });
+      // Round-robin select from sessions
+      var keys=Object.keys(sess);
+      var sel=[],idx=Math.floor(Math.random()*keys.length);
+      while(sel.length<N&&keys.some(function(k){return sess[k].length>0;})){
+        var k=keys[idx%keys.length];
+        if(sess[k].length>0)sel.push(sess[k].shift());
+        idx++;
+      }
+      window.__heroSelection=sel;
+      us({shown:st.shown.concat(sel.map(function(x){return x.src;})).slice(-M)});
+      if(sel.length>0){
+        var link=document.createElement('link');
+        link.rel='preload';link.as='image';link.href=sel[0].src;
+        document.head.appendChild(link);
+      }
+    }catch(e){
+      console.warn('Hero pool selection failed:',e);
+      window.__heroSelection=pool.slice(0,N);
     }
-  }catch(e){console.warn('Hero pool selection failed:',e);}
+    window.__heroPageId=PAGE;
+  }
+  // Run on initial load
+  runSelection();
+  // Re-run on View Transitions navigation
+  document.addEventListener('astro:page-load',runSelection);
 })();
 `.trim()
 }

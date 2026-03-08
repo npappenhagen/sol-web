@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import type { CarouselImage } from '@/lib/carousel-images'
 import { getVariantUrl, hasVariants } from '@/lib/image-url'
 import { schedulePreloads } from '@/lib/image-preloader'
+import { selectFromPool } from '@/lib/image-pool'
 
 declare global {
   interface Window {
@@ -133,8 +134,17 @@ export default function HeroCarousel({
     if (!usePreSelection) return
 
     const readSelection = () => {
+      // Check if selection exists and matches this page
       if (window.__heroSelection && window.__heroPageId === pageId) {
         setPreSelectedSlides(window.__heroSelection)
+      } else {
+        // Selection not ready yet or wrong page - try again shortly
+        // This handles View Transitions timing where script may run after component mounts
+        setTimeout(() => {
+          if (window.__heroSelection && window.__heroPageId === pageId) {
+            setPreSelectedSlides(window.__heroSelection)
+          }
+        }, 50)
       }
     }
 
@@ -142,10 +152,14 @@ export default function HeroCarousel({
     readSelection()
 
     // Re-read on View Transitions navigation (inline script may have run with new selection)
-    document.addEventListener('astro:page-load', readSelection)
+    const handlePageLoad = () => {
+      // Small delay to ensure inline script has executed
+      setTimeout(readSelection, 10)
+    }
+    document.addEventListener('astro:page-load', handlePageLoad)
 
     return () => {
-      document.removeEventListener('astro:page-load', readSelection)
+      document.removeEventListener('astro:page-load', handlePageLoad)
     }
   }, [usePreSelection, pageId])
 
@@ -169,6 +183,26 @@ export default function HeroCarousel({
       window.removeEventListener('urlchange', syncFilter)
     }
   }, [subcategoryHeroMap])
+
+  // Re-select from subcategory pool when filter changes
+  useEffect(() => {
+    if (!usePreSelection || !subcategoryHeroMap || !activeFilter) return
+
+    const pool = subcategoryHeroMap[activeFilter]
+    if (!pool || pool.length === 0) return
+
+    const count = displayCount ?? 4
+    if (pool.length <= count) {
+      // Pool is small enough to show all
+      setPreSelectedSlides(pool)
+      return
+    }
+
+    // Client-side selection from subcategory pool using pool scoring
+    const selectedSrcs = selectFromPool(pool.map(s => s.src), count)
+    const selectedSlides = pool.filter(s => selectedSrcs.includes(s.src))
+    setPreSelectedSlides(selectedSlides)
+  }, [activeFilter, subcategoryHeroMap, usePreSelection, displayCount])
 
   // Pick slides based on active filter or pre-selection
   const allSlides = useMemo(() => {

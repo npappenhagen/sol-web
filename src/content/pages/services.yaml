@@ -45,14 +45,14 @@ services:
     packages:
       - name: "Golden Hour"
         duration: "30 min"
-        starting_price: 350
+        starting_price: 295
         includes:
           - "15+ edited images"
           - "1 location"
           - "Online gallery"
       - name: "Half Session"
         duration: "60 min"
-        starting_price: 500
+        starting_price: 425
         includes:
           - "30+ edited images"
           - "1-2 locations"
@@ -60,7 +60,7 @@ services:
           - "Outfit change"
       - name: "Full Session"
         duration: "90 min"
-        starting_price: 700
+        starting_price: 595
         includes:
           - "50+ edited images"
           - "Multiple locations"
@@ -90,7 +90,7 @@ services:
     packages:
       - name: "Starter"
         duration: "30 min"
-        starting_price: 400
+        starting_price: 325
         includes:
           - "10+ edited images"
           - "1 location/setup"
@@ -98,7 +98,7 @@ services:
           - "Online gallery"
       - name: "Signature"
         duration: "60 min"
-        starting_price: 650
+        starting_price: 550
         includes:
           - "25+ edited images"
           - "2-3 setups"
@@ -107,7 +107,7 @@ services:
           - "Online gallery"
       - name: "Full Brand"
         duration: "90 min"
-        starting_price: 950
+        starting_price: 795
         includes:
           - "40+ edited images"
           - "Multiple setups"
@@ -132,7 +132,7 @@ services:
     packages:
       - name: "Half Day"
         duration: "4 hours"
-        starting_price: 1200
+        starting_price: 950
         includes:
           - "100+ edited images"
           - "Event coverage"
@@ -140,7 +140,7 @@ services:
           - "Social media sneak peeks"
       - name: "Full Day"
         duration: "8 hours"
-        starting_price: 2000
+        starting_price: 1600
         includes:
           - "200+ edited images"
           - "Full event coverage"
