@@ -17,11 +17,6 @@ export interface PoolState {
   preloaded: string[]  // Images preloaded during idle
 }
 
-export interface PoolImage {
-  src: string
-  session?: string  // date_taken - groups images from the same photo shoot
-}
-
 /**
  * Read pool state from sessionStorage.
  * Returns empty state if unavailable or corrupted.
@@ -89,66 +84,6 @@ export function selectFromPool(pool: string[], count: number): string[] {
   // Update shown history (FIFO with max size)
   updatePoolState({
     shown: [...state.shown, ...selected].slice(-MAX_HISTORY),
-  })
-
-  return selected
-}
-
-/**
- * Session-aware selection from an image pool.
- *
- * Groups images by session (date_taken) and round-robin selects from each group.
- * This prevents images from the same photo shoot appearing adjacent in the carousel.
- *
- * Algorithm:
- * 1. Group images by session
- * 2. Shuffle images within each session group
- * 3. Round-robin pick from each session to fill the selection
- *
- * Returns selected images with same-shoot adjacency impossible.
- */
-export function selectFromPoolSessionAware(
-  pool: PoolImage[],
-  count: number
-): PoolImage[] {
-  if (pool.length === 0) return []
-  if (pool.length <= count) return pool
-
-  // Group by session (date_taken)
-  // Images without session get unique keys to prevent same-group adjacency
-  const sessions = new Map<string, PoolImage[]>()
-  let unknownCounter = 0
-  for (const img of pool) {
-    const key = img.session || `unknown-${unknownCounter++}`
-    if (!sessions.has(key)) sessions.set(key, [])
-    sessions.get(key)!.push(img)
-  }
-
-  // Shuffle within each session group
-  for (const imgs of sessions.values()) {
-    for (let i = imgs.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      ;[imgs[i], imgs[j]] = [imgs[j], imgs[i]]
-    }
-  }
-
-  // Round-robin pick from each session (prevents adjacency)
-  const sessionArrays = [...sessions.values()]
-  const selected: PoolImage[] = []
-  let sessionIdx = Math.floor(Math.random() * sessionArrays.length)
-
-  while (selected.length < count && sessionArrays.some(a => a.length > 0)) {
-    const session = sessionArrays[sessionIdx % sessionArrays.length]
-    if (session.length > 0) {
-      selected.push(session.shift()!)
-    }
-    sessionIdx++
-  }
-
-  // Update shown history
-  const state = getPoolState()
-  updatePoolState({
-    shown: [...state.shown, ...selected.map(s => s.src)].slice(-MAX_HISTORY),
   })
 
   return selected

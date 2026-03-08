@@ -1,6 +1,6 @@
 _page: services
 page_heading: "How we work together"
-page_intro: "Every session is custom — designed around your story, your space, your light. Here's where we start."
+page_intro: "Every session is custom — designed around your story, your energy, your light. Here's where we start."
 # Hero auto-sources from mood photos (randomized at build)
 hero_carousel_speed: 8
 
@@ -36,28 +36,21 @@ process:
 services:
   - name: Portrait
     tagline: "Families. Couples. Maternity. Moments that matter."
-    description: "Unhurried sessions that capture your people as they actually are — messy, laughing, real. Whether it's a growing belly, a reunion, or just a Tuesday that deserves to be remembered."
+    description: "Unhurried sessions that capture your people as they actually are — laughing, connected, real. Whether it's a growing belly, a reunion, or just a Tuesday that deserves to be remembered."
     ideal_for:
       - "Families visiting Costa Rica"
       - "Couples celebrating milestones"
       - "Expecting parents"
       - "Anyone who wants real over posed"
     packages:
-      - name: "Golden Hour"
-        duration: "30 min"
-        starting_price: 295
-        includes:
-          - "15+ edited images"
-          - "1 location"
-          - "Online gallery"
-      - name: "Half Session"
+      - name: "Classic Session"
         duration: "60 min"
         starting_price: 425
         includes:
           - "30+ edited images"
           - "1-2 locations"
           - "Online gallery"
-          - "Outfit change"
+          - "Optional outfit change"
       - name: "Full Session"
         duration: "90 min"
         starting_price: 595
@@ -66,7 +59,6 @@ services:
           - "Multiple locations"
           - "Online gallery"
           - "Outfit changes"
-          - "Print credits"
     image: /media/portfolio/portraits/2026-portrait-portfolio-75.jpg
     carousel_mode: auto
     carousel_count: 12

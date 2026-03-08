@@ -18,7 +18,7 @@ const serviceNames: Record<string, string> = {
 interface Props {
   portfolioSlug?: string
   buttonText?: string
-  variant?: 'solid' | 'outline' | 'minimal' | 'premium'
+  variant?: 'solid' | 'premium'
   className?: string
 }
 
@@ -27,10 +27,8 @@ interface Props {
  * Requires CalProvider to be mounted in the layout for proper initialization.
  *
  * Variants:
- *   - solid: Classic filled button
- *   - outline: Border only
- *   - minimal: Text link style
- *   - premium: Modern gradient with glow animation (default for CTAs)
+ *   - solid: Classic filled button (default)
+ *   - premium: Modern gradient with glow animation (use for primary CTAs)
  */
 export default function BookingButton({
   portfolioSlug,
@@ -52,9 +50,7 @@ export default function BookingButton({
   // Cal.com config for the modal
   const calConfig = JSON.stringify({
     layout: 'month_view',
-    ...(prefillNotes && {
-      notes: prefillNotes,
-    }),
+    ...(prefillNotes && { notes: prefillNotes }),
   })
 
   // Premium variant - modern gradient with glow
@@ -87,93 +83,38 @@ export default function BookingButton({
           scale: { duration: 0.1 },
         }}
       >
-        {/* Shimmer effect */}
         <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-
         <Calendar className="h-4 w-4 relative z-10" strokeWidth={1.5} />
         <span className="relative z-10">{buttonText}</span>
       </motion.button>
     )
   }
 
-  // Solid variant - modern with subtle animation
-  if (variant === 'solid') {
-    return (
-      <motion.button
-        data-cal-link={calLink}
-        data-cal-config={calConfig}
-        className={`
-          group relative inline-flex items-center gap-2
-          px-6 py-2.5 rounded-md
-          font-sans text-xs tracking-widest uppercase
-          bg-[var(--sol-caramel)] text-[var(--sol-cream)]
-          shadow-md shadow-[var(--sol-caramel)]/20
-          cursor-pointer
-          overflow-hidden
-          ${className ?? ''}
-        `}
-        whileHover={{
-          y: -2,
-          boxShadow: '0 8px 25px -8px rgba(139, 94, 60, 0.4)',
-        }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ duration: 0.2 }}
-      >
-        {/* Hover background shift */}
-        <span className="absolute inset-0 bg-[var(--sol-forest)] translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-
-        <Calendar className="h-3.5 w-3.5 relative z-10" strokeWidth={1.5} />
-        <span className="relative z-10">{buttonText}</span>
-      </motion.button>
-    )
-  }
-
-  // Outline variant
-  if (variant === 'outline') {
-    return (
-      <motion.button
-        data-cal-link={calLink}
-        data-cal-config={calConfig}
-        className={`
-          group relative inline-flex items-center gap-2
-          px-6 py-2.5 rounded-md
-          font-sans text-xs tracking-widest uppercase
-          border-2 border-[var(--sol-charcoal)] text-[var(--sol-charcoal)]
-          cursor-pointer
-          overflow-hidden
-          ${className ?? ''}
-        `}
-        whileHover={{ y: -2 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ duration: 0.2 }}
-      >
-        {/* Hover fill */}
-        <span className="absolute inset-0 bg-[var(--sol-charcoal)] translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-
-        <Calendar className="h-3.5 w-3.5 relative z-10 group-hover:text-[var(--sol-cream)] transition-colors duration-300" strokeWidth={1.5} />
-        <span className="relative z-10 group-hover:text-[var(--sol-cream)] transition-colors duration-300">{buttonText}</span>
-      </motion.button>
-    )
-  }
-
-  // Minimal variant
+  // Solid variant (default) - modern with subtle animation
   return (
     <motion.button
       data-cal-link={calLink}
       data-cal-config={calConfig}
       className={`
-        inline-flex items-center gap-2
+        group relative inline-flex items-center gap-2
+        px-6 py-2.5 rounded-md
         font-sans text-xs tracking-widest uppercase
-        text-[var(--sol-caramel)] hover:text-[var(--sol-forest)]
-        underline underline-offset-4
+        bg-[var(--sol-caramel)] text-[var(--sol-cream)]
+        shadow-md shadow-[var(--sol-caramel)]/20
         cursor-pointer
+        overflow-hidden
         ${className ?? ''}
       `}
-      whileHover={{ x: 2 }}
+      whileHover={{
+        y: -2,
+        boxShadow: '0 8px 25px -8px rgba(139, 94, 60, 0.4)',
+      }}
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.2 }}
     >
-      {buttonText}
+      <span className="absolute inset-0 bg-[var(--sol-forest)] translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+      <Calendar className="h-3.5 w-3.5 relative z-10" strokeWidth={1.5} />
+      <span className="relative z-10">{buttonText}</span>
     </motion.button>
   )
 }

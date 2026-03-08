@@ -427,6 +427,20 @@ images:
     orientation: portrait
     tags:
       - retreat
+  - src: /media/portfolio/events/2026-retreat-portfolio-48.jpg
+    hidden: false
+    date_taken: "2026-03-07"
+    hue: 18
+    width: 3333
+    height: 5000
+    orientation: portrait
+  - src: /media/portfolio/events/2026-retreat-portfolio-49.jpg
+    hidden: false
+    date_taken: "2026-03-08"
+    hue: 19
+    width: 3333
+    height: 5000
+    orientation: portrait
   - src: /media/portfolio/events/2026-retreat-portfolio-5.jpg
     hidden: false
     date_taken: "2023-04-22"
@@ -517,6 +531,8 @@ tags:
   - surf
 featured: true
 ---
+
+
 
 
 

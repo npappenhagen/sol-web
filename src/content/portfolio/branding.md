@@ -367,6 +367,13 @@ images:
       - family
       - lp
       - sunset
+  - src: /media/portfolio/branding/2026-branding-portfolio-43.jpg
+    hidden: false
+    date_taken: "2026-03-07"
+    hue: 37
+    width: 3333
+    height: 5000
+    orientation: portrait
   - src: /media/portfolio/branding/2026-branding-portfolio-5.jpg
     hidden: false
     date_taken: "2023-04-09"
@@ -437,6 +444,8 @@ tags:
   - surf
 featured: true
 ---
+
+
 
 
 

@@ -35,3 +35,4 @@ public/media/
 
 # Photo sync manifest (machine-specific, rebuilds on first sync)
 .manifest.json
+.wrangler/

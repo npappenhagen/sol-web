@@ -82,17 +82,6 @@ images:
     tags:
       - family
       - lp
-  - src: /media/portfolio/family/2026-family-portfolio-16.jpg
-    hidden: false
-    date_taken: "2024-12-22"
-    hue: 17
-    width: 3333
-    height: 5000
-    orientation: portrait
-    tags:
-      - bp
-      - family
-      - lp
   - src: /media/portfolio/family/2026-family-portfolio-17.jpg
     hidden: false
     date_taken: "2025-01-04"
@@ -674,6 +663,8 @@ tags:
   - social
 featured: false
 ---
+
+
 
 
 

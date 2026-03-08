@@ -1,0 +1,39 @@
+---
+interface ProcessStep {
+  number: string
+  title: string
+  description: string
+}
+
+interface Props {
+  heading: string
+  steps: ProcessStep[]
+}
+
+const { heading, steps } = Astro.props
+---
+
+<section class="bg-[var(--sol-charcoal)] text-[var(--sol-cream)] py-20">
+  <div class="max-w-5xl mx-auto px-6">
+    <h2 class="font-display text-3xl lg:text-4xl text-center mb-16">{heading}</h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-4">
+      {steps.map((step, idx) => (
+        <div class="relative text-center lg:text-left">
+          {/* Connector line (desktop only) */}
+          {idx < steps.length - 1 && (
+            <div class="hidden lg:block absolute top-8 left-1/2 w-full h-px bg-[var(--sol-sage)]/30" />
+          )}
+          <div class="relative z-10">
+            <span class="inline-block font-sans text-[var(--sol-sage)] text-sm tracking-widest mb-2">
+              {step.number}
+            </span>
+            <h3 class="font-display text-2xl mb-2">{step.title}</h3>
+            <p class="font-serif text-[var(--sol-cream)]/70 text-sm leading-relaxed">
+              {step.description}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

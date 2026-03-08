@@ -51,15 +51,8 @@ const portfolio = defineCollection({
   }),
 })
 
-const carouselImageSchema = z.object({
-  src: z.string(),
-  focal_x: z.union([z.string(), z.number()]).optional(),
-  focal_y: z.union([z.string(), z.number()]).optional(),
-  // Image dimensions for smart aspect ratio display
-  width: z.number().optional(),
-  height: z.number().optional(),
-  orientation: z.enum(['portrait', 'landscape', 'square']).optional(),
-})
+// Alias for backward compatibility with service carousel images
+const carouselImageSchema = heroImageSchema
 
 const subcategorySchema = z.object({
   label: z.string(),

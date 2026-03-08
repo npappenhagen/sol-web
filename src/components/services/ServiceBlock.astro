@@ -1,0 +1,208 @@
+---
+import BookingButton from '@/components/BookingButton'
+import ServiceCarousel from '@/components/shared/ServiceCarousel'
+import ServiceBento from '@/components/services/ServiceBento'
+
+interface Package {
+  name: string
+  duration: string
+  starting_price: number | null | undefined
+  price_note?: string
+  includes: string[]
+}
+
+interface Subcategory {
+  label: string
+  filter: string
+}
+
+interface CarouselImg {
+  src: string
+  focal_x?: number
+  focal_y?: number
+}
+
+interface Props {
+  name: string
+  tagline?: string
+  description: string
+  ideal_for?: string[]
+  packages?: Package[]
+  what_to_expect?: string
+  carousel_images?: CarouselImg[]
+  portfolio_slug?: string
+  subcategories?: Subcategory[]
+  serviceNumber: string
+  isEven: boolean
+}
+
+const {
+  name,
+  tagline,
+  description,
+  ideal_for,
+  packages,
+  what_to_expect,
+  carousel_images,
+  portfolio_slug,
+  subcategories,
+  serviceNumber,
+  isEven,
+} = Astro.props
+
+function formatPrice(price: number | null | undefined, priceNote?: string): string {
+  if (priceNote) return priceNote
+  if (price == null) return 'Contact for pricing'
+  return `$${price}`
+}
+---
+
+<article class="animate-on-scroll" id={portfolio_slug}>
+  {/* Service number label */}
+  <div class="flex items-center gap-4 mb-8">
+    <span class="text-[var(--sol-sage)] text-sm font-sans tracking-widest">{serviceNumber}</span>
+    <div class="flex-1 h-px bg-[var(--sol-sage)]/30" />
+  </div>
+
+  <div class={`grid lg:grid-cols-2 gap-8 lg:gap-12 items-start ${isEven ? 'lg:flex-row-reverse' : ''}`}>
+    {/* Images: Carousel on mobile/tablet, Bento on desktop */}
+    <div class={`${isEven ? 'lg:order-2' : ''}`}>
+      {carousel_images && carousel_images.length > 0 ? (
+        <>
+          {/* Mobile/Tablet: Carousel */}
+          <div class="lg:hidden">
+            <ServiceCarousel
+              client:visible
+              images={carousel_images}
+              name={name}
+              portfolioSlug={portfolio_slug}
+            />
+          </div>
+          {/* Desktop: Bento grid */}
+          <div class="hidden lg:block">
+            <ServiceBento
+              client:visible
+              images={carousel_images}
+              portfolioSlug={portfolio_slug}
+              isEven={isEven}
+            />
+          </div>
+        </>
+      ) : (
+        <div class="aspect-[4/3] bg-[var(--sol-sage)]/20 rounded-sm" />
+      )}
+    </div>
+
+    {/* Content - sticky on desktop */}
+    <div class={`lg:sticky lg:top-24 lg:max-w-md ${isEven ? 'lg:order-1' : ''}`}>
+      {/* Title and tagline */}
+      <a
+        href={`/portfolio/${portfolio_slug}`}
+        class="block hover:text-[var(--sol-caramel)] transition-colors group"
+      >
+        <h2 class="font-display text-4xl lg:text-5xl text-[var(--sol-charcoal)] mb-2 group-hover:text-[var(--sol-caramel)]">
+          {name}
+        </h2>
+        {tagline && (
+          <p class="font-serif text-[var(--sol-caramel)] text-lg italic mb-4">{tagline}</p>
+        )}
+      </a>
+
+      <p class="font-serif text-[var(--sol-charcoal)]/80 leading-relaxed text-lg mb-6">
+        {description}
+      </p>
+
+      {/* Ideal for */}
+      {ideal_for && ideal_for.length > 0 && (
+        <div class="mb-8">
+          <h4 class="font-sans text-xs tracking-widest uppercase text-[var(--sol-charcoal)]/60 mb-3">
+            Ideal for
+          </h4>
+          <ul class="space-y-1">
+            {ideal_for.map((item) => (
+              <li class="text-[var(--sol-charcoal)]/70 text-sm font-serif pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[0.6em] before:w-1.5 before:h-1.5 before:rounded-full before:bg-[var(--sol-sage)]">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Subcategory filters (for portrait) */}
+      {subcategories && subcategories.length > 0 && (
+        <div class="flex flex-wrap gap-x-4 gap-y-1 mb-6">
+          {subcategories.map((sub) => (
+            <a
+              href={`/portfolio/${portfolio_slug}?filter=${sub.filter}`}
+              class="font-serif text-[var(--sol-charcoal)]/70 hover:text-[var(--sol-caramel)] transition-colors underline underline-offset-2 decoration-[var(--sol-sage)]"
+            >
+              {sub.label}
+            </a>
+          ))}
+        </div>
+      )}
+
+      {/* Packages */}
+      {packages && packages.length > 0 && (
+        <div class="mb-8 space-y-4">
+          <h4 class="font-sans text-xs tracking-widest uppercase text-[var(--sol-charcoal)]/60 mb-3">
+            Session packages
+          </h4>
+          <div class="space-y-3">
+            {packages.map((pkg) => (
+              <div class="group border-l-2 border-[var(--sol-sage)]/40 hover:border-[var(--sol-caramel)] pl-4 py-2 transition-colors">
+                <div class="flex justify-between items-baseline mb-1">
+                  <span class="font-sans font-medium text-[var(--sol-charcoal)]">
+                    {pkg.name}
+                  </span>
+                  <span class="font-display text-lg text-[var(--sol-caramel)]">
+                    {formatPrice(pkg.starting_price, pkg.price_note)}
+                  </span>
+                </div>
+                <div class="flex justify-between items-baseline">
+                  <span class="text-sm text-[var(--sol-charcoal)]/60">{pkg.duration}</span>
+                </div>
+                <ul class="mt-2 text-sm text-[var(--sol-charcoal)]/70 space-y-0.5">
+                  {pkg.includes.map((item) => (
+                    <li class="flex items-center gap-2">
+                      <span class="w-1 h-1 bg-[var(--sol-sage)] rounded-full flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* What to expect */}
+      {what_to_expect && (
+        <div class="mb-8 p-4 bg-[var(--sol-cream)] border border-[var(--sol-sage)]/30 rounded-sm">
+          <h4 class="font-sans text-xs tracking-widest uppercase text-[var(--sol-charcoal)]/60 mb-2">
+            What to expect
+          </h4>
+          <p class="font-serif text-sm text-[var(--sol-charcoal)]/80 leading-relaxed">
+            {what_to_expect}
+          </p>
+        </div>
+      )}
+
+      {/* CTAs */}
+      <div class="flex gap-4 flex-wrap items-center">
+        <a
+          href={`/portfolio/${portfolio_slug}`}
+          class="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-md font-sans text-xs tracking-widest uppercase border-2 border-[var(--sol-charcoal)]/80 text-[var(--sol-charcoal)] overflow-hidden transition-all hover:-translate-y-0.5"
+        >
+          <span class="absolute inset-0 bg-[var(--sol-charcoal)] translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+          <span class="relative z-10 group-hover:text-[var(--sol-cream)] transition-colors duration-300">View Portfolio</span>
+        </a>
+        <BookingButton
+          client:load
+          portfolioSlug={portfolio_slug}
+          buttonText="Book Now"
+        />
+      </div>
+    </div>
+  </div>
+</article>

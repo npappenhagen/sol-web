@@ -6,54 +6,12 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { getStarterMessage, getPlaceholder } from '@/lib/inquiry-messages'
+import { parseInquiryHash, isInquiryHash } from '@/lib/inquiry-utils'
+import { useInquiryForm } from '@/hooks/useInquiryForm'
+import { useResizable } from '@/hooks/useResizable'
 
-type Status = 'idle' | 'sending' | 'sent' | 'error'
-
-interface FormData {
-  message: string
-  email: string
-  name: string
-}
-
-interface FormErrors {
-  message?: string
-  email?: string
-}
-
-interface TouchedFields {
-  message: boolean
-  email: boolean
-}
-
-const MIN_W = 320
 const MIN_H = 380
-const MAX_W = 520
-const MAX_H = 85 // vh
-const DEFAULT_W = 400
-const DEFAULT_H = 520
-
-const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-
-function validateEmail(email: string): string | undefined {
-  const trimmed = email.trim()
-  if (!trimmed) return 'Email is required'
-  if (!EMAIL_REGEX.test(trimmed)) return 'Please enter a valid email address'
-  return undefined
-}
-
-function validateMessage(message: string): string | undefined {
-  const trimmed = message.trim()
-  if (!trimmed) return 'Please include a message'
-  if (trimmed.length < 10) return 'Message is too short'
-  return undefined
-}
-
-function validateForm(data: FormData): FormErrors {
-  return {
-    message: validateMessage(data.message),
-    email: validateEmail(data.email),
-  }
-}
+const DEFAULT_SIZE = { w: 400, h: 520 }
 
 const baseFieldClass =
   'border bg-[var(--sol-cream)] text-[var(--sol-charcoal)] placeholder:text-[var(--sol-charcoal)]/40 font-serif transition-colors'
@@ -62,95 +20,42 @@ const errorFieldClass = 'border-[var(--sol-blush)] focus-visible:border-[var(--s
 
 export default function InquiryWidget() {
   const [expanded, setExpanded] = useState(false)
-  const [status, setStatus] = useState<Status>('idle')
-  const [serverError, setServerError] = useState('')
-  const [formData, setFormData] = useState<FormData>({ message: '', email: '', name: '' })
-  const [touched, setTouched] = useState<TouchedFields>({ message: false, email: false })
-  const [size, setSize] = useState({ w: DEFAULT_W, h: DEFAULT_H })
   const [placeholder, setPlaceholder] = useState(() => getPlaceholder(null))
-
   const containerRef = useRef<HTMLDivElement>(null)
-  const isResizing = useRef(false)
-  const startRef = useRef({ x: 0, y: 0, w: 0, h: 0 })
   const formRef = useRef<HTMLFormElement>(null)
 
-  // Compute errors based on current form data
-  const errors = validateForm(formData)
+  // Form state and handlers
+  const {
+    formData,
+    status,
+    serverError,
+    visibleErrors,
+    updateField,
+    markTouched,
+    resetForm,
+    handleSubmit,
+    setStatus,
+  } = useInquiryForm()
 
-  // Only show errors for touched fields
-  const visibleErrors = {
-    message: touched.message ? errors.message : undefined,
-    email: touched.email ? errors.email : undefined,
-  }
+  // Resize behavior
+  const { size, handleResizeStart, resetSize } = useResizable(DEFAULT_SIZE)
 
-  const updateField = useCallback(<K extends keyof FormData>(field: K, value: FormData[K]) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
-  }, [])
-
-  const markTouched = useCallback((field: keyof TouchedFields) => {
-    setTouched(prev => ({ ...prev, [field]: true }))
-  }, [])
-
-  const handleResizeStart = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    isResizing.current = true
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
-    startRef.current = { x: clientX, y: clientY, w: size.w, h: size.h }
-  }, [size])
-
-  useEffect(() => {
-    const move = (e: MouseEvent | TouchEvent) => {
-      if (!isResizing.current) return
-      e.preventDefault()
-      const clientX = 'touches' in e ? (e as TouchEvent).touches[0].clientX : (e as MouseEvent).clientX
-      const clientY = 'touches' in e ? (e as TouchEvent).touches[0].clientY : (e as MouseEvent).clientY
-      const dx = clientX - startRef.current.x
-      const dy = clientY - startRef.current.y
-      const maxH = Math.min(window.innerHeight * (MAX_H / 100), 700)
-      setSize({
-        w: Math.min(MAX_W, Math.max(MIN_W, startRef.current.w + dx)),
-        h: Math.min(maxH, Math.max(MIN_H, startRef.current.h + dy)),
-      })
-    }
-    const up = () => { isResizing.current = false }
-    document.addEventListener('mousemove', move)
-    document.addEventListener('touchmove', move, { passive: false })
-    document.addEventListener('mouseup', up)
-    document.addEventListener('touchend', up)
-    return () => {
-      document.removeEventListener('mousemove', move)
-      document.removeEventListener('touchmove', move)
-      document.removeEventListener('mouseup', up)
-      document.removeEventListener('touchend', up)
-    }
-  }, [])
-
-  // Parse context from hash (e.g., #inquiry?context=portraits)
-  const parseInquiryHash = useCallback((hash: string): string | null => {
-    if (!hash.includes('inquiry')) return null
-    const queryStart = hash.indexOf('?')
-    if (queryStart === -1) return null
-    const params = new URLSearchParams(hash.slice(queryStart + 1))
-    return params.get('context')
-  }, [])
-
-  // Open widget with optional context-aware starter message and placeholder
+  // Open widget with optional context-aware starter message
   const openWithContext = useCallback((context: string | null) => {
     const starter = getStarterMessage(context)
     if (starter) {
-      setFormData(prev => ({ ...prev, message: starter }))
+      updateField('message', starter)
     }
     setPlaceholder(getPlaceholder(context))
     setExpanded(true)
-  }, [])
+  }, [updateField])
 
+  // Handle hash-based opening
   useEffect(() => {
     const checkHash = () => {
       if (typeof window === 'undefined') return
       const hash = window.location.hash
-      if (hash.includes('inquiry')) {
+      if (isInquiryHash(hash)) {
         const context = parseInquiryHash(hash)
         openWithContext(context)
         window.history.replaceState(null, '', window.location.pathname)
@@ -177,23 +82,18 @@ export default function InquiryWidget() {
       window.removeEventListener('hashchange', checkHash)
       document.removeEventListener('click', handleClick)
     }
-  }, [parseInquiryHash, openWithContext])
-
-  const resetForm = useCallback(() => {
-    setFormData({ message: '', email: '', name: '' })
-    setTouched({ message: false, email: false })
-    setServerError('')
-    setSize({ w: DEFAULT_W, h: DEFAULT_H })
-  }, [])
+  }, [openWithContext])
 
   const close = useCallback(() => {
     setExpanded(false)
     setTimeout(() => {
       setStatus('idle')
       resetForm()
+      resetSize()
     }, 300)
-  }, [resetForm])
+  }, [resetForm, resetSize, setStatus])
 
+  // Close on outside click
   useEffect(() => {
     if (!expanded) return
     const handleOutside = (e: MouseEvent | TouchEvent) => {
@@ -208,48 +108,6 @@ export default function InquiryWidget() {
       document.removeEventListener('touchstart', handleOutside)
     }
   }, [expanded, close])
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-
-    // Mark all fields as touched to show any validation errors
-    setTouched({ message: true, email: true })
-
-    // Check for validation errors
-    const currentErrors = validateForm(formData)
-    if (currentErrors.message || currentErrors.email) {
-      return
-    }
-
-    setStatus('sending')
-    setServerError('')
-
-    try {
-      const submitData = new FormData()
-      submitData.append('message', formData.message.trim())
-      submitData.append('email', formData.email.trim())
-      if (formData.name.trim()) {
-        submitData.append('name', formData.name.trim())
-      }
-
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        body: submitData,
-      })
-      const body = await res.json()
-
-      if (res.ok) {
-        setStatus('sent')
-        resetForm()
-      } else {
-        setServerError(body.error ?? 'Something went wrong. Please try again.')
-        setStatus('error')
-      }
-    } catch {
-      setServerError('Unable to send message. Please check your connection and try again.')
-      setStatus('error')
-    }
-  }
 
   return (
     <div
@@ -408,7 +266,6 @@ export default function InquiryWidget() {
 
               {/* Actions */}
               <div className="flex items-center gap-3 pt-2">
-                {/* Primary CTA - Send message */}
                 <motion.button
                   type="submit"
                   disabled={status === 'sending'}
@@ -435,9 +292,7 @@ export default function InquiryWidget() {
                     scale: { duration: 0.1 },
                   }}
                 >
-                  {/* Shimmer effect */}
                   <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-
                   <Send className="h-3.5 w-3.5 relative z-10" strokeWidth={1.5} />
                   <span className="relative z-10">
                     {status === 'sending' ? 'Sending...' : 'Send message'}
@@ -475,7 +330,7 @@ export default function InquiryWidget() {
         </div>
       </div>
 
-      {/* Collapsed pill - Premium floating CTA */}
+      {/* Collapsed pill */}
       <AnimatePresence>
         {!expanded && (
           <motion.button
@@ -516,9 +371,7 @@ export default function InquiryWidget() {
             aria-controls="inquiry-form"
             aria-label="Say hello — send a message"
           >
-            {/* Shimmer effect on hover */}
             <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
-
             <Mail className="h-4 w-4 relative z-10" strokeWidth={1.5} />
             <span className="font-sans text-sm tracking-wider relative z-10">Say hello</span>
           </motion.button>
