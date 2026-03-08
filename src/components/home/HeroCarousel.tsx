@@ -52,6 +52,19 @@ const widthPatterns = {
   6: ['24vw', '20vw', '16vw', '14vw', '14vw', '12vw'],
 }
 
+/**
+ * Generate a shuffled order array for CSS flexbox ordering.
+ * Returns [0,1,2,3...] shuffled, e.g., [2,0,3,1]
+ */
+function generateShuffledOrder(length: number): number[] {
+  const order = Array.from({ length }, (_, i) => i)
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[order[i], order[j]] = [order[j], order[i]]
+  }
+  return order
+}
+
 export default function HeroCarousel({
   slides: defaultSlides,
   heading,
@@ -66,6 +79,10 @@ export default function HeroCarousel({
   const [focalShift, setFocalShift] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
   const [activeFilter, setActiveFilter] = useState<string | null>(null)
+  // CSS order values for each slide - starts sequential, shuffles after hydration
+  const [slideOrder, setSlideOrder] = useState<number[]>([])
+  // Desktop images start hidden, shuffle while hidden, then fade in
+  const [desktopReady, setDesktopReady] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const touchStartX = useRef<number | null>(null)
   const dragStartX = useRef<number | null>(null)
@@ -115,6 +132,15 @@ export default function HeroCarousel({
     const timer = setTimeout(() => setIsVisible(true), 100)
     return () => clearTimeout(timer)
   }, [])
+
+  // Desktop: shuffle order while hidden, then fade in (avoids visible reorder flash)
+  useEffect(() => {
+    // Shuffle immediately (images hidden via opacity 0)
+    setSlideOrder(generateShuffledOrder(slides.length))
+    // Small delay to ensure shuffle applied before fade-in
+    const timer = setTimeout(() => setDesktopReady(true), 50)
+    return () => clearTimeout(timer)
+  }, [slides.length])
 
   // Handle scroll snap detection (mobile only)
   useEffect(() => {
@@ -255,7 +281,12 @@ export default function HeroCarousel({
       {/* Tablet+: Horizontal strip with asymmetric widths + peek interaction */}
       <div
         className="hidden md:flex h-full select-none"
-        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+        style={{
+          cursor: isDragging ? 'grabbing' : 'grab',
+          // Start hidden, shuffle while hidden, fade in after reorder
+          opacity: desktopReady ? 1 : 0,
+          transition: 'opacity 0.5s ease-out',
+        }}
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
@@ -265,7 +296,11 @@ export default function HeroCarousel({
           <div
             key={slide.src}
             className="relative h-full shrink-0"
-            style={{ width: getSlideWidth(idx, slides.length) }}
+            style={{
+              width: getSlideWidth(idx, slides.length),
+              // CSS order shuffle - images already loaded, instant visual reorder
+              order: slideOrder[idx] ?? idx,
+            }}
           >
             <img
               src={getHeroSrc(slide.src)}
@@ -276,9 +311,9 @@ export default function HeroCarousel({
                 objectPosition: getFocalPosition(slide, fallbackFocalX, fallbackFocalY, focalShift),
                 transition: isDragging ? 'none' : 'object-position 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
               }}
-              loading={idx === 0 ? 'eager' : 'lazy'}
-              decoding={idx === 0 ? 'sync' : 'async'}
-              fetchPriority={idx === 0 ? 'high' : undefined}
+              // All desktop hero images are above-fold, eager load them all
+              loading="eager"
+              decoding="async"
             />
             {/* Subtle separator line */}
             {idx < slides.length - 1 && (
