@@ -166,31 +166,25 @@ function formatPrice(price: number | null | undefined, priceNote?: string): stri
                     <h4 class="font-sans text-xs tracking-widest uppercase text-[var(--sol-charcoal)]/60 mb-3">
                       Ideal for
                     </h4>
-                    <div class="flex flex-wrap gap-2">
+                    <ul class="space-y-1">
                       {ideal_for.map((item) => (
-                        <span class="inline-block px-3 py-1 bg-[var(--sol-sage)]/30 text-[var(--sol-charcoal)]/80 text-sm font-serif rounded-full">
+                        <li class="text-[var(--sol-charcoal)]/70 text-sm font-serif pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[0.6em] before:w-1.5 before:h-1.5 before:rounded-full before:bg-[var(--sol-sage)]">
                           {item}
-                        </span>
+                        </li>
                       ))}
-                    </div>
+                    </ul>
                   </div>
                 )}
 
                 {/* Subcategory filters (for portrait) */}
                 {subcategories && subcategories.length > 0 && (
-                  <div class="flex flex-wrap gap-3 mb-6">
-                    {subcategories.map((sub, subIdx) => (
+                  <div class="flex flex-wrap gap-x-4 gap-y-1 mb-6">
+                    {subcategories.map((sub) => (
                       <a
                         href={`/portfolio/${portfolio_slug}?filter=${sub.filter}`}
-                        class="group relative inline-block"
+                        class="font-serif text-[var(--sol-charcoal)]/70 hover:text-[var(--sol-caramel)] transition-colors underline underline-offset-2 decoration-[var(--sol-sage)]"
                       >
-                        <span class="font-display text-lg text-[var(--sol-charcoal)] relative z-10 px-1 group-hover:text-[var(--sol-forest)] transition-colors">
-                          {sub.label}
-                        </span>
-                        <span
-                          class="absolute inset-0 -skew-x-3 bg-[var(--sol-sage)]/40 group-hover:bg-[var(--sol-sage)]/60 transition-colors"
-                          style={`transform: skewX(${subIdx % 2 === 0 ? '-3' : '2'}deg) rotate(${subIdx % 2 === 0 ? '-1' : '1'}deg);`}
-                        />
+                        {sub.label}
                       </a>
                     ))}
                   </div>
