@@ -443,8 +443,8 @@ export default function GalleryGrid({
     <>
       {/* Filter toggles for portraits */}
       {hasFilters && availableFilters.length > 0 && (
-        <div className="flex flex-col items-center gap-4 px-6 pt-8">
-          <div className="flex justify-center gap-3">
+        <div className="pt-8 overflow-x-auto scrollbar-hide">
+          <div className="flex justify-center gap-3 px-6 min-w-max">
             <button
               type="button"
               onClick={() => handleFilterChange(null)}
