@@ -2,7 +2,7 @@
 title: Retreats
 category: events
 date: 2026-01-01
-description: "Retreats, gatherings, and the energy of people coming together — documented with warmth and intention."
+description: "Retreats, ceremonies, gatherings — the energy of people coming together, documented with warmth and intention. More than capturing moments — holding space and witnessing people in powerful transformation."
 cover: /media/portfolio/events/2026-retreat-portfolio-1.jpg
 cover_position: top
 carousel_mode: auto

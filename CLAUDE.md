@@ -164,7 +164,8 @@ src/
       ServicePreview.astro  # 4-up service category grid → /services
     portfolio/
       CategoryGrid.astro # full-bleed clickable category panels (portraits, branding, retreats)
-      GalleryGrid.tsx    # React island — masonry grid + lightbox
+      GalleryGrid.tsx    # React island — justified gallery grid
+      Lightbox.tsx       # Full-screen image viewer with swipe/keyboard nav
     shared/
       SectionLabel.astro # small uppercase tracking eyebrow label
   content/
@@ -251,6 +252,50 @@ The sync script (`scripts/sync-photos.py`) reads `dc:subject` XMP tags from each
 - Pages are static by default. Only `export const prerender = false` + API routes run as Workers.
 - Tailwind utility classes + CSS vars. No inline styles, no CSS-in-JS.
 - No `any` in TypeScript. Infer from Zod schemas when possible.
+
+## Architecture Decisions
+
+### Image Pools vs Carousels vs Hero Selection
+
+Three distinct image selection strategies:
+
+| Strategy | Location | Purpose |
+|----------|----------|---------|
+| **Mood Pool** | `carousel-images.ts` | Stratified sampling from 53 mood images for heroes/backgrounds |
+| **Hero Selection** | `useHeroSelection.ts` | Client-side random selection from pre-built image pools |
+| **Gallery Display** | `GalleryGrid.tsx` | Justified layout algorithm for portfolio galleries |
+
+**Why separate?** Heroes need session-aware selection to avoid same-shoot clusters. Galleries need justified layout for visual impact. Mood images need variety across the full range.
+
+### SSG vs SSR Route Decisions
+
+| Route | Mode | Why |
+|-------|------|-----|
+| All pages | SSG (static) | Photography site is read-heavy, content changes infrequently |
+| `/api/contact` | SSR (Worker) | Needs server-side Resend API key, form processing |
+
+**Rule:** Default to static. Only opt into SSR when you need secrets or server-side logic.
+
+### Progressive Loading Strategy
+
+Large image galleries use progressive loading:
+
+1. **Initial render:** First 12 images (carousel) or 1 module (bento)
+2. **Scroll/intersection:** Load more in batches (8 images / 1 module)
+3. **Lazy attributes:** `loading="lazy"` on images beyond viewport
+
+See `useProgressiveLoad.ts` for the reusable hook pattern.
+
+### Shared Utilities
+
+| File | Purpose |
+|------|---------|
+| `lib/constants.ts` | Site identity, gallery config, carousel config |
+| `lib/validation.ts` | Email/message validation for forms |
+| `lib/image-filters.ts` | Filtering hidden, portrait, hero-safe images |
+| `lib/gallery-layout.ts` | Justified layout algorithm |
+| `lib/data-loaders.ts` | Content loading with error handling |
+| `hooks/useProgressiveLoad.ts` | Batch loading for large lists |
 
 ## Tools Reference
 

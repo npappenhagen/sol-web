@@ -1,45 +1,81 @@
-# Sol-web
+# Sol Photography
 
-Astro + pnpm + Tailwind + Cloudflare + shadcn + Sveltia CMS.
+Photography portfolio and business site for Sol Photography.
 
-**Sveltia CMS:** Admin at `/admin`. Sveltia requires HTTPS — dev server runs at `https://localhost:4321`. Open `https://localhost:4321/admin` in Chrome/Edge/Brave. Auth via GitHub Personal Access Token — click "Sign In with Token" and paste a PAT with `Contents: Read and write` on this repo.
+**Live:** [solphotography.net](https://solphotography.net)
 
-**Axon (code intelligence):** `pip install axoniq` → `axon analyze .` (use `--no-embeddings` for faster index) → run `pnpm dev:full` to keep index fresh. Claude/Cursor MCP config in `.claude/settings.json`.
+## Stack
 
-## 🚀 Project Structure
+- **Astro 5** — Static-first with SSR for API routes
+- **Tailwind CSS v4** + shadcn/ui — React islands for interactive components
+- **TypeScript** — Strict mode
+- **Cloudflare Pages** — Static hosting + Workers for SSR
+- **Sveltia CMS** — Git-based content management
+- **Resend** — Transactional email
 
-Inside of your Astro project, you'll see the following folders and files:
+## Quick Start
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+pnpm install
+pnpm dev           # https://localhost:4321
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Commands
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+| Command | Action |
+|---------|--------|
+| `pnpm dev` | Start dev server (HTTPS) |
+| `pnpm build` | Build production site |
+| `pnpm preview` | Preview production build |
+| `pnpm lint` | Run ESLint |
+| `make sync-photos` | Sync photos from SMB share |
+| `make deploy` | Build + deploy to Cloudflare |
 
-Any static assets, like images, can be placed in the `public/` directory.
+## CMS
 
-## 🧞 Commands
+Admin at `/admin`. Auth via GitHub Personal Access Token with `Contents: Read and write` on this repo.
 
-All commands are run from the root of the project, from a terminal:
+Sveltia CMS manages:
+- **Page content:** `src/content/pages/*.yaml`
+- **Portfolio galleries:** `src/content/portfolio/*.md`
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts dev server at `https://localhost:4321`    |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm lint`            | Run ESLint (also runs on pre-commit via husky)   |
-| `pnpm dev:full`        | Astro + Axon watch (keeps code index fresh for MCP) |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+## Development
 
-## 👀 Want to learn more?
+See `CLAUDE.md` for AI context, architecture decisions, and detailed component documentation.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### Code Intelligence
+
+```bash
+# First-time setup
+pip install axoniq
+axon analyze .
+
+# Keep index fresh during development
+pnpm dev:full
+```
+
+Axon MCP tools are auto-configured via `.mcp.json`.
+
+## Photo Workflow
+
+1. Export from Lightroom to SMB share (`/Volumes/sol/`)
+2. `make sync-photos` copies files + extracts metadata
+3. Edit in CMS at `/admin` if needed
+4. `make deploy`
+
+## Project Structure
+
+```
+src/
+  components/    # Astro + React components
+  content/       # CMS content (pages, portfolio)
+  hooks/         # React hooks
+  lib/           # Utilities (constants, validation, filters)
+  pages/         # Route files
+  styles/        # Global CSS + Tailwind
+public/
+  admin/         # Sveltia CMS config
+  media/         # Images (gitignored, synced from SMB)
+scripts/
+  sync-photos.py # Photo sync + metadata extraction
+```

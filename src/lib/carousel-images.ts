@@ -1,6 +1,7 @@
 import { getCollection } from 'astro:content'
 import fs from 'node:fs'
 import path from 'node:path'
+import { filterForCarousel, filterHidden } from '@/lib/image-filters'
 
 export interface CarouselImage {
   src: string
@@ -127,17 +128,12 @@ export async function getAllPortraitImages(
 
   // Extract all portrait/hero-safe images with session info
   return filtered.flatMap((p) =>
-    (p.data.images ?? [])
-      .filter((img) => {
-        if (img.hidden) return false
-        return img.orientation === 'portrait' || img.hero_safe === true
-      })
-      .map((img) => ({
-        src: img.src,
-        focal_x: undefined,
-        focal_y: undefined,
-        session: img.date_taken,
-      }))
+    filterForCarousel(p.data.images ?? []).map((img) => ({
+      src: img.src,
+      focal_x: undefined,
+      focal_y: undefined,
+      session: img.date_taken,
+    }))
   )
 }
 
@@ -159,25 +155,18 @@ export async function getCarouselImages(
     : portfolios
 
   // Extract non-hidden images from each portfolio
-  const images: CarouselImage[] = filtered.flatMap((p) =>
-    (p.data.images ?? [])
-      .filter((img) => {
-        // Always exclude hidden images
-        if (img.hidden) return false
+  const images: CarouselImage[] = filtered.flatMap((p) => {
+    const baseImages = p.data.images ?? []
+    const filteredImages = portraitOnly
+      ? filterForCarousel(baseImages)
+      : filterHidden(baseImages)
 
-        // Filter for portrait or hero_safe images (default behavior for carousels)
-        if (portraitOnly) {
-          return img.orientation === 'portrait' || img.hero_safe === true
-        }
-
-        return true
-      })
-      .map((img) => ({
-        src: img.src,
-        focal_x: undefined,
-        focal_y: undefined,
-      }))
-  )
+    return filteredImages.map((img) => ({
+      src: img.src,
+      focal_x: undefined,
+      focal_y: undefined,
+    }))
+  })
 
   // Shuffle if requested (build-time randomization)
   if (shuffle) {

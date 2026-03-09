@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import type { CarouselImage } from '@/lib/carousel-images'
 import { getVariantUrl, hasVariants } from '@/lib/image-url'
+import { CAROUSEL_CONFIG } from '@/lib/constants'
 
 interface Props {
   images: CarouselImage[]
@@ -8,9 +9,7 @@ interface Props {
   portfolioSlug?: string
 }
 
-const INITIAL_COUNT = 12
-const BATCH_SIZE = 8
-const LOAD_THRESHOLD = 200 // px from edge to trigger load
+const { INITIAL_COUNT, BATCH_SIZE, LOAD_THRESHOLD } = CAROUSEL_CONFIG
 
 function getObjPos(img: CarouselImage): string {
   const x = img.focal_x != null ? Number(img.focal_x) : 50

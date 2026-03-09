@@ -1,11 +1,10 @@
 import { getEntry } from 'astro:content'
 import { getVariantUrl, hasVariants } from '@/lib/image-url'
+import { filterVisiblePortrait } from '@/lib/image-filters'
+import { PORTRAIT_SUBCATEGORIES, type PortraitSubcategory } from '@/lib/constants'
 
-/**
- * Sub-categories that redirect to portraits with filter.
- */
-export const PORTRAIT_SUBCATEGORIES = ['family', 'couples', 'maternity'] as const
-export type PortraitSubcategory = (typeof PORTRAIT_SUBCATEGORIES)[number]
+// Re-export for backward compatibility
+export { PORTRAIT_SUBCATEGORIES, type PortraitSubcategory }
 
 export interface HeroSlide {
   src: string
@@ -82,12 +81,10 @@ export function buildHeroSlides(
   carouselCount: number
 ): { slides: HeroSlide[], usePreSelection: boolean } {
   if (carouselMode === 'auto' && images && images.length > 0) {
-    const portraitImages = images
-      .filter((img) => !img.hidden && img.orientation === 'portrait')
-      .map((img) => ({
-        src: toWebPSrc(img.src),
-        session: img.date_taken,
-      }))
+    const portraitImages = filterVisiblePortrait(images).map((img) => ({
+      src: toWebPSrc(img.src),
+      session: img.date_taken,
+    }))
 
     const slides = portraitImages.length > 0
       ? portraitImages
@@ -131,12 +128,12 @@ export async function buildSubcategoryHeroMap(
   for (const subcat of PORTRAIT_SUBCATEGORIES) {
     const subcatEntry = await getEntry('portfolio', subcat)
     if (subcatEntry?.data.images) {
-      const portraitImages = (subcatEntry.data.images as RawImage[])
-        .filter((img) => !img.hidden && img.orientation === 'portrait')
-        .map((img) => ({
-          src: toWebPSrc(img.src),
-          session: img.date_taken,
-        }))
+      const portraitImages = filterVisiblePortrait(
+        subcatEntry.data.images as RawImage[]
+      ).map((img) => ({
+        src: toWebPSrc(img.src),
+        session: img.date_taken,
+      }))
       heroMap[subcat] = portraitImages.length > 0
         ? portraitImages
         : defaultSlides.map((s) => ({ ...s, src: toWebPSrc(s.src) }))

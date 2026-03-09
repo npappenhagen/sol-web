@@ -42,22 +42,20 @@ services:
       - "Couples celebrating milestones"
       - "Expecting parents"
       - "Anyone who wants real over posed"
+    starting_note: "Portraits starting at $350"
     packages:
       - name: "Classic Session"
-        duration: "60 min"
-        starting_price: 425
+        duration: "up to 60 minutes"
         includes:
-          - "30+ edited images"
-          - "1-2 locations"
-          - "Online gallery"
-          - "Optional outfit change"
+          - "50 high-resolution and website images"
+          - "Professional editing"
+          - "Private online gallery"
       - name: "Full Session"
-        duration: "90 min"
-        starting_price: 595
+        duration: "up to 90 minutes"
         includes:
-          - "50+ edited images"
+          - "75+ edited images"
           - "Multiple locations"
-          - "Online gallery"
+          - "Private online gallery"
           - "Outfit changes"
     image: /media/portfolio/portraits/2026-portrait-portfolio-75.jpg
     carousel_mode: auto
@@ -75,39 +73,40 @@ services:
     tagline: "Show up as yourself. Professionally."
     description: "Personal brand imagery that actually looks like you — for the creative, the founder, the maker who's ready to show up online. Not stock photos. Not stiff headshots. Images that feel like your business feels."
     ideal_for:
-      - "Entrepreneurs and coaches"
       - "Creators and artists"
+      - "Entrepreneurs and coaches"
       - "Small business owners"
       - "Anyone refreshing their online presence"
+    starting_note: "Branding starting at $500"
     packages:
-      - name: "Starter"
-        duration: "30 min"
-        starting_price: 325
-        includes:
-          - "10+ edited images"
-          - "1 location/setup"
-          - "Brand consultation"
-          - "Online gallery"
       - name: "Signature"
-        duration: "60 min"
-        starting_price: 550
+        duration: "up to 60 minutes"
         includes:
           - "25+ edited images"
           - "2-3 setups"
           - "Brand consultation"
           - "Prop/wardrobe guidance"
-          - "Online gallery"
+          - "Private online gallery"
       - name: "Full Brand"
-        duration: "90 min"
-        starting_price: 795
+        duration: "up to 90 minutes"
         includes:
           - "40+ edited images"
           - "Multiple setups"
           - "Brand consultation"
           - "Location scouting"
           - "Styled flat-lays"
-          - "Online gallery"
-    what_to_expect: "We'll start with a brand chat — your vibe, your audience, the feeling you want to evoke. Then we plan setups that tell your story: working shots, lifestyle moments, details of your craft. You'll leave with a library of content that actually feels like you."
+          - "Private online gallery"
+      - name: "Half Day"
+        duration: "up to 4 hours"
+        includes:
+          - "75+ edited images"
+          - "Multiple locations"
+          - "Brand consultation"
+          - "Location scouting"
+          - "Styled flat-lays"
+          - "Private online gallery"
+          - "Content variety for months of use"
+    what_to_expect: "We'll start with a brand chat — your vibe, your audience, the feeling you want to evoke. Then we plan setups that tell your story: working shots, lifestyle moments, details of your craft. You'll leave with a library of usable content that actually feels like you."
     image: /media/portfolio/branding/2026-branding-portfolio-23.jpg
     carousel_mode: auto
     carousel_count: 12
@@ -115,33 +114,31 @@ services:
 
   - name: Retreats
     tagline: "The energy of people coming together."
-    description: "Retreats, workshops, and gatherings documented with warmth and intention. I blend into the background so you can focus on your guests — then deliver images that capture the transformation."
+    description: "Retreats, ceremonies, and gatherings documented with warmth and intention. A ceremonial photography experience — I blend into the background so you can focus on your guests, then deliver images that capture the transformation."
     ideal_for:
       - "Yoga and wellness retreats"
       - "Creative workshops"
       - "Corporate offsites"
       - "Hosted experiences"
+    starting_note: "Retreats starting at $950"
     packages:
       - name: "Half Day"
-        duration: "4 hours"
-        starting_price: 950
+        duration: "up to 4 hours"
         includes:
           - "100+ edited images"
           - "Event coverage"
-          - "Online gallery"
+          - "Private online gallery"
           - "Social media sneak peeks"
       - name: "Full Day"
-        duration: "8 hours"
-        starting_price: 1600
+        duration: "up to 8 hours"
         includes:
           - "200+ edited images"
           - "Full event coverage"
-          - "Online gallery"
+          - "Private online gallery"
           - "Social media sneak peeks"
           - "Venue/detail shots"
       - name: "Multi-Day"
         duration: "Custom"
-        starting_price: null
         price_note: "Custom quote"
         includes:
           - "Full retreat documentation"
@@ -149,7 +146,7 @@ services:
           - "Participant portraits"
           - "Marketing assets"
           - "Expedited delivery available"
-    what_to_expect: "I arrive early to capture the space before guests do. Throughout the event, I document candid moments, connections, and the details that make your retreat special. You'll receive sneak peeks within 24 hours for social, with full gallery delivery in 2-3 weeks."
+    what_to_expect: "It starts with a consultation and planning session to define the goals and vision of your retreat. Throughout the event, I document candid moments, connections, and the details that make your gathering special — holding space and witnessing to thoughtfully capture the most important moments of transformation. You'll receive sneak peeks within 24 hours for social, with full gallery delivery in 2-3 weeks."
     image: /media/portfolio/events/2026-retreat-portfolio-27.jpg
     carousel_mode: auto
     carousel_count: 12

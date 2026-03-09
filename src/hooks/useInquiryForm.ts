@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { validateEmail, validateMessage } from '@/lib/validation'
 
 export type Status = 'idle' | 'sending' | 'sent' | 'error'
 
@@ -31,25 +32,9 @@ interface UseInquiryFormResult {
   setStatus: (status: Status) => void
 }
 
-const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-
-function validateEmail(email: string): string | undefined {
-  const trimmed = email.trim()
-  if (!trimmed) return 'Email is required'
-  if (!EMAIL_REGEX.test(trimmed)) return 'Please enter a valid email address'
-  return undefined
-}
-
-function validateMessage(message: string): string | undefined {
-  const trimmed = message.trim()
-  if (!trimmed) return 'Please include a message'
-  if (trimmed.length < 10) return 'Message is too short'
-  return undefined
-}
-
 function validateForm(data: FormData): FormErrors {
   return {
-    message: validateMessage(data.message),
+    message: validateMessage(data.message, { minLength: 10 }),
     email: validateEmail(data.email),
   }
 }

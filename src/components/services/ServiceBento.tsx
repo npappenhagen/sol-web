@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import type { CarouselImage } from '@/lib/carousel-images'
 import { getVariantUrl, hasVariants } from '@/lib/image-url'
+import { BENTO_CONFIG } from '@/lib/constants'
 
 interface Props {
   images: CarouselImage[]
@@ -8,10 +9,7 @@ interface Props {
   isEven?: boolean
 }
 
-// Each bento module: 1 hero + 4 grid = 5 images
-const IMAGES_PER_MODULE = 5
-const INITIAL_MODULES = 1
-const LOAD_THRESHOLD = 400 // px from bottom to trigger load
+const { IMAGES_PER_MODULE, INITIAL_MODULES, LOAD_THRESHOLD } = BENTO_CONFIG
 
 function getObjPos(img: CarouselImage): string {
   const x = img.focal_x != null ? Number(img.focal_x) : 50

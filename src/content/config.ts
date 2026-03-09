@@ -15,13 +15,19 @@ const imageSchema = z.object({
   hero_safe: z.boolean().optional(),
 })
 
+/** Focal point value: number 0-100 or string percentage */
+const focalPointSchema = z.union([
+  z.string(),
+  z.number().min(0).max(100),
+]).optional()
+
 const heroImageSchema = z.object({
-  src: z.string(),
-  focal_x: z.union([z.string(), z.number()]).optional(),
-  focal_y: z.union([z.string(), z.number()]).optional(),
+  src: z.string().min(1),
+  focal_x: focalPointSchema,
+  focal_y: focalPointSchema,
   // Image dimensions for smart aspect ratio display
-  width: z.number().optional(),
-  height: z.number().optional(),
+  width: z.number().positive().optional(),
+  height: z.number().positive().optional(),
   orientation: z.enum(['portrait', 'landscape', 'square']).optional(),
 })
 
@@ -34,8 +40,8 @@ const portfolio = defineCollection({
     description: z.string().optional(),
     cover: z.string(),
     cover_position: z.enum(['top', 'center', 'bottom', 'left', 'right']).default('center'),
-    cover_focal_x: z.union([z.string(), z.number()]).optional(),
-    cover_focal_y: z.union([z.string(), z.number()]).optional(),
+    cover_focal_x: focalPointSchema,
+    cover_focal_y: focalPointSchema,
     cover_width: z.number().optional(),
     cover_height: z.number().optional(),
     cover_orientation: z.enum(['portrait', 'landscape', 'square']).optional(),
@@ -43,7 +49,7 @@ const portfolio = defineCollection({
     carousel_mode: z.enum(['manual', 'auto']).default('auto'),
     carousel_count: z.number().default(4),
     hero_images: z.array(heroImageSchema).optional(),
-    hero_carousel_speed: z.number().default(6),
+    hero_carousel_speed: z.number().min(1).max(30).default(6),
     images: z.array(imageSchema).optional(),
     tags: z.array(z.string()).optional(),
     featured: z.boolean().default(false),
@@ -115,8 +121,8 @@ const pages = defineCollection({
             z.string(),
             z.object({
               image: z.string(),
-              focal_x: z.union([z.string(), z.number()]).optional(),
-              focal_y: z.union([z.string(), z.number()]).optional(),
+              focal_x: focalPointSchema,
+              focal_y: focalPointSchema,
             }),
           ]),
         )
@@ -126,9 +132,9 @@ const pages = defineCollection({
           ),
         ),
       hero_position: z.enum(['top', 'center', 'bottom', 'left', 'right']).default('center'),
-      hero_focal_x: z.union([z.string(), z.number()]).optional(),
-      hero_focal_y: z.union([z.string(), z.number()]).optional(),
-      hero_carousel_speed: z.number().default(6),
+      hero_focal_x: focalPointSchema,
+      hero_focal_y: focalPointSchema,
+      hero_carousel_speed: z.number().min(1).max(30).default(6),
       hero_heading: z.string(),
       intro_label: z.string(),
       intro_heading: z.string(),
@@ -148,8 +154,8 @@ const pages = defineCollection({
             z.string(),
             z.object({
               image: z.string(),
-              focal_x: z.union([z.string(), z.number()]).optional(),
-              focal_y: z.union([z.string(), z.number()]).optional(),
+              focal_x: focalPointSchema,
+              focal_y: focalPointSchema,
             }),
           ]),
         )
@@ -159,9 +165,9 @@ const pages = defineCollection({
           ),
         ),
       hero_position: z.enum(['top', 'center', 'bottom', 'left', 'right']).default('center'),
-      hero_focal_x: z.union([z.string(), z.number()]).optional(),
-      hero_focal_y: z.union([z.string(), z.number()]).optional(),
-      hero_carousel_speed: z.number().default(6),
+      hero_focal_x: focalPointSchema,
+      hero_focal_y: focalPointSchema,
+      hero_carousel_speed: z.number().min(1).max(30).default(6),
       heading: z.string(),
       subheading: z.string(),
       bio: z.string(),
@@ -178,8 +184,8 @@ const pages = defineCollection({
             z.string(),
             z.object({
               image: z.string(),
-              focal_x: z.union([z.string(), z.number()]).optional(),
-              focal_y: z.union([z.string(), z.number()]).optional(),
+              focal_x: focalPointSchema,
+              focal_y: focalPointSchema,
             }),
           ]),
         )
@@ -190,7 +196,7 @@ const pages = defineCollection({
         )
         .optional(),
       hero_position: z.enum(['top', 'center', 'bottom', 'left', 'right']).default('center'),
-      hero_carousel_speed: z.number().default(8),
+      hero_carousel_speed: z.number().min(1).max(30).default(8),
       location: locationSchema.optional(),
       process: z.object({
         heading: z.string(),

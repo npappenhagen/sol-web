@@ -2,7 +2,7 @@
 title: Portraits
 category: portraits
 date: 2026-01-01
-description: "People photographed with patience and intention — family, maternity, couples, and everything in between."
+description: "People photographed with presence, play, and intention — family, maternity, couples, and everything in between."
 cover: /media/portfolio/portraits/2026-portrait-portfolio-1.jpg
 cover_position: top
 carousel_mode: auto

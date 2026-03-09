@@ -5,6 +5,7 @@ import Nav from '@/components/layout/Nav.astro'
 import Footer from '@/components/layout/Footer.astro'
 import InquiryWidget from '@/components/InquiryWidget'
 import CalProvider from '@/components/CalProvider'
+import { SITE_NAME, SITE_DESCRIPTION, THEME_COLOR, SERVICE_TYPES, DEFAULTS } from '@/lib/constants'
 
 interface Props {
   title: string
@@ -14,11 +15,11 @@ interface Props {
 
 const {
   title,
-  description = 'Sol Photography — portrait, branding, and event photography.',
-  image = '/media/site/og-image.jpg',
+  description = SITE_DESCRIPTION,
+  image = DEFAULTS.OG_IMAGE,
 } = Astro.props
 
-const fullTitle = title === 'Home' ? 'Sol Photography' : `${title} | Sol Photography`
+const fullTitle = title === 'Home' ? SITE_NAME : `${title} | ${SITE_NAME}`
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site)
 const ogImageUrl = new URL(image, Astro.site);
 ---
@@ -31,7 +32,7 @@ const ogImageUrl = new URL(image, Astro.site);
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="canonical" href={canonicalUrl.href} />
-    <meta name="theme-color" content="#F5F0E8" />
+    <meta name="theme-color" content={THEME_COLOR} />
 
     <!-- Preconnect to third-party origins for faster resource loading -->
     <link rel="preconnect" href="https://app.cal.com" crossorigin />
@@ -46,7 +47,7 @@ const ogImageUrl = new URL(image, Astro.site);
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImageUrl.href} />
-    <meta property="og:site_name" content="Sol Photography" />
+    <meta property="og:site_name" content={SITE_NAME} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -127,13 +128,13 @@ const ogImageUrl = new URL(image, Astro.site);
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'ProfessionalService',
-      name: 'Sol Photography',
-      url: 'https://solphotography.net',
+      name: SITE_NAME,
+      url: Astro.site?.href ?? 'https://solphotography.net',
       description: 'Portrait, branding, and event photography.',
       image: ogImageUrl.href,
       priceRange: '$$',
-      '@id': 'https://solphotography.net/#business',
-      serviceType: ['Portrait Photography', 'Branding Photography', 'Event Photography'],
+      '@id': `${Astro.site?.href ?? 'https://solphotography.net'}#business`,
+      serviceType: [...SERVICE_TYPES],
     })} />
   </head>
   <body>
