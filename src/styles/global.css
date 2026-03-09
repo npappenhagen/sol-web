@@ -255,7 +255,7 @@ html {
     left: 0;
     width: 0;
     height: 1px;
-    background: var(--sol-sage);
+    background: var(--sol-cream);
     transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   .footer-link:hover::after {

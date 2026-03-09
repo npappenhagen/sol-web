@@ -122,7 +122,12 @@ export default function HeroCarousel({
       <div
         ref={scrollRef}
         className="md:hidden flex snap-x snap-mandatory overflow-x-auto h-full scrollbar-hide"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          opacity: isVisible ? 1 : 0,
+          transition: 'opacity 0.7s ease-out',
+        }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
@@ -159,7 +164,7 @@ export default function HeroCarousel({
         style={{
           cursor: isDragging ? 'grabbing' : 'grab',
           opacity: desktopReady ? 1 : 0,
-          transition: 'opacity 0.5s ease-out',
+          transition: 'opacity 0.7s ease-out',
         }}
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}

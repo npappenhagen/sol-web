@@ -63,9 +63,7 @@ const activeServices = services
     <section class="bg-[var(--sol-sage)]/20 py-12">
       <div class="max-w-4xl mx-auto px-6 text-center">
         <h2 class="font-display text-2xl text-[var(--sol-charcoal)] mb-4">{location.heading}</h2>
-        <p class="font-serif text-[var(--sol-charcoal)]/80 leading-relaxed text-lg">
-          {location.description}
-        </p>
+        <p class="font-serif text-[var(--sol-charcoal)]/80 leading-relaxed text-lg" set:html={location.description} />
       </div>
     </section>
   )}
@@ -85,6 +83,7 @@ const activeServices = services
           description={service.description}
           ideal_for={service.ideal_for}
           packages={service.packages}
+          starting_note={service.starting_note}
           what_to_expect={service.what_to_expect}
           carousel_images={service.carousel_images}
           portfolio_slug={service.portfolio_slug}

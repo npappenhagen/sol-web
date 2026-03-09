@@ -28,6 +28,7 @@ interface Props {
   description: string
   ideal_for?: string[]
   packages?: Package[]
+  starting_note?: string
   what_to_expect?: string
   carousel_images?: CarouselImg[]
   portfolio_slug?: string
@@ -42,6 +43,7 @@ const {
   description,
   ideal_for,
   packages,
+  starting_note,
   what_to_expect,
   carousel_images,
   portfolio_slug,
@@ -50,10 +52,11 @@ const {
   isEven,
 } = Astro.props
 
-function formatPrice(price: number | null | undefined, priceNote?: string): string {
-  if (priceNote) return priceNote
-  if (price == null) return 'Contact for pricing'
-  return `$${price}`
+// Extract just the price from starting_note (e.g., "Portraits starting at $350" -> "$350")
+function extractPrice(note?: string): string {
+  if (!note) return ''
+  const match = note.match(/\$[\d,]+/)
+  return match ? match[0] : ''
 }
 ---
 
@@ -64,7 +67,7 @@ function formatPrice(price: number | null | undefined, priceNote?: string): stri
     <div class="flex-1 h-px bg-[var(--sol-sage)]/30" />
   </div>
 
-  <div class={`grid lg:grid-cols-2 gap-8 lg:gap-12 items-start ${isEven ? 'lg:flex-row-reverse' : ''}`}>
+  <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 lg:items-start">
     {/* Images: Carousel on mobile/tablet, Bento on desktop */}
     <div class={`${isEven ? 'lg:order-2' : ''}`}>
       {carousel_images && carousel_images.length > 0 ? (
@@ -78,13 +81,12 @@ function formatPrice(price: number | null | undefined, priceNote?: string): stri
               portfolioSlug={portfolio_slug}
             />
           </div>
-          {/* Desktop: Bento grid */}
+          {/* Desktop: Bento grid - JS measures sibling content and matches height */}
           <div class="hidden lg:block">
             <ServiceBento
               client:visible
               images={carousel_images}
               portfolioSlug={portfolio_slug}
-              isEven={isEven}
             />
           </div>
         </>
@@ -93,8 +95,8 @@ function formatPrice(price: number | null | undefined, priceNote?: string): stri
       )}
     </div>
 
-    {/* Content - sticky on desktop */}
-    <div class={`lg:sticky lg:top-24 lg:max-w-md ${isEven ? 'lg:order-1' : ''}`}>
+    {/* Content */}
+    <div class={`lg:max-w-md ${isEven ? 'lg:order-1' : ''}`}>
       {/* Title and tagline */}
       <a
         href={`/portfolio/${portfolio_slug}`}
@@ -144,32 +146,63 @@ function formatPrice(price: number | null | undefined, priceNote?: string): stri
 
       {/* Packages */}
       {packages && packages.length > 0 && (
-        <div class="mb-8 space-y-4">
-          <h4 class="font-sans text-xs tracking-widest uppercase text-[var(--sol-charcoal)]/60 mb-3">
-            Session packages
-          </h4>
-          <div class="space-y-3">
+        <div class="mb-10">
+          {/* Header */}
+          <div class="flex items-baseline gap-3 mb-5">
+            <h4 class="font-display text-2xl text-[var(--sol-charcoal)]">
+              Session Packages
+            </h4>
+            {starting_note && (
+              <span class="font-serif text-base italic text-[var(--sol-charcoal)]/50">
+                from {extractPrice(starting_note)}
+              </span>
+            )}
+          </div>
+
+          {/* Package cards - warm editorial style */}
+          <div class="space-y-5">
             {packages.map((pkg) => (
-              <div class="group border-l-2 border-[var(--sol-sage)]/40 hover:border-[var(--sol-caramel)] pl-4 py-2 transition-colors">
-                <div class="flex justify-between items-baseline mb-1">
-                  <span class="font-sans font-medium text-[var(--sol-charcoal)]">
-                    {pkg.name}
-                  </span>
-                  <span class="font-display text-lg text-[var(--sol-caramel)]">
-                    {formatPrice(pkg.starting_price, pkg.price_note)}
-                  </span>
+              <div class="group relative">
+                {/* Card with warm depth + hover lift */}
+                <div class="
+                  relative rounded overflow-hidden
+                  bg-gradient-to-br from-white via-[#FDFCFA] to-[var(--sol-cream)]
+                  hover:from-white hover:via-white hover:to-[#FBF8F4]
+                  border border-[var(--sol-blush)]/15
+                  shadow-[0_2px_8px_rgba(139,94,60,0.06),0_1px_2px_rgba(139,94,60,0.04)]
+                  hover:shadow-[0_8px_24px_rgba(139,94,60,0.14),0_4px_8px_rgba(139,94,60,0.08)]
+                  hover:border-[var(--sol-caramel)]/35
+                  hover:-translate-y-1
+                  transition-all duration-300 ease-out
+                  cursor-pointer
+                ">
+                  {/* Warm left accent - expands on hover */}
+                  <div class="absolute top-0 left-0 bottom-0 w-[3px] group-hover:w-[5px] bg-gradient-to-b from-[var(--sol-caramel)] via-[var(--sol-blush)] to-[var(--sol-sage)]/50 transition-all duration-300" />
+
+                  <div class="p-5 pl-6">
+                    {/* Package header */}
+                    <div class="mb-1">
+                      <h5 class="font-display text-xl text-[var(--sol-charcoal)]">
+                        {pkg.name}
+                      </h5>
+                    </div>
+
+                    {/* Duration */}
+                    <p class="text-[10px] tracking-[0.2em] uppercase text-[var(--sol-charcoal)]/45 font-medium mb-4">{pkg.duration}</p>
+
+                    {/* Features */}
+                    <ul class="space-y-2">
+                      {pkg.includes.map((item) => (
+                        <li class="flex items-start gap-2.5 text-sm text-[var(--sol-charcoal)]/75">
+                          <svg class="w-3.5 h-3.5 text-[var(--sol-sage)] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-                <div class="flex justify-between items-baseline">
-                  <span class="text-sm text-[var(--sol-charcoal)]/60">{pkg.duration}</span>
-                </div>
-                <ul class="mt-2 text-sm text-[var(--sol-charcoal)]/70 space-y-0.5">
-                  {pkg.includes.map((item) => (
-                    <li class="flex items-center gap-2">
-                      <span class="w-1 h-1 bg-[var(--sol-sage)] rounded-full flex-shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
               </div>
             ))}
           </div>

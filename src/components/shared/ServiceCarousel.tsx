@@ -25,8 +25,15 @@ function getImageSrc(src: string): string {
 export default function ServiceCarousel({ images, name, portfolioSlug }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [isReady, setIsReady] = useState(false)
   const dragStartX = useRef(0)
   const scrollStartX = useRef(0)
+
+  // Fade-in on mount
+  useEffect(() => {
+    const timer = setTimeout(() => setIsReady(true), 50)
+    return () => clearTimeout(timer)
+  }, [])
 
   // Progressive loading state
   const [visibleCount, setVisibleCount] = useState(Math.min(INITIAL_COUNT, images.length))
@@ -85,7 +92,13 @@ export default function ServiceCarousel({ images, name, portfolioSlug }: Props) 
   if (images.length === 0) return null
 
   return (
-    <div className="relative group/carousel">
+    <div
+      className="relative group/carousel"
+      style={{
+        opacity: isReady ? 1 : 0,
+        transition: 'opacity 0.7s ease-out',
+      }}
+    >
       {/* Left edge fade */}
       <div
         className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[var(--sol-cream)] to-transparent opacity-60 pointer-events-none z-10"

@@ -1,15 +1,11 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import type { CarouselImage } from '@/lib/carousel-images'
 import { getVariantUrl, hasVariants } from '@/lib/image-url'
-import { BENTO_CONFIG } from '@/lib/constants'
 
 interface Props {
   images: CarouselImage[]
   portfolioSlug: string
-  isEven?: boolean
 }
-
-const { IMAGES_PER_MODULE, INITIAL_MODULES, LOAD_THRESHOLD } = BENTO_CONFIG
 
 function getObjPos(img: CarouselImage): string {
   const x = img.focal_x != null ? Number(img.focal_x) : 50
@@ -76,79 +72,149 @@ function BentoModule({
   )
 }
 
+const IMAGES_PER_MODULE = 5
+const LINK_HEIGHT = 44 // Height of "View full gallery" link
+
 /**
- * Desktop bento grid with contained scroll for services page.
- * Each module: 1 large hero + 4 smaller grid images
- * Contained scroll area - user can explore more if they want, or scroll past.
- * All images link to the portfolio gallery.
+ * Desktop bento grid that matches sibling content height.
+ * Measures the adjacent content column and constrains itself to match.
  */
 export default function ServiceBento({ images, portfolioSlug }: Props) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const sentinelRef = useRef<HTMLDivElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [containerHeight, setContainerHeight] = useState<number | null>(null)
+  const [canScroll, setCanScroll] = useState(false)
+  const [isAtBottom, setIsAtBottom] = useState(false)
 
-  // Calculate total possible modules
-  const totalModules = Math.ceil(images.length / IMAGES_PER_MODULE)
+  // Measure sibling content column and match its height
+  const measureAndSetHeight = useCallback(() => {
+    const wrapper = wrapperRef.current
+    if (!wrapper) return
 
-  // Progressive loading state
-  const [visibleModules, setVisibleModules] = useState(INITIAL_MODULES)
-  const hasMore = visibleModules < totalModules
+    // Find the parent grid, then the sibling content column
+    const gridParent = wrapper.closest('.grid')
+    if (!gridParent) return
 
-  // Slice images into modules
+    const columns = gridParent.children
+    let contentColumn: Element | null = null
+
+    for (const col of columns) {
+      if (!col.contains(wrapper)) {
+        contentColumn = col
+        break
+      }
+    }
+
+    if (contentColumn) {
+      const contentHeight = contentColumn.getBoundingClientRect().height
+      // Account for the "View full gallery" link height
+      const bentoHeight = Math.max(300, contentHeight - LINK_HEIGHT)
+      setContainerHeight(bentoHeight)
+    }
+  }, [])
+
+  // Measure on mount and resize
+  useEffect(() => {
+    measureAndSetHeight()
+
+    // Re-measure on resize
+    const handleResize = () => measureAndSetHeight()
+    window.addEventListener('resize', handleResize)
+
+    // Also observe for layout shifts
+    const observer = new ResizeObserver(measureAndSetHeight)
+    const gridParent = wrapperRef.current?.closest('.grid')
+    if (gridParent) {
+      observer.observe(gridParent)
+    }
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      observer.disconnect()
+    }
+  }, [measureAndSetHeight])
+
+  // Check scroll state
+  useEffect(() => {
+    const scrollContainer = scrollRef.current
+    if (!scrollContainer || containerHeight === null) return
+
+    const checkScroll = () => {
+      const hasOverflow = scrollContainer.scrollHeight > scrollContainer.clientHeight
+      setCanScroll(hasOverflow)
+
+      const atBottom = scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 10
+      setIsAtBottom(atBottom)
+    }
+
+    checkScroll()
+    scrollContainer.addEventListener('scroll', checkScroll, { passive: true })
+    return () => scrollContainer.removeEventListener('scroll', checkScroll)
+  }, [containerHeight, images])
+
+  if (images.length === 0) return null
+
+  // Build modules from images
   const modules: CarouselImage[][] = []
-  for (let i = 0; i < visibleModules; i++) {
-    const start = i * IMAGES_PER_MODULE
-    const end = start + IMAGES_PER_MODULE
-    const moduleImages = images.slice(start, end)
-    // Only add module if it has at least 2 images (hero + 1 grid)
+  for (let i = 0; i < images.length; i += IMAGES_PER_MODULE) {
+    const moduleImages = images.slice(i, i + IMAGES_PER_MODULE)
     if (moduleImages.length >= 2) {
       modules.push(moduleImages)
     }
   }
 
-  // IntersectionObserver for loading more modules (within container)
-  useEffect(() => {
-    const sentinel = sentinelRef.current
-    const container = containerRef.current
-    if (!sentinel || !container || !hasMore) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setVisibleModules(prev => Math.min(prev + 1, totalModules))
-        }
-      },
-      {
-        root: container, // Observe within the container, not the viewport
-        rootMargin: `${LOAD_THRESHOLD}px`
-      }
-    )
-
-    observer.observe(sentinel)
-    return () => observer.disconnect()
-  }, [hasMore, totalModules])
-
-  if (images.length === 0) return null
-
   return (
-    <div
-      ref={containerRef}
-      className="max-h-[80vh] overflow-y-auto scrollbar-hide rounded-sm"
-    >
-      <div className="space-y-4">
-        {modules.map((moduleImages, idx) => (
-          <BentoModule
-            key={idx}
-            images={moduleImages}
-            portfolioSlug={portfolioSlug}
-            moduleIndex={idx}
-          />
-        ))}
+    <div ref={wrapperRef} className="flex flex-col">
+      {/* Scrollable container - height matched to sibling */}
+      <div
+        ref={scrollRef}
+        className="overflow-y-auto rounded-lg bento-scroll relative"
+        style={{ height: containerHeight ? `${containerHeight}px` : 'auto' }}
+      >
+        <div className="space-y-3 p-1">
+          {modules.map((moduleImages, idx) => (
+            <BentoModule
+              key={idx}
+              images={moduleImages}
+              portfolioSlug={portfolioSlug}
+              moduleIndex={idx}
+            />
+          ))}
+        </div>
 
-        {/* Sentinel for loading more modules */}
-        {hasMore && (
-          <div ref={sentinelRef} className="h-1" aria-hidden="true" />
+        {/* Bottom fade - shows when there's more to scroll */}
+        {canScroll && !isAtBottom && (
+          <div className="sticky bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[var(--sol-cream)] to-transparent pointer-events-none" />
         )}
       </div>
+
+      {/* "View full gallery" link - always visible */}
+      <a
+        href={`/portfolio/${portfolioSlug}`}
+        className="block text-center py-3 text-sm font-sans tracking-wide text-[var(--sol-charcoal)]/50 hover:text-[var(--sol-caramel)] transition-colors flex-shrink-0"
+      >
+        View full gallery →
+      </a>
+
+      <style>{`
+        .bento-scroll::-webkit-scrollbar {
+          width: 4px;
+        }
+        .bento-scroll::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .bento-scroll::-webkit-scrollbar-thumb {
+          background: var(--sol-sage);
+          border-radius: 2px;
+        }
+        .bento-scroll::-webkit-scrollbar-thumb:hover {
+          background: var(--sol-caramel);
+        }
+        .bento-scroll {
+          scrollbar-width: thin;
+          scrollbar-color: var(--sol-sage) transparent;
+        }
+      `}</style>
     </div>
   )
 }

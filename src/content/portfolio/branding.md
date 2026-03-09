@@ -2,7 +2,7 @@
 title: Branding
 category: branding
 date: 2026-01-01
-description: "Personal brand imagery that actually looks like you — for the creative, the founder, the maker."
+description: "Personal brand imagery that actually looks like you. For the creative, the founder, the maker."
 cover: /media/portfolio/branding/2026-branding-portfolio-1.jpg
 cover_position: top
 carousel_mode: auto

@@ -1,15 +1,16 @@
 _page: services
 page_heading: "How we work together"
-page_intro: "Every session is custom — designed around your story, your energy, your light. Here's where we start."
+page_intro: "Every session is custom, designed around your story, your energy, your light. Here's where we start."
 # Hero auto-sources from mood photos (randomized at build)
 hero_carousel_speed: 8
 
 # Location info
 location:
   heading: "Based in Costa Rica"
-  description: "Home base is Playa Flamingo, Guanacaste. I photograph within a 1-hour radius at no extra charge — Tamarindo, Conchal, Potrero, Brasilito, and beyond. Destination sessions and custom travel packages available."
+  description: "Home base is Playa Flamingo, Guanacaste. I photograph within a 1-hour radius at no extra charge: <br/> Playa Grande, Tamarindo, Conchal, Potrero, Brasilito, and beyond. Destination sessions and custom travel packages available."
   areas:
     - Playa Flamingo
+    - Playa Grande
     - Tamarindo
     - Conchal
     - Potrero
@@ -25,7 +26,7 @@ process:
       description: "Tell me about your vision. I'll respond within 48 hours."
     - number: "02"
       title: "Connect"
-      description: "We'll hop on a call to plan the details — location, timing, wardrobe."
+      description: "We'll hop on a call to plan the details: location, timing, wardrobe."
     - number: "03"
       title: "Create"
       description: "The session itself. Relaxed, guided, and always at your pace."
@@ -36,7 +37,7 @@ process:
 services:
   - name: Portrait
     tagline: "Families. Couples. Maternity. Moments that matter."
-    description: "Unhurried sessions that capture your people as they actually are — laughing, connected, real. Whether it's a growing belly, a reunion, or just a Tuesday that deserves to be remembered."
+    description: "Unhurried sessions that capture your people as they actually are. Laughing, connected, real. Whether it's a growing belly, a reunion, or just a Tuesday that deserves to be remembered."
     ideal_for:
       - "Families visiting Costa Rica"
       - "Couples celebrating milestones"
@@ -46,12 +47,14 @@ services:
     packages:
       - name: "Classic Session"
         duration: "up to 60 minutes"
+        starting_price: 350
         includes:
           - "50 high-resolution and website images"
           - "Professional editing"
           - "Private online gallery"
       - name: "Full Session"
         duration: "up to 90 minutes"
+        price_note: "Custom"
         includes:
           - "75+ edited images"
           - "Multiple locations"
@@ -71,7 +74,7 @@ services:
 
   - name: Branding
     tagline: "Show up as yourself. Professionally."
-    description: "Personal brand imagery that actually looks like you — for the creative, the founder, the maker who's ready to show up online. Not stock photos. Not stiff headshots. Images that feel like your business feels."
+    description: "Personal brand imagery that actually looks like you. For the creative, the founder, the maker who's ready to show up online. Not stock photos. Not stiff headshots. Images that feel like your business feels."
     ideal_for:
       - "Creators and artists"
       - "Entrepreneurs and coaches"
@@ -81,6 +84,7 @@ services:
     packages:
       - name: "Signature"
         duration: "up to 60 minutes"
+        starting_price: 500
         includes:
           - "25+ edited images"
           - "2-3 setups"
@@ -89,6 +93,7 @@ services:
           - "Private online gallery"
       - name: "Full Brand"
         duration: "up to 90 minutes"
+        price_note: "Custom"
         includes:
           - "40+ edited images"
           - "Multiple setups"
@@ -98,6 +103,7 @@ services:
           - "Private online gallery"
       - name: "Half Day"
         duration: "up to 4 hours"
+        price_note: "Custom"
         includes:
           - "75+ edited images"
           - "Multiple locations"
@@ -106,7 +112,7 @@ services:
           - "Styled flat-lays"
           - "Private online gallery"
           - "Content variety for months of use"
-    what_to_expect: "We'll start with a brand chat — your vibe, your audience, the feeling you want to evoke. Then we plan setups that tell your story: working shots, lifestyle moments, details of your craft. You'll leave with a library of usable content that actually feels like you."
+    what_to_expect: "We'll start with a brand chat to cover your vibe, your audience, the feeling you want to evoke. Then we plan setups that tell your story: working shots, lifestyle moments, details of your craft. You'll leave with a library of usable content that actually feels like you."
     image: /media/portfolio/branding/2026-branding-portfolio-23.jpg
     carousel_mode: auto
     carousel_count: 12
@@ -114,7 +120,7 @@ services:
 
   - name: Retreats
     tagline: "The energy of people coming together."
-    description: "Retreats, ceremonies, and gatherings documented with warmth and intention. A ceremonial photography experience — I blend into the background so you can focus on your guests, then deliver images that capture the transformation."
+    description: "Retreats, ceremonies, and gatherings documented with warmth and intention. I blend into the background so you can focus on the moments that matter."
     ideal_for:
       - "Yoga and wellness retreats"
       - "Creative workshops"
@@ -124,6 +130,7 @@ services:
     packages:
       - name: "Half Day"
         duration: "up to 4 hours"
+        starting_price: 950
         includes:
           - "100+ edited images"
           - "Event coverage"
@@ -131,6 +138,7 @@ services:
           - "Social media sneak peeks"
       - name: "Full Day"
         duration: "up to 8 hours"
+        price_note: "Custom"
         includes:
           - "200+ edited images"
           - "Full event coverage"
@@ -139,21 +147,21 @@ services:
           - "Venue/detail shots"
       - name: "Multi-Day"
         duration: "Custom"
-        price_note: "Custom quote"
+        price_note: "Custom"
         includes:
           - "Full retreat documentation"
           - "Daily highlights"
           - "Participant portraits"
           - "Marketing assets"
           - "Expedited delivery available"
-    what_to_expect: "It starts with a consultation and planning session to define the goals and vision of your retreat. Throughout the event, I document candid moments, connections, and the details that make your gathering special — holding space and witnessing to thoughtfully capture the most important moments of transformation. You'll receive sneak peeks within 24 hours for social, with full gallery delivery in 2-3 weeks."
+    what_to_expect: "It starts with a consultation and planning session to define the goals and vision of your retreat. Throughout the event, I document candid moments, connections, and the details that make your gathering special. You'll receive sneak peeks within 24 hours for social, with full gallery delivery in 2-3 weeks."
     image: /media/portfolio/events/2026-retreat-portfolio-27.jpg
     carousel_mode: auto
     carousel_count: 12
     portfolio_slug: events
 
   - name: Architecture
-    description: "Spaces photographed with patience and light — interiors, exteriors, and the details that make a place feel alive."
+    description: "Spaces photographed with patience and light. Interiors, exteriors, and the details that make a place feel alive."
     starting_note: "Starting at $X"
     image: /media/pages/service-architecture.jpg
     # No portfolio_slug = not displayed on services page (no photos yet)
