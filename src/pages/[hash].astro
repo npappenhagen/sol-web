@@ -1,0 +1,48 @@
+---
+import Layout from '@/layouts/Layout.astro'
+
+export const prerender = false
+
+/**
+ * Pic-Time client gallery short URL redirect.
+ * Catches paths like /zg9VOX6mwZKeJ (9–15 alphanumeric) and 301s to Pic-Time.
+ * Cloudflare Rule 1 handles /-slug/gallery; this handles the hash pattern.
+ */
+const PIC_TIME_URL = 'https://solphotographycr.pic-time.com'
+
+const { hash } = Astro.params
+if (!hash) return Astro.redirect('/404')
+
+const HASH_PATTERN = /^[a-zA-Z0-9]{9,15}$/
+const BLOCKLIST = new Set(['portfolio', 'about', 'services', 'contact', 'admin', 'api'])
+
+const isPicTimeHash = HASH_PATTERN.test(hash) && !BLOCKLIST.has(hash)
+
+if (isPicTimeHash) {
+  return Astro.redirect(`${PIC_TIME_URL}/${hash}`, 301)
+}
+---
+
+<Layout title="Page Not Found">
+  <section class="min-h-[60vh] flex flex-col items-center justify-center px-6 text-center">
+    <p class="font-sans text-xs tracking-widest uppercase text-[var(--sol-caramel)] mb-4">404</p>
+    <h1 class="font-display text-5xl md:text-7xl text-[var(--sol-charcoal)] mb-6">Page not found</h1>
+    <p class="font-body text-[var(--sol-charcoal)]/70 max-w-md mb-10">
+      The page you're looking for doesn't exist or has been moved.
+    </p>
+    <div class="flex gap-6">
+      <a
+        href="/"
+        class="font-sans text-xs tracking-widest uppercase border border-[var(--sol-charcoal)] px-8 py-3 hover:bg-[var(--sol-charcoal)] hover:text-[var(--sol-cream)] transition-colors"
+      >
+        Home
+      </a>
+      <a
+        href="/portfolio"
+        class="font-sans text-xs tracking-widest uppercase border border-[var(--sol-charcoal)] px-8 py-3 hover:bg-[var(--sol-charcoal)] hover:text-[var(--sol-cream)] transition-colors"
+      >
+        Portfolio
+      </a>
+    </div>
+  </section>
+</Layout>

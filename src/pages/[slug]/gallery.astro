@@ -1,0 +1,17 @@
+---
+export const prerender = false
+
+/**
+ * Pic-Time gallery invite path redirect (fallback).
+ * Catches /-slug/gallery (e.g. /-knoorfamily/gallery?inviteToken=...).
+ * Cloudflare Rule 1 handles this at the edge; this is a fallback if the rule misses.
+ */
+const PIC_TIME_URL = 'https://solphotographycr.pic-time.com'
+
+const { slug } = Astro.params
+if (!slug?.startsWith('-')) return Astro.redirect('/404')
+
+const query = Astro.url.search
+const target = `${PIC_TIME_URL}/${slug}/gallery${query}`
+return Astro.redirect(target, 301)
+---
