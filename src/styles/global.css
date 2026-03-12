@@ -55,6 +55,9 @@
 }
 
 :root {
+    /* Force light mode — prevent browsers from auto-darkening */
+    color-scheme: light only;
+
     /* Sol Photography brand */
     --sol-steel: #6B9CAC;
     --sol-sage: #7BA089;        /* Muted monstera — richer, warmer green */

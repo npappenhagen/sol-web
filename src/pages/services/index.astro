@@ -77,20 +77,22 @@ const activeServices = services
 
     <div class="space-y-32">
       {activeServices.map((service, idx) => (
-        <ServiceBlock
-          name={service.name}
-          tagline={service.tagline}
-          description={service.description}
-          ideal_for={service.ideal_for}
-          packages={service.packages}
-          starting_note={service.starting_note}
-          what_to_expect={service.what_to_expect}
-          carousel_images={service.carousel_images}
-          portfolio_slug={service.portfolio_slug}
-          subcategories={service.subcategories}
-          serviceNumber={String(idx + 1).padStart(2, '0')}
-          isEven={idx % 2 === 1}
-        />
+        <div id={service.portfolio_slug} class="scroll-mt-24">
+          <ServiceBlock
+            name={service.name}
+            tagline={service.tagline}
+            description={service.description}
+            ideal_for={service.ideal_for}
+            packages={service.packages}
+            starting_note={service.starting_note}
+            what_to_expect={service.what_to_expect}
+            carousel_images={service.carousel_images}
+            portfolio_slug={service.portfolio_slug}
+            subcategories={service.subcategories}
+            serviceNumber={String(idx + 1).padStart(2, '0')}
+            isEven={idx % 2 === 1}
+          />
+        </div>
       ))}
     </div>
   </section>

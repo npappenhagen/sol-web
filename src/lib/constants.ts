@@ -9,7 +9,7 @@
 
 export const SITE_NAME = 'Sol Photography'
 export const SITE_URL = 'https://solphotography.net'
-export const SITE_DESCRIPTION = 'Sol Photography — portrait, branding, and event photography.'
+export const SITE_DESCRIPTION = 'Sol Photography — portrait, branding, and retreat photography.'
 export const THEME_COLOR = '#F5F0E8'
 
 // ============================================================================
@@ -85,7 +85,7 @@ export type PortfolioCategory = (typeof PORTFOLIO_CATEGORIES)[number]
 export const SERVICE_TYPES = [
   'Portrait Photography',
   'Branding Photography',
-  'Event Photography',
+  'Retreat Photography',
 ] as const
 export type ServiceType = (typeof SERVICE_TYPES)[number]
 
