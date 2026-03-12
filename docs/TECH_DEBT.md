@@ -26,28 +26,10 @@ Track technical debt for the Sol Photography website (`src/` scope only).
 
 ## Open
 
-### TD-001: Audit and consolidate lib/ utilities (medium)
-**Category:** cleanup
-**Location:** `src/lib/`
-**Description:** Several utility files may have overlapping or unused functions. Run `axon_dead_code` to identify candidates for removal. Consolidate related utilities.
-**Added:** 2026-03-12
-
-### TD-002: Review image loading strategy (medium)
-**Category:** performance
-**Location:** `src/components/portfolio/GalleryGrid.tsx`, `src/components/home/HeroCarousel.tsx`
-**Description:** Multiple image loading approaches exist (progressive load hook, lazy attributes, carousel config). Audit for consistency and potential simplification.
-**Added:** 2026-03-12
-
 ### TD-003: Global CSS file size (low)
 **Category:** performance
 **Location:** `src/styles/global.css` (27KB)
 **Description:** Largest file in src/. Review for unused styles, potential extraction, or Tailwind optimization.
-**Added:** 2026-03-12
-
-### TD-008: Button style inconsistency (medium)
-**Category:** ux
-**Location:** Various button components
-**Description:** Round vs square vs text vs arrow buttons inconsistent across site. WORK WITH ME missing arrow like INQUIRE →. Standardize pattern.
 **Added:** 2026-03-12
 
 ---
@@ -68,6 +50,25 @@ Track technical debt for the Sol Photography website (`src/` scope only).
 
 ### TD-007: Services dropdown anchors broken
 **Resolution:** Added `id` attributes to service section wrappers in services/index.astro with `scroll-mt-24` for nav offset. Anchors now work: `#portraits`, `#branding`, `#events`.
+**Resolved:** 2026-03-12
+
+### TD-008: Button style inconsistency
+**Resolution:** Added arrow icon to INQUIRE link in Nav.astro (desktop and mobile) matching About page `cta-arrow` pattern. Increased footer padding from `pb-20` to `pb-32` for better spacing. Button variants (outlined, solid, gradient) kept distinct by purpose.
+**Resolved:** 2026-03-12
+
+### TD-002: Review image loading strategy
+**Resolution:** Added CSS containment to `global.css` for scroll performance:
+- `content-visibility: auto` on sections below fold (defers paint)
+- `contain: layout style` on gallery images (prevents reflow cascades)
+- `will-change` hints on scroll-animated elements (GPU acceleration)
+- Lazy images get `content-visibility: auto` for paint containment
+**Resolved:** 2026-03-12
+
+### TD-001: Consolidate lib/ utilities
+**Resolution:** Audited lib/ with Axon dead code analysis. Deleted 2 dead files:
+- `gallery-layout.ts` — duplicate of GalleryGrid's internal `computeJustifiedLayout`
+- `data-loaders.ts` — all exports (`loadPageEntry`, `loadPortfolioGallery`, etc.) never imported
+Verified build passes after removal.
 **Resolved:** 2026-03-12
 
 <!--

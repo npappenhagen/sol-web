@@ -5,7 +5,7 @@ import Nav from '@/components/layout/Nav.astro'
 import Footer from '@/components/layout/Footer.astro'
 import InquiryWidget from '@/components/InquiryWidget'
 import CalProvider from '@/components/CalProvider'
-import { SITE_NAME, SITE_DESCRIPTION, THEME_COLOR, SERVICE_TYPES, DEFAULTS } from '@/lib/constants'
+import { SITE_NAME, SITE_DESCRIPTION, THEME_COLOR, SERVICE_TYPES, DEFAULTS, SOCIAL_PROFILES, BUSINESS_LOCATION, SERVICE_AREAS } from '@/lib/constants'
 
 interface Props {
   title: string
@@ -135,6 +135,23 @@ const ogImageUrl = new URL(image, Astro.site);
       priceRange: '$$',
       '@id': `${Astro.site?.href ?? 'https://solphotography.net'}#business`,
       serviceType: [...SERVICE_TYPES],
+      sameAs: [...SOCIAL_PROFILES],
+      areaServed: SERVICE_AREAS.map(area => ({
+        '@type': 'Place',
+        name: area,
+      })),
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: BUSINESS_LOCATION.addressLocality,
+        addressCountry: BUSINESS_LOCATION.addressCountry,
+      },
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: '5.0',
+        reviewCount: '4',
+        bestRating: '5',
+        worstRating: '1',
+      },
     })} />
   </head>
   <body>

@@ -455,7 +455,7 @@ export default function GalleryGrid({
                       src={getDefaultSrc(img.src, 'gallery')}
                       width={img.width || DEFAULT_WIDTH}
                       height={img.height || DEFAULT_HEIGHT}
-                      alt=""
+                      alt={img.tags?.length ? `${img.tags.join(', ')} - ${title}` : `${title} photography`}
                       loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover"
@@ -466,7 +466,7 @@ export default function GalleryGrid({
                     src={img.src}
                     width={img.width || DEFAULT_WIDTH}
                     height={img.height || DEFAULT_HEIGHT}
-                    alt=""
+                    alt={img.tags?.length ? `${img.tags.join(', ')} - ${title}` : `${title} photography`}
                     loading="lazy"
                     decoding="async"
                     className="w-full h-full object-cover"

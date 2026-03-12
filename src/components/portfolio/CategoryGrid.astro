@@ -43,7 +43,7 @@ const categories = [
             />
             <img
               src={getDefaultSrc(image, 'hero')}
-              alt=""
+              alt={`${label} photography portfolio`}
               class="w-full h-full object-cover"
               style={`object-position: ${position};`}
               loading="lazy"
@@ -53,7 +53,7 @@ const categories = [
         ) : (
           <img
             src={image}
-            alt=""
+            alt={`${label} photography portfolio`}
             class="absolute inset-0 w-full h-full object-cover"
             style={`object-position: ${position};`}
             loading="lazy"
@@ -66,7 +66,7 @@ const categories = [
 
         {/* Category label */}
         <div class="absolute inset-0 flex items-center justify-center">
-          <h2 class="font-display text-5xl md:text-7xl lg:text-8xl font-light italic text-[var(--sol-cream)] tracking-wide hero-headline">
+          <h2 class="font-display text-6xl md:text-8xl lg:text-9xl font-light italic text-[var(--sol-cream)] tracking-wide hero-headline">
             {label}
           </h2>
         </div>

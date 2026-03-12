@@ -12,6 +12,50 @@ export const SITE_URL = 'https://solphotography.net'
 export const SITE_DESCRIPTION = 'Sol Photography — portrait, branding, and retreat photography.'
 export const THEME_COLOR = '#F5F0E8'
 
+// Social profiles for structured data
+export const SOCIAL_PROFILES = [
+  'https://www.instagram.com/sol__photography_/',
+] as const
+
+// Business location for local SEO
+export const BUSINESS_LOCATION = {
+  name: 'Sol Photography',
+  founder: 'Laurel',
+  addressLocality: 'Guanacaste',
+  addressCountry: 'CR',
+} as const
+
+// Service areas for local SEO (Guanacaste beach towns + resorts)
+export const SERVICE_AREAS = [
+  // Region
+  'Costa Rica',
+  'Guanacaste',
+  'Peninsula Papagayo',
+  'Gulf of Papagayo',
+  // Beach towns
+  'Tamarindo',
+  'Playa Flamingo',
+  'Playa Conchal',
+  'Brasilito',
+  'Potrero',
+  'Playa Grande',
+  'Las Catalinas',
+  'Zapotal',
+  'Playa Langosta',
+  'Sugar Beach',
+  'Playa Panama',
+  'Hacienda Pinilla',
+  'Liberia',
+  // Resorts (people search "photographer near [resort]")
+  'Westin Reserva Conchal',
+  'W Costa Rica Reserva Conchal',
+  'JW Marriott Guanacaste',
+  'Four Seasons Peninsula Papagayo',
+  'Andaz Peninsula Papagayo',
+  'Margaritaville Playa Flamingo',
+  'Casa Chameleon Las Catalinas',
+] as const
+
 // ============================================================================
 // Gallery Configuration
 // ============================================================================

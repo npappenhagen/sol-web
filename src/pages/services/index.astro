@@ -6,6 +6,7 @@ import ServiceBlock from '@/components/services/ServiceBlock.astro'
 import ProcessTimeline from '@/components/services/ProcessTimeline.astro'
 import { getEntry, getCollection } from 'astro:content'
 import { getAllMoodImages } from '@/lib/carousel-images'
+import { SITE_NAME, SITE_URL } from '@/lib/constants'
 
 const page = await getEntry('pages', 'services')
 const portfolios = await getCollection('portfolio')
@@ -47,6 +48,34 @@ const activeServices = services
 ---
 
 <Layout title="Services" description={page_intro}>
+  {/* Service + BreadcrumbList schema for SEO */}
+  {activeServices.map((service) => (
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      name: `${service.name} Photography`,
+      description: service.description,
+      provider: {
+        '@type': 'ProfessionalService',
+        name: SITE_NAME,
+        url: SITE_URL,
+      },
+      areaServed: {
+        '@type': 'Place',
+        name: 'Guanacaste, Costa Rica',
+      },
+      url: `${SITE_URL}/services#${service.portfolio_slug}`,
+    })} />
+  ))}
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Services', item: `${SITE_URL}/services` },
+    ],
+  })} />
+
   <Hero
     slides={allMoodImages}
     heading={page_heading}

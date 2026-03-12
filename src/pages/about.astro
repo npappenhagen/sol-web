@@ -3,6 +3,7 @@ import Layout from '@/layouts/Layout.astro'
 import Hero from '@/components/home/Hero.astro'
 import { getEntry } from 'astro:content'
 import { getAllMoodImages } from '@/lib/carousel-images'
+import { SITE_NAME, SITE_URL, SOCIAL_PROFILES, SERVICE_AREAS } from '@/lib/constants'
 
 const about = await getEntry('pages', 'about')
 const {
@@ -25,7 +26,37 @@ const collageImages = headshots && headshots.length >= 3 ? headshots.slice(0, 3)
 const allMoodImages = getAllMoodImages()
 ---
 
-<Layout title="About" description={subheading}>
+<Layout title="About" description={subheading} image={headshot}>
+  {/* Person + BreadcrumbList schema for SEO */}
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Laurel',
+    jobTitle: 'Photographer',
+    description: subheading,
+    image: `${SITE_URL}${headshot}`,
+    url: `${SITE_URL}/about`,
+    sameAs: [...SOCIAL_PROFILES],
+    worksFor: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    workLocation: {
+      '@type': 'Place',
+      name: 'Guanacaste, Costa Rica',
+    },
+    knowsAbout: ['Portrait Photography', 'Family Photography', 'Branding Photography', 'Retreat Photography'],
+  })} />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'About', item: `${SITE_URL}/about` },
+    ],
+  })} />
+
   <!-- Hero banner with carousel support -->
   <Hero
     slides={allMoodImages}
