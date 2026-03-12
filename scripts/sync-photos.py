@@ -671,6 +671,7 @@ def sync_category(category: str, manifest: dict, dry_run: bool = False, force: b
                 num = int(match.group(1))
                 mood_metadata[str(num)] = {
                     "session": img.get("date_taken", f"unknown-{num}"),
+                    "orientation": img.get("orientation", "unknown"),
                 }
         MOOD_METADATA_PATH.parent.mkdir(parents=True, exist_ok=True)
         with open(MOOD_METADATA_PATH, "w") as f:

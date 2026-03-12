@@ -10,12 +10,8 @@ const logoAlt = site.data.logo_alt
 const year = new Date().getFullYear();
 ---
 
-<ShadowFooter
-  client:visible
-  animation={{ scale: 100, speed: 90 }}
-  noise={{ opacity: 0.8, scale: 1.2 }}
->
-  <div class="max-w-7xl mx-auto px-6 pt-48 pb-20 flex flex-col items-center gap-10 text-[var(--sol-cream)]">
+<ShadowFooter client:visible>
+  <div class="max-w-7xl mx-auto px-6 pt-64 pb-40 flex flex-col items-center gap-10 text-[var(--sol-cream)]">
     <!-- Logo at the horizon with warm glow -->
     <a href="/" class="relative block hover:scale-[1.03] transition-transform nav-logo-hover group">
       <!-- Glow behind logo -->

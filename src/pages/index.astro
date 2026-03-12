@@ -3,8 +3,9 @@ import Layout from '@/layouts/Layout.astro'
 import Hero from '@/components/home/Hero.astro'
 import IntroBlock from '@/components/home/IntroBlock.astro'
 import ServicePreview from '@/components/home/ServicePreview.astro'
+import TestimonialsCarousel from '@/components/home/TestimonialsCarousel'
 import { getEntry } from 'astro:content'
-import { getAllPortraitImages } from '@/lib/carousel-images'
+import { getAllPortraitImages, getMoodBackgroundPaths } from '@/lib/carousel-images'
 
 const [home, servicesPage] = await Promise.all([
   getEntry('pages', 'home'),
@@ -20,11 +21,15 @@ const {
   intro_heading,
   intro_body,
   intro_headshot,
+  testimonials,
 } = home.data
 
 // Get FULL portrait image pool for client-side selection
 // Pull from portraits category for best variety on home page
 const allPortraitImages = await getAllPortraitImages(['portraits'])
+
+// Get mood images for testimonials background
+const testimonialBackgrounds = getMoodBackgroundPaths(8)
 
 const activeServices = servicesPage.data.services.filter((s: { portfolio_slug?: string }) => s.portfolio_slug);
 ---
@@ -46,6 +51,12 @@ const activeServices = servicesPage.data.services.filter((s: { portfolio_slug?: 
   <IntroBlock label={intro_label} heading={intro_heading} body={intro_body} headshot={intro_headshot} />
   <div class="section-divider" data-divider aria-hidden="true" />
   <ServicePreview services={activeServices} />
+  {testimonials && testimonials.length > 0 && (
+    <>
+      <div class="section-divider" data-divider aria-hidden="true" />
+      <TestimonialsCarousel client:visible testimonials={testimonials} backgroundImages={testimonialBackgrounds} />
+    </>
+  )}
 </Layout>
 
 <script>

@@ -21,8 +21,23 @@ const errorFieldClass = 'border-[var(--sol-blush)] focus-visible:border-[var(--s
 export default function InquiryWidget() {
   const [expanded, setExpanded] = useState(false)
   const [placeholder, setPlaceholder] = useState(() => getPlaceholder(null))
+  const [pastHero, setPastHero] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
+
+  // Show widget only after scrolling past hero area (~90vh)
+  useEffect(() => {
+    const handleScroll = () => {
+      const threshold = window.innerHeight * 0.85
+      setPastHero(window.scrollY > threshold)
+    }
+
+    // Check initial position
+    handleScroll()
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   // Form state and handlers
   const {
@@ -330,9 +345,9 @@ export default function InquiryWidget() {
         </div>
       </div>
 
-      {/* Collapsed pill */}
+      {/* Collapsed pill - only show after scrolling past hero */}
       <AnimatePresence>
-        {!expanded && (
+        {!expanded && pastHero && (
           <motion.button
             type="button"
             onClick={() => openWithContext(null)}
