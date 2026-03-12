@@ -154,6 +154,8 @@ html {
     font-size: 17px;
     color: var(--sol-charcoal);
     background-color: var(--sol-cream);
+    /* Prevent iOS overscroll bounce and pull-to-refresh */
+    overscroll-behavior: none;
   }
   h1 {
     font-family: 'Cormorant Garamond', Georgia, serif;
