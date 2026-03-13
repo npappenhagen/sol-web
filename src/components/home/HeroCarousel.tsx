@@ -2,6 +2,7 @@ import type { CarouselImage } from '@/lib/carousel-images'
 import { getVariantUrl, hasVariants, IMAGE_WIDTHS } from '@/lib/image-url'
 import { useHeroSelection } from '@/hooks/useHeroSelection'
 import { useHeroDisplay } from '@/hooks/useHeroDisplay'
+import { logRender } from '@/lib/hero-debug'
 
 /**
  * Convert image src to WebP variant for portfolio images.
@@ -72,7 +73,7 @@ export default function HeroCarousel({
   pageId = 'default',
 }: Props) {
   // Slide selection (pre-selection, filtering, random selection)
-  const { slides, displaySlides, activeFilter } = useHeroSelection({
+  const { slides, displaySlides, activeFilter, isReady } = useHeroSelection({
     defaultSlides,
     usePreSelection,
     pageId,
@@ -106,9 +107,12 @@ export default function HeroCarousel({
     usePreSelection,
   })
 
+  // Use safe viewport height utilities for mobile address bar handling
+  // Includes fallback stack: vh → -webkit-fill-available → svh/dvh
+  // This fixes scroll jank in Brave and other browsers with partial svh support
   const heightClass = variant === 'portfolio'
-    ? 'h-[60vh] md:h-[70vh]'
-    : 'h-screen'
+    ? 'h-portfolio-hero'
+    : 'h-screen-safe'
 
   const getSlideWidth = (index: number, total: number): string => {
     const count = Math.min(total, 6) as keyof typeof widthPatterns
@@ -116,8 +120,20 @@ export default function HeroCarousel({
     return pattern[index % pattern.length]
   }
 
+  // Debug logging
+  logRender('HeroCarousel', {
+    isReady,
+    isVisible,
+    desktopReady,
+    slidesCount: slides.length,
+    displaySlidesCount: displaySlides.length,
+    displaySlides: displaySlides.map(s => s.src.split('/').pop()),
+    usePreSelection,
+    pageId,
+  })
+
   return (
-    <section className={`relative ${heightClass} overflow-hidden`}>
+    <section className={`relative ${heightClass} overflow-hidden bg-[var(--sol-charcoal)]`}>
       {/* Mobile: Horizontal scroll, one image at a time */}
       <div
         ref={scrollRef}
@@ -125,8 +141,8 @@ export default function HeroCarousel({
         style={{
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
-          opacity: isVisible ? 1 : 0,
-          transition: 'opacity 0.7s ease-out',
+          opacity: isReady && isVisible ? 1 : 0,
+          transition: 'opacity 0.5s ease-out',
         }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
@@ -163,8 +179,8 @@ export default function HeroCarousel({
         className="hidden md:flex h-full select-none"
         style={{
           cursor: isDragging ? 'grabbing' : 'grab',
-          opacity: desktopReady ? 1 : 0,
-          transition: 'opacity 0.7s ease-out',
+          opacity: isReady && desktopReady ? 1 : 0,
+          transition: 'opacity 0.5s ease-out',
         }}
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
@@ -213,7 +229,7 @@ export default function HeroCarousel({
 
       {/* Heading */}
       <div
-        className="absolute inset-x-0 bottom-24 md:bottom-32 z-10 px-6 text-center"
+        className="absolute inset-x-0 bottom-28 md:bottom-36 z-10 px-6 text-center"
         style={{
           opacity: isVisible ? 1 : 0,
           transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
@@ -222,17 +238,17 @@ export default function HeroCarousel({
       >
         {activeFilter && subcategoryHeroMap ? (
           <h1 className="font-display font-light italic tracking-wide hero-headline">
-            <span className="block text-3xl md:text-5xl lg:text-6xl text-white ml-[5%] md:ml-[8%]">
+            <span className="block text-4xl md:text-6xl lg:text-7xl text-white ml-[5%] md:ml-[8%]">
               {activeFilter === 'family' && 'Family'}
               {activeFilter === 'couples' && 'Couples'}
               {activeFilter === 'maternity' && 'Maternity'}
             </span>
-            <span className="block text-5xl md:text-7xl lg:text-8xl text-[var(--sol-cream)] -mt-2 md:-mt-3 mr-[5%] md:mr-[8%]">
+            <span className="block text-6xl md:text-8xl lg:text-9xl text-[var(--sol-cream)] -mt-2 md:-mt-3 mr-[5%] md:mr-[8%]">
               Portraits
             </span>
           </h1>
         ) : (
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-light italic text-[var(--sol-cream)] tracking-wide hero-headline">
+          <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-light italic text-[var(--sol-cream)] tracking-wide hero-headline">
             {heading}
           </h1>
         )}

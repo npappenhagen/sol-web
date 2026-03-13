@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import type { CarouselImage } from '@/lib/carousel-images'
 import { selectFromPool } from '@/lib/image-pool'
+import { log } from '@/lib/hero-debug'
 
 declare global {
   interface Window {
@@ -21,6 +22,8 @@ interface UseHeroSelectionResult {
   slides: CarouselImage[]
   displaySlides: CarouselImage[]
   activeFilter: string | null
+  /** True when pre-selection is complete (or not using pre-selection) */
+  isReady: boolean
 }
 
 /**
@@ -30,7 +33,7 @@ interface UseHeroSelectionResult {
  * - Reading pre-selected slides from window (set by inline script)
  * - URL filter synchronization for subcategory pages
  * - Client-side selection from pools
- * - View Transitions navigation events
+ * - View Transitions navigation events (only on actual URL change)
  */
 export function useHeroSelection({
   defaultSlides,
@@ -42,6 +45,8 @@ export function useHeroSelection({
   const [preSelectedSlides, setPreSelectedSlides] = useState<CarouselImage[]>([])
   const [activeFilter, setActiveFilter] = useState<string | null>(null)
   const [selectedIndices, setSelectedIndices] = useState<Set<number> | null>(null)
+  // Track when pre-selection is ready (prevents flash during hydration)
+  const [preSelectionReady, setPreSelectionReady] = useState(!usePreSelection)
 
   // Read pre-selected slides from window after hydration
   useEffect(() => {
@@ -49,21 +54,32 @@ export function useHeroSelection({
 
     const readSelection = () => {
       if (window.__heroSelection && window.__heroPageId === pageId) {
+        log('selection_read', { count: window.__heroSelection.length })
         setPreSelectedSlides(window.__heroSelection)
+        setPreSelectionReady(true)
       } else {
         // Selection not ready yet - try again shortly
         setTimeout(() => {
           if (window.__heroSelection && window.__heroPageId === pageId) {
             setPreSelectedSlides(window.__heroSelection)
           }
+          setPreSelectionReady(true)
         }, 50)
       }
     }
 
     readSelection()
 
-    // Re-read on View Transitions navigation
-    const handlePageLoad = () => setTimeout(readSelection, 10)
+    // Re-read on View Transitions navigation (only if URL changed)
+    let lastUrl = window.location.href
+    const handlePageLoad = () => {
+      const newUrl = window.location.href
+      if (newUrl !== lastUrl) {
+        log('navigation_detected', { from: lastUrl, to: newUrl })
+        lastUrl = newUrl
+        setTimeout(readSelection, 10)
+      }
+    }
     document.addEventListener('astro:page-load', handlePageLoad)
 
     return () => {
@@ -144,7 +160,7 @@ export function useHeroSelection({
   // Fallback slides to prevent CLS during loading
   const displaySlides = slides.length > 0 ? slides : defaultSlides.slice(0, displayCount ?? 4)
 
-  return { slides, displaySlides, activeFilter }
+  return { slides, displaySlides, activeFilter, isReady: preSelectionReady }
 }
 
 /**

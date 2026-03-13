@@ -104,6 +104,22 @@ export function generatePoolSelectionScript(poolId: string, count: number, pageI
   return `
 (function(){
   var K='sol-image-pool',M=20,PID='${poolId}',N=${count},PAGE='${pageId}';
+  var DBG=localStorage.getItem('HERO_DEBUG')==='true';
+  var DBG_START=performance.now();
+  var DBG_EVENTS=[];
+  function dlog(e,d){
+    if(!DBG)return;
+    var ev={ts:Math.round(performance.now()-DBG_START),event:'inline_'+e};
+    if(d)ev.data=d;
+    DBG_EVENTS.push(ev);
+    console.log('%c[HeroInline +'+ev.ts+'ms]%c '+e,'color:#ff0','color:#fff',d||'');
+    try{
+      var ex=JSON.parse(localStorage.getItem('HERO_DEBUG_LOG')||'{"events":[]}');
+      ex.events=ex.events.concat(DBG_EVENTS);
+      localStorage.setItem('HERO_DEBUG_LOG',JSON.stringify(ex));
+    }catch(x){}
+  }
+  dlog('script_start',{poolId:PID,count:N,pageId:PAGE});
   function gs(){
     try{
       var r=sessionStorage.getItem(K);
@@ -116,11 +132,18 @@ export function generatePoolSelectionScript(poolId: string, count: number, pageI
     try{var c=gs();sessionStorage.setItem(K,JSON.stringify(Object.assign(c,s)));}catch(e){}
   }
   function runSelection(){
+    dlog('runSelection_called');
     var el=document.getElementById(PID);
-    if(!el)return;
+    if(!el){dlog('pool_element_not_found');return;}
     try{
       var pool=JSON.parse(el.textContent||'[]');
-      if(pool.length<=N){window.__heroSelection=pool;window.__heroPageId=PAGE;return;}
+      dlog('pool_parsed',{poolSize:pool.length});
+      if(pool.length<=N){
+        window.__heroSelection=pool;
+        window.__heroPageId=PAGE;
+        dlog('pool_small_using_all',{count:pool.length});
+        return;
+      }
       var st=gs();
       var shown=new Set(st.shown);
       // Group by session (date_taken) - images without session get unique keys
@@ -157,22 +180,45 @@ export function generatePoolSelectionScript(poolId: string, count: number, pageI
         idx++;
       }
       window.__heroSelection=sel;
+      dlog('selection_complete',{
+        count:sel.length,
+        images:sel.map(function(x){return x.src.split('/').pop();})
+      });
       us({shown:st.shown.concat(sel.map(function(x){return x.src;})).slice(-M)});
       if(sel.length>0){
         var link=document.createElement('link');
         link.rel='preload';link.as='image';link.href=sel[0].src;
         document.head.appendChild(link);
+        dlog('preload_added',{src:sel[0].src.split('/').pop()});
       }
     }catch(e){
+      dlog('selection_error',{error:e.message});
       console.warn('Hero pool selection failed:',e);
       window.__heroSelection=pool.slice(0,N);
     }
     window.__heroPageId=PAGE;
+    dlog('window_set',{heroPageId:PAGE,selectionCount:window.__heroSelection?window.__heroSelection.length:0});
   }
+  // Track if we've already selected for this page to avoid re-selection on astro:page-load
+  var hasSelected=false;
   // Run on initial load
   runSelection();
-  // Re-run on View Transitions navigation
-  document.addEventListener('astro:page-load',runSelection);
+  hasSelected=true;
+  // Re-run on View Transitions navigation (only if URL changed)
+  var lastUrl=window.location.href;
+  document.addEventListener('astro:page-load',function(){
+    var newUrl=window.location.href;
+    dlog('astro_page_load_triggered',{lastUrl:lastUrl,newUrl:newUrl,hasSelected:hasSelected});
+    if(newUrl!==lastUrl){
+      dlog('url_changed_reselecting');
+      lastUrl=newUrl;
+      hasSelected=false;
+      runSelection();
+      hasSelected=true;
+    }else{
+      dlog('same_url_skipping_reselection');
+    }
+  });
 })();
 `.trim()
 }

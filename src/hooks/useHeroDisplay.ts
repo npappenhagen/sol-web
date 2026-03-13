@@ -75,11 +75,19 @@ export function useHeroDisplay({
     return () => window.removeEventListener('resize', checkDesktop)
   }, [])
 
-  // Entrance animation
+  // Entrance animation - wait for slides to be ready before showing
+  // This prevents the flash when pre-selection swaps in
   useEffect(() => {
+    // If using pre-selection, wait for slides to be populated
+    if (usePreSelection && slides.length === 0) {
+      // Pre-selection not ready yet - set max timeout fallback
+      const fallbackTimer = setTimeout(() => setIsVisible(true), 500)
+      return () => clearTimeout(fallbackTimer)
+    }
+    // Slides ready - show with small delay for smooth entrance
     const timer = setTimeout(() => setIsVisible(true), 100)
     return () => clearTimeout(timer)
-  }, [])
+  }, [usePreSelection, slides.length])
 
   // Desktop: shuffle order while hidden, then fade in
   useEffect(() => {

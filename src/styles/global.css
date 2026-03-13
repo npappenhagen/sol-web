@@ -146,6 +146,59 @@
   scroll-margin-top: 5rem;
 }
 
+/* ========================================
+   SAFE VIEWPORT HEIGHT — MOBILE ADDRESS BAR FIX
+   ========================================
+   Brave and some browsers don't properly support svh/dvh units.
+   Use fallback stack: vh → -webkit-fill-available → svh/dvh
+
+   Usage:
+   - .h-screen-safe: Full viewport (dynamic, animates with address bar)
+   - .h-screen-stable: Full viewport (stable, address bar visible height)
+   - .min-h-*-safe: Min-height variants for sections
+   ======================================== */
+
+.h-screen-safe {
+  height: 100vh;
+  height: -webkit-fill-available;
+  height: 100dvh;
+}
+
+.h-screen-stable {
+  height: 100vh;
+  height: -webkit-fill-available;
+  height: 100svh;
+}
+
+.min-h-50-stable {
+  min-height: 50vh;
+  min-height: 50svh;
+}
+
+.min-h-60-stable {
+  min-height: 60vh;
+  min-height: 60svh;
+}
+
+.min-h-70-stable {
+  min-height: 70vh;
+  min-height: 70svh;
+}
+
+/* Portfolio hero heights */
+.h-portfolio-hero {
+  height: 60vh;
+  height: -webkit-fill-available;
+  height: 60svh;
+}
+
+@media (min-width: 768px) {
+  .h-portfolio-hero {
+    height: 70vh;
+    height: 70svh;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

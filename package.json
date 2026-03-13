@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
+    "preview": "wrangler pages dev dist",
     "astro": "astro",
     "lint": "eslint . --max-warnings 0",
     "prepare": "husky"
@@ -16,6 +16,7 @@
     "@astrojs/react": "^4.4.2",
     "@astrojs/sitemap": "^3.7.0",
     "@calcom/embed-react": "^1.5.3",
+    "@fontsource-variable/dm-sans": "^5.2.8",
     "@fontsource-variable/montserrat": "^5.2.8",
     "@fontsource/cormorant-garamond": "^5.2.11",
     "@fontsource/lora": "^5.2.8",
