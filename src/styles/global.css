@@ -7,7 +7,7 @@
 @import "@fontsource/cormorant-garamond/400.css";
 @import "@fontsource/cormorant-garamond/400-italic.css";
 @import "@fontsource/cormorant-garamond/600.css";
-@import "@fontsource-variable/montserrat";
+@import "@fontsource-variable/dm-sans";
 @import "@fontsource/lora/400.css";
 @import "@fontsource/lora/400-italic.css";
 
@@ -135,9 +135,11 @@
     --sidebar-ring: oklch(0.556 0 0);
 }
 
-/* Smooth scrolling and offset for fixed nav */
-html {
-  scroll-behavior: smooth;
+/* Smooth scrolling for anchor links only - not for page navigation */
+@media (prefers-reduced-motion: no-preference) {
+  html:has(:target) {
+    scroll-behavior: smooth;
+  }
 }
 
 :target {
@@ -165,7 +167,7 @@ html {
     font-family: 'Cormorant Garamond', Georgia, serif;
   }
   h4, h5, h6, nav, button, label {
-    font-family: 'Montserrat', system-ui, sans-serif;
+    font-family: 'DM Sans', system-ui, sans-serif;
     letter-spacing: 0.1em;
   }
 
@@ -203,7 +205,7 @@ html {
   .cta-underline {
     position: relative;
     display: inline-block;
-    font-family: 'Montserrat', system-ui, sans-serif;
+    font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 0.75rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -440,11 +442,15 @@ html {
     transform: translateY(20px);
     transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                 transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* Hint to browser: will animate these properties */
+    will-change: opacity, transform;
   }
 
   .animate-on-scroll.is-visible {
     opacity: 1;
     transform: translateY(0);
+    /* Remove hint after animation completes to free GPU memory */
+    will-change: auto;
   }
 
   /* ========================================
@@ -854,9 +860,26 @@ html {
     pointer-events: none;
   }
 
-  /* Gallery image lift on hover — simplified to opacity only */
+  /* =====================================================
+   * PERFORMANCE: CSS Containment for scroll performance
+   * ===================================================== */
+
+  /*
+   * NOTE: Removed content-visibility: auto from sections.
+   * It caused scroll jank on mobile (especially services page):
+   * - Browser re-renders sections when they become visible
+   * - This triggers layout recalculation in React islands
+   * - Combined with ResizeObservers in ServiceBento, causes "jerk/magnet" effect
+   * - The browser loading bar appears as Chromium paints deferred content
+   *
+   * Lazy images still get native browser lazy loading via loading="lazy".
+   * Gallery images retain layout containment for hover effects.
+   */
+
+  /* Gallery rows: contain layout to prevent reflow cascades */
   .gallery-image-lift {
     position: relative;
+    contain: layout style;
   }
 
   .gallery-image-lift::after {
@@ -895,7 +918,8 @@ html {
 
   /* Tag filter pills */
   .filter-pill {
-    @apply px-4 py-1.5 rounded-full font-sans text-xs tracking-widest uppercase transition-all;
+    @apply px-3 py-1.5 rounded-full font-sans text-[10px] tracking-wider uppercase transition-all;
+    @apply sm:px-4 sm:text-xs sm:tracking-widest;
     border: 1px solid var(--sol-sage);
     color: var(--sol-charcoal);
     opacity: 0.7;

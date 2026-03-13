@@ -56,12 +56,26 @@ Track technical debt for the Sol Photography website (`src/` scope only).
 **Resolution:** Added arrow icon to INQUIRE link in Nav.astro (desktop and mobile) matching About page `cta-arrow` pattern. Increased footer padding from `pb-20` to `pb-32` for better spacing. Button variants (outlined, solid, gradient) kept distinct by purpose.
 **Resolved:** 2026-03-12
 
+### TD-009: Mobile scroll jank on services page (high)
+**Resolution:** Removed `content-visibility: auto` from sections in global.css. This CSS property was causing the browser to defer rendering of off-screen sections, but when combined with React islands using `client:visible` (ServiceBento, ServiceCarousel), it created a chain reaction:
+1. User scrolls and stops
+2. Browser begins rendering deferred sections (shows loading bar in Chromium)
+3. React islands hydrate and run ResizeObservers
+4. Layout recalculation causes scroll position "jerk/magnet" effect
+
+Also scoped `scroll-behavior: smooth` to only apply during anchor navigation (`:has(:target)`) to prevent interference with browser scroll restoration.
+
+Native image `loading="lazy"` still handles image lazy loading. Gallery images retain `contain: layout style` for hover effects.
+**Resolved:** 2026-03-13
+
 ### TD-002: Review image loading strategy
 **Resolution:** Added CSS containment to `global.css` for scroll performance:
 - `content-visibility: auto` on sections below fold (defers paint)
 - `contain: layout style` on gallery images (prevents reflow cascades)
 - `will-change` hints on scroll-animated elements (GPU acceleration)
 - Lazy images get `content-visibility: auto` for paint containment
+
+**Note:** `content-visibility: auto` on sections was later removed in TD-009 due to causing mobile scroll jank.
 **Resolved:** 2026-03-12
 
 ### TD-001: Consolidate lib/ utilities
