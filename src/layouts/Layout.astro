@@ -5,6 +5,7 @@ import Nav from '@/components/layout/Nav.astro'
 import Footer from '@/components/layout/Footer.astro'
 import InquiryWidget from '@/components/InquiryWidget'
 import CalProvider from '@/components/CalProvider'
+import ScrollDebugOverlay from '@/components/debug/ScrollDebugOverlay'
 import { SITE_NAME, SITE_DESCRIPTION, THEME_COLOR, SERVICE_TYPES, DEFAULTS, SOCIAL_PROFILES, BUSINESS_LOCATION, SERVICE_AREAS } from '@/lib/constants'
 
 interface Props {
@@ -164,6 +165,7 @@ const ogImageUrl = new URL(image, Astro.site);
     </main>
     <CalProvider client:only="react" />
     <InquiryWidget client:only="react" />
+    <ScrollDebugOverlay client:only="react" />
     <Footer />
 
     <!-- Scroll-triggered animation observer -->
@@ -192,6 +194,13 @@ const ogImageUrl = new URL(image, Astro.site);
 
 // Re-run after View Transitions complete
 document.addEventListener('astro:page-load', initScrollAnimations)
+    </script>
+
+    <!-- Scroll debug initialization (only active with ?debug=scroll) -->
+    <script>
+      import { initScrollDebug } from '@/lib/scroll-debug'
+      initScrollDebug()
+      document.addEventListener('astro:page-load', initScrollDebug)
     </script>
   </body>
 </html>

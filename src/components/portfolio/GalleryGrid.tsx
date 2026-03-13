@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { getSrcSet, getSizes, getDefaultSrc, hasVariants } from '@/lib/image-url'
 import { GALLERY_CONFIG, PORTRAIT_SUBCATEGORIES } from '@/lib/constants'
 import { Lightbox } from './Lightbox'
+import { logEvent } from '@/lib/scroll-debug'
 
 interface ImageData {
   src: string
@@ -262,6 +263,7 @@ export default function GalleryGrid({
   const [activeFilter, setActiveFilter] = useState<string | null>(initialFilter)
   const [containerWidth, setContainerWidth] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
+  const resizeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const { SPACING } = GALLERY_CONFIG
 
@@ -294,21 +296,28 @@ export default function GalleryGrid({
     }
   }, [getFilterFromUrl])
 
-  // Measure container width
+  // Measure container width (debounced to prevent mobile scroll jank)
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
 
     const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setContainerWidth(entry.contentRect.width)
-      }
+      logEvent('resize', 'GalleryGrid', { debounced: true })
+      if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
+      resizeTimeoutRef.current = setTimeout(() => {
+        for (const entry of entries) {
+          setContainerWidth(entry.contentRect.width)
+        }
+      }, 100)
     })
 
     observer.observe(container)
     setContainerWidth(container.offsetWidth)
 
-    return () => observer.disconnect()
+    return () => {
+      if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
+      observer.disconnect()
+    }
   }, [])
 
   // Collect all unique categories from images for filtering

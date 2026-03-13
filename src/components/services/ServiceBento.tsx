@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import type { CarouselImage } from '@/lib/carousel-images'
 import { getVariantUrl, hasVariants } from '@/lib/image-url'
+import { logEvent } from '@/lib/scroll-debug'
 
 interface Props {
   images: CarouselImage[]
@@ -73,7 +74,6 @@ function BentoModule({
 }
 
 const IMAGES_PER_MODULE = 5
-const LINK_HEIGHT = 44 // Height of "View full gallery" link
 
 /**
  * Desktop bento grid that matches sibling content height.
@@ -82,9 +82,9 @@ const LINK_HEIGHT = 44 // Height of "View full gallery" link
 export default function ServiceBento({ images, portfolioSlug }: Props) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const resizeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [containerHeight, setContainerHeight] = useState<number | null>(null)
   const [canScroll, setCanScroll] = useState(false)
-  const [isAtBottom, setIsAtBottom] = useState(false)
 
   // Measure sibling content column and match its height
   const measureAndSetHeight = useCallback(() => {
@@ -107,49 +107,46 @@ export default function ServiceBento({ images, portfolioSlug }: Props) {
 
     if (contentColumn) {
       const contentHeight = contentColumn.getBoundingClientRect().height
-      // Account for the "View full gallery" link height
-      const bentoHeight = Math.max(300, contentHeight - LINK_HEIGHT)
+      const bentoHeight = Math.max(300, contentHeight)
       setContainerHeight(bentoHeight)
     }
   }, [])
 
-  // Measure on mount and resize
+  // Measure on mount and resize (debounced to prevent mobile scroll jank)
   useEffect(() => {
     measureAndSetHeight()
 
-    // Re-measure on resize
-    const handleResize = () => measureAndSetHeight()
-    window.addEventListener('resize', handleResize)
+    // Debounced handler to prevent jank from mobile address bar resize
+    const debouncedMeasure = () => {
+      logEvent('resize', 'ServiceBento', { debounced: true })
+      if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
+      resizeTimeoutRef.current = setTimeout(measureAndSetHeight, 100)
+    }
 
-    // Also observe for layout shifts
-    const observer = new ResizeObserver(measureAndSetHeight)
+    // Re-measure on resize
+    window.addEventListener('resize', debouncedMeasure)
+
+    // Also observe for layout shifts (debounced)
+    const observer = new ResizeObserver(debouncedMeasure)
     const gridParent = wrapperRef.current?.closest('.grid')
     if (gridParent) {
       observer.observe(gridParent)
     }
 
     return () => {
-      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('resize', debouncedMeasure)
+      if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
       observer.disconnect()
     }
   }, [measureAndSetHeight])
 
-  // Check scroll state
+  // Check if content is scrollable (only on mount/resize, no scroll listener)
   useEffect(() => {
     const scrollContainer = scrollRef.current
     if (!scrollContainer || containerHeight === null) return
 
-    const checkScroll = () => {
-      const hasOverflow = scrollContainer.scrollHeight > scrollContainer.clientHeight
-      setCanScroll(hasOverflow)
-
-      const atBottom = scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 10
-      setIsAtBottom(atBottom)
-    }
-
-    checkScroll()
-    scrollContainer.addEventListener('scroll', checkScroll, { passive: true })
-    return () => scrollContainer.removeEventListener('scroll', checkScroll)
+    const hasOverflow = scrollContainer.scrollHeight > scrollContainer.clientHeight
+    setCanScroll(hasOverflow)
   }, [containerHeight, images])
 
   if (images.length === 0) return null
@@ -182,19 +179,11 @@ export default function ServiceBento({ images, portfolioSlug }: Props) {
           ))}
         </div>
 
-        {/* Bottom fade - shows when there's more to scroll */}
-        {canScroll && !isAtBottom && (
+        {/* Bottom fade - always visible when content is scrollable */}
+        {canScroll && (
           <div className="sticky bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[var(--sol-cream)] to-transparent pointer-events-none" />
         )}
       </div>
-
-      {/* "View full gallery" link - always visible */}
-      <a
-        href={`/portfolio/${portfolioSlug}`}
-        className="block text-center py-3 text-sm font-sans tracking-wide text-[var(--sol-charcoal)]/50 hover:text-[var(--sol-caramel)] transition-colors flex-shrink-0"
-      >
-        View full gallery →
-      </a>
 
       <style>{`
         .bento-scroll::-webkit-scrollbar {
