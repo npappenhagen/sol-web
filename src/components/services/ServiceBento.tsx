@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import type { CarouselImage } from '@/lib/carousel-images'
 import { getVariantUrl, hasVariants } from '@/lib/image-url'
-import { logEvent } from '@/lib/scroll-debug'
 
 interface Props {
   images: CarouselImage[]
@@ -112,29 +111,47 @@ export default function ServiceBento({ images, portfolioSlug }: Props) {
     }
   }, [])
 
-  // Measure on mount and resize (debounced to prevent mobile scroll jank)
+  // Measure on mount and width resize only
+  // Mobile address bars cause constant height changes that we must ignore
   useEffect(() => {
     measureAndSetHeight()
 
-    // Debounced handler to prevent jank from mobile address bar resize
-    const debouncedMeasure = () => {
-      logEvent('resize', 'ServiceBento', { debounced: true })
-      if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
-      resizeTimeoutRef.current = setTimeout(measureAndSetHeight, 100)
+    let lastWidth = window.innerWidth
+
+    // Only re-measure on WIDTH changes, not height (mobile address bar)
+    const handleResize = () => {
+      const newWidth = window.innerWidth
+      // CRITICAL: Ignore height-only changes from mobile address bar
+      if (Math.abs(newWidth - lastWidth) > 1) {
+        lastWidth = newWidth
+        if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
+        resizeTimeoutRef.current = setTimeout(measureAndSetHeight, 100)
+      }
     }
 
-    // Re-measure on resize
-    window.addEventListener('resize', debouncedMeasure)
+    window.addEventListener('resize', handleResize)
 
-    // Also observe for layout shifts (debounced)
-    const observer = new ResizeObserver(debouncedMeasure)
+    // ResizeObserver for sibling content changes - also width-filtered
+    let lastObservedWidth = 0
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0]
+      if (!entry) return
+      const newWidth = entry.contentRect.width
+      // Only react to width changes in the observed element
+      if (Math.abs(newWidth - lastObservedWidth) > 1) {
+        lastObservedWidth = newWidth
+        if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
+        resizeTimeoutRef.current = setTimeout(measureAndSetHeight, 100)
+      }
+    })
+
     const gridParent = wrapperRef.current?.closest('.grid')
     if (gridParent) {
       observer.observe(gridParent)
     }
 
     return () => {
-      window.removeEventListener('resize', debouncedMeasure)
+      window.removeEventListener('resize', handleResize)
       if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
       observer.disconnect()
     }

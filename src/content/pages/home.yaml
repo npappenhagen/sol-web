@@ -23,7 +23,7 @@ hero_images:
 hero_heading: "Light. Story. Memory."
 intro_label: "WHY SOL"
 intro_heading: "Because some moments deserve to be held."
-intro_body: "I'm Laurel, a Costa Rica-based photographer who believes the best images come from real connection, not perfect poses. Whether it's the chaos of family mornings, the quiet of a couple at golden hour, or the energy of a creative building their brand, I'm here to witness it with you. My approach is simple: slow down, stay present, and let the light do its work. The result? Photos that feel like coming home."
+intro_body: "I'm Laurel, a Costa Rica-based photographer who believes the best images come from real connection, not perfect poses. Whether it's the chaos of family mornings, the quiet of a couple at golden hour, or the energy of a creative building their brand, I'm here to witness it with you. My approach is simple: slow down, stay present, make space for play. The light handles the rest. The result? Photos that feel like coming home."
 intro_headshot: /media/pages/Laurel-headshot-3.jpg
 stats:
   - number: "5+"
@@ -33,3 +33,21 @@ stats:
   - number: "4"
     label: "Specialties"
 featured_slugs: []
+
+testimonials:
+  - quote: "After documenting our retreats ourselves for five years, hiring Laurel allowed us to finally be fully present with our guests. She understood the delicacy of the ceremonial space, and the images are already elevating the marketing for our future retreats."
+    author: "Lawrie W."
+    image: /media/testimonials/2026-testimonial-1.jpg
+  - quote: "Having Laurel present at our retreat felt safe, supportive, and completely aligned. It's incredible to be witnessed and to embody Goddess energy in this way. I've done many types of photoshoots, but my favorite images have always been ceremonial. It feels like a return to self."
+    author: "Jessica"
+    context: "Reclamation Retreat"
+    image: /media/testimonials/2026-testimonial-2.jpg
+  - quote: "Thank you for giving us our dream pictures from our time in Costa Rica! My kids were so comfortable with Laurel and she made the entire photo shoot feel effortless and so fun. We are so so happy with our pictures. 10/10 recommend this incredibly talented photographer!"
+    author: "Katie F."
+    image: /media/testimonials/2026-testimonial-4.jpg
+  - quote: "I cannot recommend Laurel enough. She took my favorite photos of my family ever and my kids said it was so much fun. She was super flexible and helpful with scheduling and location. She's truly amazing!"
+    author: "Natalie E."
+    image: /media/testimonials/2026-testimonial-5.jpg
+  - quote: "Our session felt completely pressure-free. Laurel's warm energy put us at ease. When I saw our photos, I cried. As a mom always behind the camera, it was pure joy to finally be in the picture, and now I can't decide which one to print and frame first!"
+    author: "Maureen N."
+    image: /media/testimonials/2026-testimonial-3.jpg

@@ -146,10 +146,10 @@ export function generatePoolSelectionScript(poolId: string, count: number, pageI
       }
       var st=gs();
       var shown=new Set(st.shown);
-      // Group by session (date_taken) - images without session get unique keys
+      // Group by category for visual diversity (fallback to session, then unique key)
       var sess={},uc=0;
       pool.forEach(function(img){
-        var k=img.session||('u'+uc++);
+        var k=img.category||img.session||('u'+uc++);
         if(!sess[k])sess[k]=[];
         sess[k].push(img);
       });

@@ -10,8 +10,9 @@ import { parseInquiryHash, isInquiryHash } from '@/lib/inquiry-utils'
 import { useInquiryForm } from '@/hooks/useInquiryForm'
 import { useResizable } from '@/hooks/useResizable'
 
-const MIN_H = 380
-const DEFAULT_SIZE = { w: 400, h: 520 }
+// Smaller min height for compact screens (iPhone SE: 568px viewport)
+const MIN_H = 320
+const DEFAULT_SIZE = { w: 400, h: 480 }
 
 const baseFieldClass =
   'border bg-[var(--sol-cream)] text-[var(--sol-charcoal)] placeholder:text-[var(--sol-charcoal)]/40 font-serif transition-colors'
@@ -26,9 +27,13 @@ export default function InquiryWidget() {
   const formRef = useRef<HTMLFormElement>(null)
 
   // Show widget only after scrolling past hero area (~90vh)
+  // Cache threshold on mount — do NOT re-read innerHeight per scroll event.
+  // Brave Android address bar changes innerHeight during scroll, causing
+  // threshold to oscillate and trigger re-renders → layout jank.
   useEffect(() => {
+    const threshold = window.innerHeight * 0.85
+
     const handleScroll = () => {
-      const threshold = window.innerHeight * 0.85
       setPastHero(window.scrollY > threshold)
     }
 
@@ -128,7 +133,7 @@ export default function InquiryWidget() {
     <div
       ref={containerRef}
       id="inquiry"
-      className="fixed bottom-4 right-4 left-4 z-40 flex flex-col items-end gap-0 sm:left-auto sm:bottom-6 sm:right-6 pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)]"
+      className="fixed bottom-2 right-2 left-2 z-40 flex flex-col items-end gap-0 sm:left-auto sm:bottom-6 sm:right-6 pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)]"
     >
       {/* Expanded panel */}
       <div
@@ -139,10 +144,10 @@ export default function InquiryWidget() {
         style={expanded ? { width: size.w, height: size.h, minHeight: MIN_H, maxWidth: '100%' } : undefined}
         className={cn(
           'overflow-hidden rounded-2xl border border-[var(--sol-sage)]/50 bg-[var(--sol-cream)] shadow-2xl transition-all duration-300 ease-out',
-          expanded ? 'visible w-full max-w-[min(100vw-2rem,520px)] opacity-100 sm:max-w-none inquiry-panel-expand' : 'invisible h-0 max-h-0 w-0 opacity-0'
+          expanded ? 'visible w-full max-w-[min(100vw-1rem,520px)] max-h-[calc(100svh-4rem)] opacity-100 sm:max-w-none sm:max-h-none inquiry-panel-expand' : 'invisible h-0 max-h-0 w-0 opacity-0'
         )}
       >
-        <div className="relative flex h-full flex-col overflow-hidden p-4 sm:p-5 min-w-0">
+        <div className="relative flex h-full flex-col overflow-hidden p-3 sm:p-5 min-w-0">
           {/* Header */}
           <div className="mb-4 flex shrink-0 items-center justify-between">
             <h2 className="font-display text-xl font-light text-[var(--sol-charcoal)]">Say hello</h2>

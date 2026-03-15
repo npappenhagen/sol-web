@@ -25,8 +25,9 @@ const {
 } = home.data
 
 // Get FULL portrait image pool for client-side selection
-// Pull from portraits category for best variety on home page
-const allPortraitImages = await getAllPortraitImages(['portraits'])
+// Pull from all categories (except mood) for maximum variety
+// Only portrait-orientation images are included (via filterForCarousel)
+const allPortraitImages = await getAllPortraitImages(['portraits', 'branding', 'events'])
 
 // Get mood images for testimonials background
 const testimonialBackgrounds = getMoodBackgroundPaths(8)

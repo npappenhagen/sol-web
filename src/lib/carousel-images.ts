@@ -9,6 +9,8 @@ export interface CarouselImage {
   focal_y?: number | string
   /** Session identifier (date_taken) for grouping images from the same photo shoot */
   session?: string
+  /** Portfolio category for visual diversity grouping (portraits, branding, events) */
+  category?: string
 }
 
 /**
@@ -158,13 +160,14 @@ export async function getAllPortraitImages(
     ? portfolios.filter((p) => categories.includes(p.data.category))
     : portfolios
 
-  // Extract all portrait/hero-safe images with session info
+  // Extract all portrait/hero-safe images with session and category info
   return filtered.flatMap((p) =>
     filterForCarousel(p.data.images ?? []).map((img) => ({
       src: img.src,
       focal_x: undefined,
       focal_y: undefined,
       session: img.date_taken,
+      category: p.data.category,
     }))
   )
 }

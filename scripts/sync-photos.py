@@ -3,18 +3,14 @@
 Sync web-size photos from the SMB share into public/media/ and update
 portfolio frontmatter with image paths and Lightroom keywords.
 
-Uses content-addressable hashing for incremental syncs - only processes
-images that have actually changed.
+Always does a full reprocess (force mode is the default for reliability).
 
 Usage:
     python3 scripts/sync-photos.py                   # sync all categories
     python3 scripts/sync-photos.py portraits         # sync one category
     python3 scripts/sync-photos.py --dry-run         # preview without copying
-    python3 scripts/sync-photos.py --force           # ignore manifest, reprocess all
-    python3 scripts/sync-photos.py --cleanup         # remove orphaned images
 """
 
-import hashlib
 import json
 import os
 import re
@@ -33,8 +29,8 @@ except ImportError:
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MEDIA_DIR = PROJECT_ROOT / "public" / "media"
 CONTENT_DIR = PROJECT_ROOT / "src" / "content" / "portfolio"
-MANIFEST_PATH = MEDIA_DIR / ".manifest.json"
 MOOD_METADATA_PATH = MEDIA_DIR / "mood" / "metadata.json"
+TESTIMONIAL_MAPPING_PATH = MEDIA_DIR / "testimonials" / "mapping.json"
 
 # Image variant sizes for responsive srcset
 VARIANT_WIDTHS = [400, 800, 1200, 1920]
@@ -52,6 +48,7 @@ SOURCES = {
     "branding": Path("/Volumes/sol/branding-portfolio/web size"),
     "events": Path("/Volumes/sol/retreat-portfolio/web size"),
     "mood": Path("/Volumes/sol/mood-portfolio"),
+    "testimonials": Path("/Volumes/sol/testimonial-photos"),
     "logos": Path("/Volumes/sol/2026 logos"),
     "headshots": Path("/Volumes/sol/Laurel-headshots"),
 }
@@ -59,43 +56,42 @@ SOURCES = {
 # Keywords to strip — too generic to be useful as tags
 GENERIC_KEYWORDS = {"portfolio", "portrait", "branding", "mood"}
 
-# ── Manifest ────────────────────────────────────────────────────────────────
+# Filename sanitization: replace spaces, Unicode whitespace, and special chars with hyphens
+# Prevents frontmatter/variant mismatch from filenames like "photo-23 2.14.08\u202fPM.jpg"
+UNSAFE_FILENAME_CHARS = re.compile(r"[\s\u00a0\u202f\u2007\u2060]+")
 
-def load_manifest() -> dict:
-    """Load the manifest file, or return empty structure if not exists."""
-    if MANIFEST_PATH.exists():
-        try:
-            with open(MANIFEST_PATH, "r") as f:
-                return json.load(f)
-        except (json.JSONDecodeError, IOError):
-            print("  WARN: Manifest corrupted, rebuilding")
-    return {"version": 1, "images": {}}
+# Cover tag pattern: home-{category}-cover
+COVER_TAG_PATTERN = re.compile(r"^home-(\w+)-cover$", re.IGNORECASE)
 
+# Testimonial tag pattern: testimonial-{name}
+TESTIMONIAL_TAG_PATTERN = re.compile(r"^testimonial-(\w+)$", re.IGNORECASE)
 
-def save_manifest(manifest: dict):
-    """Save the manifest to disk."""
-    MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(MANIFEST_PATH, "w") as f:
-        json.dump(manifest, f, indent=2)
-
-
-def compute_file_hash(filepath: Path, sample_size: int = 65536) -> str:
-    """
-    Hash using file header + trailer for speed on large JPEGs.
-    Includes file size to catch truncation.
-    """
-    hasher = hashlib.sha256()
-    size = filepath.stat().st_size
-    with open(filepath, "rb") as f:
-        hasher.update(f.read(sample_size))
-        if size > sample_size * 2:
-            f.seek(-sample_size, 2)
-            hasher.update(f.read(sample_size))
-        hasher.update(str(size).encode())
-    return f"sha256:{hasher.hexdigest()[:16]}"
+# Cover tag category name mapping (tag name -> actual category name)
+# Handles cases where tag name differs from folder/category name
+COVER_TAG_CATEGORY_MAP = {
+    "retreat": "events",
+    "retreats": "events",
+    "portrait": "portraits",
+}
 
 
 # ── Helpers ─────────────────────────────────────────────────────────────────
+
+def sanitize_filename(name: str) -> str:
+    """
+    Replace spaces and Unicode whitespace with hyphens, collapse runs.
+
+    Lightroom sometimes exports filenames with regular spaces, narrow
+    no-break spaces (U+202F), or other Unicode whitespace. These cause
+    mismatches between frontmatter paths and generated WebP variant names.
+    """
+    sanitized = UNSAFE_FILENAME_CHARS.sub("-", name)
+    # Collapse multiple consecutive hyphens
+    sanitized = re.sub(r"-{2,}", "-", sanitized)
+    # Remove trailing hyphens before extension
+    base, ext = os.path.splitext(sanitized)
+    return base.rstrip("-") + ext
+
 
 def extract_dimensions(filepath: Path) -> tuple[int, int, str] | None:
     """Extract width, height, and orientation from image."""
@@ -168,14 +164,13 @@ def extract_dominant_hue(filepath: Path) -> int | None:
     return None
 
 
-def generate_variants(src_path: Path, dest_base: Path, force: bool = False) -> list[str]:
+def generate_variants(src_path: Path, dest_base: Path) -> list[str]:
     """
     Generate responsive image variants at multiple widths in WebP format.
 
     Args:
         src_path: Path to source JPEG
         dest_base: Base path for output (without extension)
-        force: If True, regenerate even if variants exist
 
     Returns:
         List of generated variant filenames
@@ -192,11 +187,6 @@ def generate_variants(src_path: Path, dest_base: Path, force: bool = False) -> l
                 continue
 
             variant_path = dest_base.parent / f"{dest_base.stem}-{width}w.webp"
-
-            # Skip if variant exists and is newer than source (unless force)
-            if not force and variant_path.exists():
-                if variant_path.stat().st_mtime >= src_path.stat().st_mtime:
-                    continue
 
             # Calculate new height maintaining aspect ratio
             ratio = width / orig_width
@@ -235,6 +225,26 @@ def extract_keywords(filepath: Path) -> list[str]:
     except Exception:
         pass
     return []
+
+
+def extract_cover_tag(keywords: list[str]) -> str | None:
+    """Check if any keyword matches the cover tag pattern. Returns category if found."""
+    for kw in keywords:
+        match = COVER_TAG_PATTERN.match(kw)
+        if match:
+            category = match.group(1).lower()
+            # Apply category name mapping (e.g., "retreat" -> "events")
+            return COVER_TAG_CATEGORY_MAP.get(category, category)
+    return None
+
+
+def extract_testimonial_tag(keywords: list[str]) -> str | None:
+    """Check if any keyword matches the testimonial tag pattern. Returns name if found."""
+    for kw in keywords:
+        match = TESTIMONIAL_TAG_PATTERN.match(kw)
+        if match:
+            return match.group(1).lower()
+    return None
 
 
 def parse_existing_images(lines: list[str]) -> dict[str, bool]:
@@ -369,145 +379,28 @@ def format_yaml_list(key: str, items: list[str]) -> str:
     return "\n".join(lines) + "\n"
 
 
-# ── Cleanup ─────────────────────────────────────────────────────────────────
-
-def cleanup_orphans(manifest: dict, dry_run: bool = False) -> int:
-    """
-    Remove images from manifest and disk where source no longer exists.
-    Also removes orphaned images from portfolio frontmatter.
-
-    Returns count of removed images.
-    """
-    # Safety check: ensure at least one source directory is accessible
-    # to prevent accidental deletion when SMB is unmounted
-    sources_accessible = sum(1 for src in SOURCES.values() if src.exists())
-    if sources_accessible == 0:
-        print("  ERROR: No source directories accessible (SMB not mounted?)")
-        print("  Aborting cleanup to prevent accidental data loss.")
-        return 0
-
-    removed = 0
-    orphans_by_category: dict[str, list[str]] = {}
-
-    to_remove = []
-    for web_path, entry in manifest.get("images", {}).items():
-        source_path = Path(entry.get("source_path", ""))
-        # Only mark as orphan if the parent directory exists but the file doesn't
-        # This prevents false positives when SMB is partially mounted
-        if source_path.parent.exists() and not source_path.exists():
-            to_remove.append(web_path)
-
-            # Track by category for frontmatter cleanup
-            # web_path looks like /media/portfolio/portraits/file.jpg
-            parts = web_path.split("/")
-            if len(parts) >= 4 and parts[2] == "portfolio":
-                category = parts[3]
-                if category not in orphans_by_category:
-                    orphans_by_category[category] = []
-                orphans_by_category[category].append(web_path)
-
-    for web_path in to_remove:
-        # Convert web path to filesystem path
-        # /media/portfolio/portraits/file.jpg -> public/media/portfolio/portraits/file.jpg
-        fs_path = PROJECT_ROOT / "public" / web_path.lstrip("/")
-
-        if dry_run:
-            print(f"  Would remove: {web_path}")
-        else:
-            # Remove the JPEG
-            if fs_path.exists():
-                fs_path.unlink()
-                print(f"  Removed: {fs_path.name}")
-
-            # Remove WebP variants
-            stem = fs_path.stem
-            parent = fs_path.parent
-            for width in VARIANT_WIDTHS:
-                variant = parent / f"{stem}-{width}w.webp"
-                if variant.exists():
-                    variant.unlink()
-                    print(f"  Removed variant: {variant.name}")
-
-            # Remove from manifest
-            del manifest["images"][web_path]
-
-        removed += 1
-
-    # Update frontmatter to remove orphaned images
-    if not dry_run and orphans_by_category:
-        for category, orphan_paths in orphans_by_category.items():
-            md_path = CONTENT_DIR / f"{category}.md"
-            if md_path.exists():
-                remove_images_from_frontmatter(md_path, orphan_paths)
-
-    return removed
-
-
-def remove_images_from_frontmatter(md_path: Path, orphan_paths: list[str]):
-    """Remove specific image paths from a portfolio .md frontmatter."""
-    text = md_path.read_text()
-    fm_match = re.match(r"^---\n(.*?)\n---", text, re.DOTALL)
-    if not fm_match:
-        return
-
-    body = text[fm_match.end():]
-    lines = fm_match.group(1).split("\n")
-    orphan_set = set(orphan_paths)
-
-    result = []
-    skip_until_next_item = False
-    in_images = False
-
-    for line in lines:
-        if re.match(r"^images:", line):
-            in_images = True
-            result.append(line)
-            continue
-
-        if in_images:
-            # Check if this is a new image entry
-            if m := re.match(r"^\s+-\s+src:\s+(.+)", line):
-                src = m.group(1).strip()
-                if src in orphan_set:
-                    skip_until_next_item = True
-                    continue
-                else:
-                    skip_until_next_item = False
-            elif re.match(r"^\s+-\s+/media/", line):
-                # Legacy bare path format
-                path = line.strip().lstrip("- ").strip()
-                if path in orphan_set:
-                    continue
-            elif skip_until_next_item:
-                # Skip properties of the orphaned image
-                if re.match(r"^\s{4,}", line):
-                    continue
-                else:
-                    skip_until_next_item = False
-
-            # End of images block
-            if line.strip() and not line.startswith("  ") and not re.match(r"^images:", line):
-                in_images = False
-
-        if not skip_until_next_item:
-            result.append(line)
-
-    new_text = "---\n" + "\n".join(result) + "\n---\n" + body
-    md_path.write_text(new_text)
-    print(f"  Updated frontmatter: {md_path.name} (removed {len(orphan_paths)} orphans)")
-
-
 # ── Main ────────────────────────────────────────────────────────────────────
 
-def sync_category(category: str, manifest: dict, dry_run: bool = False, force: bool = False):
+def sync_category(category: str, dry_run: bool = False, cover_tags: dict | None = None):
+    """
+    Sync a single category from SMB to public/media.
+
+    Args:
+        category: Category name (e.g., "portraits", "branding")
+        dry_run: If True, only preview what would happen
+        cover_tags: Dict mapping category -> image path for tagged covers
+    """
     src = SOURCES.get(category)
     if not src:
         print(f"Unknown category: {category}")
-        return
+        return {}
 
     if not src.exists():
         print(f"  Source not found (SMB not mounted?): {src}")
-        return
+        return {}
+
+    # Initialize return value for cover tags found in this category
+    found_cover_tags = {}
 
     # Determine destination and whether this is a gallery with frontmatter
     if category == "logos":
@@ -518,6 +411,9 @@ def sync_category(category: str, manifest: dict, dry_run: bool = False, force: b
         is_gallery = False
     elif category == "headshots":
         dest = MEDIA_DIR / "pages"
+        is_gallery = False
+    elif category == "testimonials":
+        dest = MEDIA_DIR / "testimonials"
         is_gallery = False
     else:
         dest = MEDIA_DIR / "portfolio" / category
@@ -536,67 +432,45 @@ def sync_category(category: str, manifest: dict, dry_run: bool = False, force: b
                 ok = update_frontmatter(md_path, [], [], None)
                 if ok:
                     print(f"  Cleared images from {md_path.relative_to(PROJECT_ROOT)}")
-        return
+        return found_cover_tags
 
-    print(f"  {len(files)} images → {dest.relative_to(PROJECT_ROOT)}")
+    print(f"  {len(files)} images -> {dest.relative_to(PROJECT_ROOT)}")
 
     all_tags: set[str] = set()
     image_data: list[dict] = []
+    testimonial_mapping: dict[str, str] = {}  # name -> web_path
 
     processed = 0
-    skipped = 0
     variants_generated = 0
 
     for f in files:
-        target = dest / f.name
+        safe_name = sanitize_filename(f.name)
+        safe_stem = Path(safe_name).stem
+        target = dest / safe_name
         if category == "logos":
             prefix = "site/logos"
         elif category == "headshots":
             prefix = "pages"
+        elif category == "testimonials":
+            prefix = "testimonials"
         elif is_gallery:
             prefix = f"portfolio/{category}"
         else:
             prefix = "mood"
-        web_path = f"/media/{prefix}/{f.name}"
-
-        # Check manifest for hash match
-        source_hash = compute_file_hash(f)
-        manifest_entry = manifest.get("images", {}).get(web_path, {})
-
-        needs_processing = force or manifest_entry.get("content_hash") != source_hash
-
-        if not needs_processing:
-            skipped += 1
-            # Still need to collect image data for frontmatter
-            img_entry = {"src": web_path, "hidden": False}
-            if f.suffix.lower() in (".jpg", ".jpeg"):
-                # Read cached metadata from manifest if available
-                if manifest_entry.get("width"):
-                    img_entry["width"] = manifest_entry["width"]
-                    img_entry["height"] = manifest_entry["height"]
-                    img_entry["orientation"] = manifest_entry.get("orientation")
-                if manifest_entry.get("date_taken"):
-                    img_entry["date_taken"] = manifest_entry["date_taken"]
-                if manifest_entry.get("hue") is not None:
-                    img_entry["hue"] = manifest_entry["hue"]
-                if manifest_entry.get("tags"):
-                    img_entry["tags"] = manifest_entry["tags"]
-                    all_tags.update(manifest_entry["tags"])
-            image_data.append(img_entry)
-            continue
+        web_path = f"/media/{prefix}/{safe_name}"
 
         processed += 1
 
         if not dry_run:
             # For gallery JPEGs, we only need WebP variants (originals are 10-18MB and unused)
-            # For non-gallery images (logos, mood) or non-JPEGs, copy the original
+            # For non-gallery images (logos, mood, testimonials) or non-JPEGs, copy the original
             if not (is_gallery and f.suffix.lower() in (".jpg", ".jpeg")):
                 shutil.copy2(f, target)
 
         # Generate responsive variants for gallery and mood images (not logos/headshots)
         if not dry_run and category not in ("logos", "headshots") and f.suffix.lower() in (".jpg", ".jpeg"):
-            dest_base = dest / f.stem
-            variants = generate_variants(f, dest_base, force=force)
+            dest_base = dest / safe_stem
+            variants = generate_variants(f, dest_base)
             variants_generated += len(variants)
 
         img_entry = {"src": web_path, "hidden": False}
@@ -604,7 +478,27 @@ def sync_category(category: str, manifest: dict, dry_run: bool = False, force: b
         # Only extract metadata from JPEGs (not logos)
         if f.suffix.lower() in (".jpg", ".jpeg"):
             keywords = extract_keywords(f)
-            all_tags.update(keywords)
+
+            # Check for cover tag (home-{category}-cover)
+            cover_category = extract_cover_tag(keywords)
+            if cover_category:
+                found_cover_tags[cover_category] = web_path
+                print(f"    Found cover tag: home-{cover_category}-cover -> {f.name}")
+
+            # Check for testimonial tag
+            if category == "testimonials":
+                testimonial_name = extract_testimonial_tag(keywords)
+                if testimonial_name:
+                    testimonial_mapping[testimonial_name] = web_path
+                    print(f"    Found testimonial tag: testimonial-{testimonial_name} -> {f.name}")
+
+            # Filter out cover and testimonial tags from stored tags
+            filtered_keywords = [
+                kw for kw in keywords
+                if not COVER_TAG_PATTERN.match(kw) and not TESTIMONIAL_TAG_PATTERN.match(kw)
+            ]
+            all_tags.update(filtered_keywords)
+
             # Extract date and hue for sorting
             img_entry["date_taken"] = extract_date_taken(f)
             img_entry["hue"] = extract_dominant_hue(f)
@@ -613,40 +507,31 @@ def sync_category(category: str, manifest: dict, dry_run: bool = False, force: b
             if dims:
                 img_entry["width"], img_entry["height"], img_entry["orientation"] = dims
             # Store tags per-image for filtering
-            if keywords:
-                img_entry["tags"] = keywords
+            if filtered_keywords:
+                img_entry["tags"] = filtered_keywords
 
         image_data.append(img_entry)
 
-        # Update manifest
-        if not dry_run:
-            manifest.setdefault("images", {})[web_path] = {
-                "content_hash": source_hash,
-                "source_path": str(f),
-                "processed_at": datetime.now(timezone.utc).isoformat(),
-                "variants": [f"{w}w" for w in VARIANT_WIDTHS if w <= (img_entry.get("width") or 9999)],
-                "width": img_entry.get("width"),
-                "height": img_entry.get("height"),
-                "orientation": img_entry.get("orientation"),
-                "date_taken": img_entry.get("date_taken"),
-                "hue": img_entry.get("hue"),
-                "tags": img_entry.get("tags", []),
-            }
-
     tags = sorted(all_tags)
-    cover = image_data[0]["src"] if image_data else None
+
+    # Determine cover: use tagged cover if available, otherwise first image
+    if cover_tags and category in cover_tags:
+        cover = cover_tags[category]
+        print(f"  Using tagged cover: {cover}")
+    else:
+        cover = image_data[0]["src"] if image_data else None
 
     if dry_run:
-        print(f"  Would process: {processed}, skip unchanged: {skipped}")
+        print(f"  Would process: {processed}")
         print(f"  Tags: {tags}")
         print(f"  Cover: {cover}")
         print(f"  Images: {len(image_data)} total")
         # Show sample metadata
         if image_data and image_data[0].get("date_taken"):
             print(f"  Sample date: {image_data[0]['date_taken']}, hue: {image_data[0].get('hue')}")
-        return
+        return found_cover_tags
 
-    print(f"  Processed: {processed}, skipped unchanged: {skipped}")
+    print(f"  Processed: {processed}")
 
     if is_gallery:
         md_path = CONTENT_DIR / f"{category}.md"
@@ -656,11 +541,21 @@ def sync_category(category: str, manifest: dict, dry_run: bool = False, force: b
                 variant_msg = f", {variants_generated} variants" if variants_generated else ""
                 print(f"  Updated {md_path.relative_to(PROJECT_ROOT)} ({len(image_data)} images, {len(tags)} tags{variant_msg})")
         else:
-            print(f"  WARN: {md_path.name} not found — create it first")
+            print(f"  WARN: {md_path.name} not found - create it first")
     elif category == "logos":
         print(f"  Logos: {len(image_data)} files synced to {dest.relative_to(PROJECT_ROOT)}")
     elif category == "headshots":
         print(f"  Headshots: {len(image_data)} images synced to {dest.relative_to(PROJECT_ROOT)}")
+    elif category == "testimonials":
+        # Save testimonial mapping JSON for frontend lookup
+        TESTIMONIAL_MAPPING_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with open(TESTIMONIAL_MAPPING_PATH, "w") as f_out:
+            json.dump(testimonial_mapping, f_out, indent=2)
+        print(f"  Testimonials: {len(image_data)} images synced")
+        print(f"  Testimonial mapping saved: {TESTIMONIAL_MAPPING_PATH.relative_to(PROJECT_ROOT)}")
+        if testimonial_mapping:
+            for name, path in testimonial_mapping.items():
+                print(f"    {name}: {path}")
     elif category == "mood":
         # Save mood metadata JSON for frontend session-aware selection
         mood_metadata = {}
@@ -674,65 +569,45 @@ def sync_category(category: str, manifest: dict, dry_run: bool = False, force: b
                     "orientation": img.get("orientation", "unknown"),
                 }
         MOOD_METADATA_PATH.parent.mkdir(parents=True, exist_ok=True)
-        with open(MOOD_METADATA_PATH, "w") as f:
-            json.dump(mood_metadata, f, indent=2)
+        with open(MOOD_METADATA_PATH, "w") as f_out:
+            json.dump(mood_metadata, f_out, indent=2)
         print(f"  Mood: {len(image_data)} images synced, metadata saved to {MOOD_METADATA_PATH.relative_to(PROJECT_ROOT)}")
 
-
-def count_orphans(manifest: dict) -> int:
-    """Count orphaned images (source deleted but still in manifest)."""
-    count = 0
-    for web_path, entry in manifest.get("images", {}).items():
-        source_path = Path(entry.get("source_path", ""))
-        if source_path.parent.exists() and not source_path.exists():
-            count += 1
-    return count
+    return found_cover_tags
 
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     dry_run = "--dry-run" in sys.argv
-    force = "--force" in sys.argv
-    cleanup = "--cleanup" in sys.argv
 
     categories = args if args else list(SOURCES.keys())
 
     if dry_run:
-        print("DRY RUN — no files will be copied\n")
-    if force:
-        print("FORCE MODE — ignoring manifest, reprocessing all\n")
+        print("DRY RUN - no files will be copied\n")
 
-    # Load manifest
-    manifest = load_manifest() if not force else {"version": 1, "images": {}}
-
-    # Handle cleanup mode
-    if cleanup:
-        print("[cleanup]")
-        removed = cleanup_orphans(manifest, dry_run=dry_run)
-        if removed:
-            print(f"  Removed {removed} orphaned images")
-            if not dry_run:
-                save_manifest(manifest)
-        else:
-            print("  No orphans found")
-        print()
-        return
+    # First pass: collect cover tags from all categories
+    # We need to scan all images first to find cover tags before applying them
+    print("=== Pass 1: Scanning for cover tags ===\n")
+    all_cover_tags: dict[str, str] = {}
 
     for cat in categories:
         print(f"[{cat}]")
-        sync_category(cat, manifest, dry_run=dry_run, force=force)
+        found = sync_category(cat, dry_run=True)  # Always dry run first pass
+        all_cover_tags.update(found)
         print()
 
-    # Save manifest
-    if not dry_run:
-        save_manifest(manifest)
-        print(f"Manifest saved: {MANIFEST_PATH.relative_to(PROJECT_ROOT)}")
+    if all_cover_tags:
+        print(f"Cover tags found: {all_cover_tags}\n")
 
-    # Check for orphans and warn user
-    orphan_count = count_orphans(manifest)
-    if orphan_count > 0:
-        print(f"\n⚠️  {orphan_count} orphaned images detected (source deleted, still in manifest)")
-        print("   Run 'make sync-cleanup' to remove them")
+    # Second pass: actually sync with cover tags applied
+    print("=== Pass 2: Syncing with covers ===\n")
+
+    for cat in categories:
+        print(f"[{cat}]")
+        sync_category(cat, dry_run=dry_run, cover_tags=all_cover_tags)
+        print()
+
+    print("Sync complete!")
 
 
 if __name__ == "__main__":

@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { getSrcSet, getSizes, getDefaultSrc, hasVariants } from '@/lib/image-url'
 import { GALLERY_CONFIG, PORTRAIT_SUBCATEGORIES } from '@/lib/constants'
 import { Lightbox } from './Lightbox'
-import { logEvent } from '@/lib/scroll-debug'
 
 interface ImageData {
   src: string
@@ -296,23 +295,33 @@ export default function GalleryGrid({
     }
   }, [getFilterFromUrl])
 
-  // Measure container width (debounced to prevent mobile scroll jank)
+  // Measure container width - ONLY on width changes, not height
+  // Mobile address bars cause constant height changes (90px oscillation)
+  // that trigger scroll jank if we react to them
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
 
+    let lastWidth = container.offsetWidth
+    setContainerWidth(lastWidth)
+
     const observer = new ResizeObserver((entries) => {
-      logEvent('resize', 'GalleryGrid', { debounced: true })
-      if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
-      resizeTimeoutRef.current = setTimeout(() => {
-        for (const entry of entries) {
-          setContainerWidth(entry.contentRect.width)
-        }
-      }, 100)
+      const entry = entries[0]
+      if (!entry) return
+
+      const newWidth = entry.contentRect.width
+      // CRITICAL: Only update state if WIDTH changed, ignore height-only changes
+      // This prevents mobile address bar show/hide from causing layout thrash
+      if (Math.abs(newWidth - lastWidth) > 1) {
+        lastWidth = newWidth
+        if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
+        resizeTimeoutRef.current = setTimeout(() => {
+          setContainerWidth(newWidth)
+        }, 100)
+      }
     })
 
     observer.observe(container)
-    setContainerWidth(container.offsetWidth)
 
     return () => {
       if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
@@ -408,8 +417,8 @@ export default function GalleryGrid({
     <>
       {/* Filter toggles for portraits */}
       {hasFilters && availableFilters.length > 0 && (
-        <div className="pt-8 overflow-x-auto scrollbar-hide">
-          <div className="flex justify-center gap-3 px-6 min-w-max">
+        <div className="pt-8 px-4 sm:px-6">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
             <button
               type="button"
               onClick={() => handleFilterChange(null)}

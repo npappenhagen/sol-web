@@ -3,20 +3,48 @@ title: Couples
 category: couples
 date: 2026-01-01
 description: "Love stories told through light."
-cover: /media/portfolio/couples/2026-couples-portfolio-1.jpg
+cover: /media/portfolio/couples/2026-couples-portfolio-10.jpg
 cover_position: center
 sort_mode: session_spread
 images:
-  - src: /media/portfolio/couples/2026-couples-portfolio-1.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-10.jpg
     hidden: false
-    date_taken: "2024-10-18"
-    hue: 44
-    width: 5000
-    height: 3333
-    orientation: landscape
+    date_taken: "2025-02-23"
+    hue: 31
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - couples
+      - couples portfolio
+      - lp
+  - src: /media/portfolio/couples/2026-couples-portfolio-11.jpg
+    hidden: false
+    date_taken: "2025-02-23"
+    hue: 25
+    width: 3333
+    height: 5000
+    orientation: portrait
     tags:
       - couples
-  - src: /media/portfolio/couples/2026-couples-portfolio-10.jpg
+      - couples portfolio
+      - fave
+      - lp
+  - src: /media/portfolio/couples/2026-couples-portfolio-12.jpg
+    hidden: false
+    date_taken: "2025-06-28"
+    hue: 21
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - couples
+      - couples portfolio
+      - family
+      - lp
+  - src: /media/portfolio/couples/2026-couples-portfolio-13.jpg
     hidden: false
     date_taken: "2025-08-01"
     hue: 65
@@ -25,7 +53,7 @@ images:
     orientation: portrait
     tags:
       - couples
-  - src: /media/portfolio/couples/2026-couples-portfolio-11.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-14.jpg
     hidden: false
     date_taken: "2025-08-17"
     hue: 21
@@ -37,7 +65,7 @@ images:
       - couples
       - couples portfolio
       - lp
-  - src: /media/portfolio/couples/2026-couples-portfolio-12.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-15.jpg
     hidden: false
     date_taken: "2025-08-17"
     hue: 15
@@ -49,7 +77,7 @@ images:
       - couples
       - couples portfolio
       - lp
-  - src: /media/portfolio/couples/2026-couples-portfolio-13.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-16.jpg
     hidden: false
     date_taken: "2025-08-17"
     hue: 20
@@ -58,7 +86,7 @@ images:
     orientation: portrait
     tags:
       - couples
-  - src: /media/portfolio/couples/2026-couples-portfolio-14.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-17.jpg
     hidden: false
     date_taken: "2025-08-17"
     hue: 32
@@ -67,7 +95,7 @@ images:
     orientation: portrait
     tags:
       - couples
-  - src: /media/portfolio/couples/2026-couples-portfolio-15.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-18.jpg
     hidden: false
     date_taken: "2025-11-29"
     hue: 31
@@ -80,7 +108,7 @@ images:
       - couples portfolio
       - family
       - lp
-  - src: /media/portfolio/couples/2026-couples-portfolio-16.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-19.jpg
     hidden: false
     date_taken: "2025-12-23"
     hue: 34
@@ -89,7 +117,17 @@ images:
     orientation: portrait
     tags:
       - couples
-  - src: /media/portfolio/couples/2026-couples-portfolio-17.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-2.jpg
+    hidden: false
+    date_taken: "2026-03-12"
+    hue: 28
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - couples
+      - lp
+  - src: /media/portfolio/couples/2026-couples-portfolio-20.jpg
     hidden: false
     date_taken: "2025-12-23"
     hue: 36
@@ -101,7 +139,7 @@ images:
       - couples
       - couples portfolio
       - lp
-  - src: /media/portfolio/couples/2026-couples-portfolio-18.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-21.jpg
     hidden: false
     date_taken: "2025-12-23"
     hue: 27
@@ -112,7 +150,7 @@ images:
       - couples
       - couples portfolio
       - lp
-  - src: /media/portfolio/couples/2026-couples-portfolio-19.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-22.jpg
     hidden: false
     date_taken: "2025-12-23"
     hue: 33
@@ -124,18 +162,7 @@ images:
       - couples
       - couples portfolio
       - lp
-  - src: /media/portfolio/couples/2026-couples-portfolio-2.jpg
-    hidden: false
-    date_taken: "2024-10-18"
-    width: 5000
-    height: 3333
-    orientation: landscape
-    tags:
-      - bp
-      - couples
-      - couples portfolio
-      - lp
-  - src: /media/portfolio/couples/2026-couples-portfolio-20.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-23.jpg
     hidden: false
     date_taken: "2025-12-23"
     width: 3333
@@ -143,7 +170,7 @@ images:
     orientation: portrait
     tags:
       - couples
-  - src: /media/portfolio/couples/2026-couples-portfolio-21.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-24.jpg
     hidden: false
     date_taken: "2025-12-23"
     hue: 13
@@ -155,7 +182,7 @@ images:
       - couples
       - couples portfolio
       - lp
-  - src: /media/portfolio/couples/2026-couples-portfolio-22.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-25.jpg
     hidden: false
     date_taken: "2025-12-23"
     hue: 14
@@ -167,7 +194,7 @@ images:
       - couples
       - couples portfolio
       - lp
-  - src: /media/portfolio/couples/2026-couples-portfolio-23.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-26.jpg
     hidden: false
     date_taken: "2025-12-23"
     hue: 11
@@ -179,7 +206,7 @@ images:
       - couples
       - couples portfolio
       - lp
-  - src: /media/portfolio/couples/2026-couples-portfolio-24.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-27.jpg
     hidden: false
     date_taken: "2026-01-18"
     hue: 30
@@ -188,43 +215,13 @@ images:
     orientation: portrait
     tags:
       - couples
-  - src: /media/portfolio/couples/2026-couples-portfolio-25.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-28.jpg
     hidden: false
     date_taken: "2026-01-18"
     hue: 22
     width: 5000
     height: 3333
     orientation: landscape
-    tags:
-      - couples
-  - src: /media/portfolio/couples/2026-couples-portfolio-26.jpg
-    hidden: false
-    date_taken: "2026-01-18"
-    hue: 16
-    width: 3333
-    height: 5000
-    orientation: portrait
-    tags:
-      - bp
-      - couples
-      - couples portfolio
-      - lp
-  - src: /media/portfolio/couples/2026-couples-portfolio-27.jpg
-    hidden: false
-    date_taken: "2026-01-18"
-    hue: 20
-    width: 3333
-    height: 5000
-    orientation: portrait
-    tags:
-      - couples
-  - src: /media/portfolio/couples/2026-couples-portfolio-28.jpg
-    hidden: false
-    date_taken: "2026-01-18"
-    hue: 17
-    width: 3333
-    height: 5000
-    orientation: portrait
     tags:
       - couples
   - src: /media/portfolio/couples/2026-couples-portfolio-29.jpg
@@ -241,13 +238,43 @@ images:
       - lp
   - src: /media/portfolio/couples/2026-couples-portfolio-3.jpg
     hidden: false
-    date_taken: "2024-10-18"
+    date_taken: "2026-03-13"
     width: 3333
     height: 5000
     orientation: portrait
     tags:
       - couples
   - src: /media/portfolio/couples/2026-couples-portfolio-30.jpg
+    hidden: false
+    date_taken: "2026-01-18"
+    hue: 20
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - couples
+  - src: /media/portfolio/couples/2026-couples-portfolio-31.jpg
+    hidden: false
+    date_taken: "2026-01-18"
+    hue: 17
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - couples
+  - src: /media/portfolio/couples/2026-couples-portfolio-32.jpg
+    hidden: false
+    date_taken: "2026-01-18"
+    hue: 16
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - couples
+      - couples portfolio
+      - lp
+  - src: /media/portfolio/couples/2026-couples-portfolio-33.jpg
     hidden: false
     date_taken: "2026-01-18"
     hue: 26
@@ -259,7 +286,7 @@ images:
       - couples
       - couples portfolio
       - lp
-  - src: /media/portfolio/couples/2026-couples-portfolio-31.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-34.jpg
     hidden: false
     date_taken: "2026-02-27"
     hue: 28
@@ -268,16 +295,44 @@ images:
     orientation: portrait
     tags:
       - couples
-  - src: /media/portfolio/couples/2026-couples-portfolio-32.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-35.jpg
     hidden: false
     date_taken: "2026-03-04"
-    hue: 23
+    hue: 25
     width: 3333
     height: 5000
     orientation: portrait
     tags:
       - couples
   - src: /media/portfolio/couples/2026-couples-portfolio-4.jpg
+    hidden: false
+    date_taken: "2024-10-18"
+    hue: 44
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - couples
+  - src: /media/portfolio/couples/2026-couples-portfolio-5.jpg
+    hidden: false
+    date_taken: "2024-10-18"
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - bp
+      - couples
+      - couples portfolio
+      - lp
+  - src: /media/portfolio/couples/2026-couples-portfolio-6.jpg
+    hidden: false
+    date_taken: "2024-10-18"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - couples
+  - src: /media/portfolio/couples/2026-couples-portfolio-7.jpg
     hidden: false
     date_taken: "2024-12-22"
     hue: 19
@@ -286,7 +341,7 @@ images:
     orientation: portrait
     tags:
       - couples
-  - src: /media/portfolio/couples/2026-couples-portfolio-5.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-8.jpg
     hidden: false
     date_taken: "2025-01-04"
     hue: 20
@@ -295,7 +350,7 @@ images:
     orientation: portrait
     tags:
       - couples
-  - src: /media/portfolio/couples/2026-couples-portfolio-6.jpg
+  - src: /media/portfolio/couples/2026-couples-portfolio-9.jpg
     hidden: false
     date_taken: "2025-01-04"
     hue: 24
@@ -304,43 +359,6 @@ images:
     orientation: portrait
     tags:
       - couples
-  - src: /media/portfolio/couples/2026-couples-portfolio-7.jpg
-    hidden: false
-    date_taken: "2025-02-23"
-    hue: 31
-    width: 3333
-    height: 5000
-    orientation: portrait
-    tags:
-      - bp
-      - couples
-      - couples portfolio
-      - lp
-  - src: /media/portfolio/couples/2026-couples-portfolio-8.jpg
-    hidden: false
-    date_taken: "2025-02-23"
-    hue: 25
-    width: 3333
-    height: 5000
-    orientation: portrait
-    tags:
-      - couples
-      - couples portfolio
-      - fave
-      - lp
-  - src: /media/portfolio/couples/2026-couples-portfolio-9.jpg
-    hidden: false
-    date_taken: "2025-06-28"
-    hue: 21
-    width: 3333
-    height: 5000
-    orientation: portrait
-    tags:
-      - bp
-      - couples
-      - couples portfolio
-      - family
-      - lp
 tags:
   - bp
   - couples
@@ -350,6 +368,7 @@ tags:
   - lp
 featured: false
 ---
+
 
 
 

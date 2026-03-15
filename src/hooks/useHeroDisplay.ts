@@ -67,34 +67,72 @@ export function useHeroDisplay({
   const prefersReducedMotion = useRef(false)
 
   // Detect tablet+ breakpoint (768px) and reduced motion preference
+  // Filter to width-only changes — mobile address bar show/hide fires
+  // resize events with height-only changes that we must ignore.
   useEffect(() => {
-    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768)
-    checkDesktop()
+    let lastWidth = window.innerWidth
+    setIsDesktop(lastWidth >= 768)
     prefersReducedMotion.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    const checkDesktop = () => {
+      const newWidth = window.innerWidth
+      if (Math.abs(newWidth - lastWidth) > 1) {
+        lastWidth = newWidth
+        setIsDesktop(newWidth >= 768)
+      }
+    }
+
     window.addEventListener('resize', checkDesktop)
     return () => window.removeEventListener('resize', checkDesktop)
   }, [])
 
-  // Entrance animation - wait for slides to be ready before showing
-  // This prevents the flash when pre-selection swaps in
+  // Entrance animation - wait for first image to load before showing.
+  // This prevents the per-image flash as images decode one by one.
   useEffect(() => {
-    // If using pre-selection, wait for slides to be populated
     if (usePreSelection && slides.length === 0) {
-      // Pre-selection not ready yet - set max timeout fallback
       const fallbackTimer = setTimeout(() => setIsVisible(true), 500)
       return () => clearTimeout(fallbackTimer)
     }
-    // Slides ready - show with small delay for smooth entrance
-    const timer = setTimeout(() => setIsVisible(true), 100)
-    return () => clearTimeout(timer)
-  }, [usePreSelection, slides.length])
 
-  // Desktop: shuffle order while hidden, then fade in
+    // Wait for the first image to decode before revealing
+    const firstSrc = displaySlides[0]?.src
+    if (!firstSrc) {
+      setIsVisible(true)
+      return
+    }
+
+    let cancelled = false
+    const img = new Image()
+    img.src = firstSrc
+    img.decode()
+      .then(() => { if (!cancelled) setIsVisible(true) })
+      .catch(() => { if (!cancelled) setIsVisible(true) })
+
+    // Fallback: show after 800ms even if decode is slow
+    const fallback = setTimeout(() => { if (!cancelled) setIsVisible(true) }, 800)
+    return () => { cancelled = true; clearTimeout(fallback) }
+  }, [usePreSelection, slides.length, displaySlides])
+
+  // Desktop: shuffle order, then wait for first image before fade-in
   useEffect(() => {
     setSlideOrder(generateShuffledOrder(displaySlides.length))
-    const timer = setTimeout(() => setDesktopReady(true), 50)
-    return () => clearTimeout(timer)
-  }, [displaySlides.length])
+
+    const firstSrc = displaySlides[0]?.src
+    if (!firstSrc) {
+      setDesktopReady(true)
+      return
+    }
+
+    let cancelled = false
+    const img = new Image()
+    img.src = firstSrc
+    img.decode()
+      .then(() => { if (!cancelled) setDesktopReady(true) })
+      .catch(() => { if (!cancelled) setDesktopReady(true) })
+
+    const fallback = setTimeout(() => { if (!cancelled) setDesktopReady(true) }, 800)
+    return () => { cancelled = true; clearTimeout(fallback) }
+  }, [displaySlides])
 
   // Schedule idle-time preloading
   useEffect(() => {

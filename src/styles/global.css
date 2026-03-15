@@ -149,27 +149,28 @@
 /* ========================================
    SAFE VIEWPORT HEIGHT — MOBILE ADDRESS BAR FIX
    ========================================
-   Brave and some browsers don't properly support svh/dvh units.
-   Use fallback stack: vh → -webkit-fill-available → svh/dvh
+   svh (small viewport height) is the stable viewport size — it does
+   NOT resize when mobile address bars show/hide.
 
-   Usage:
-   - .h-screen-safe: Full viewport (dynamic, animates with address bar)
-   - .h-screen-stable: Full viewport (stable, address bar visible height)
-   - .min-h-*-safe: Min-height variants for sections
+   DO NOT use -webkit-fill-available (it's dynamic like dvh, causes jank).
+
+   Hero classes use hard height (needed for absolutely positioned images).
+   Section classes use min-height (allows content to grow naturally).
+   Both use svh to avoid Brave Android address bar jank.
    ======================================== */
 
+/* Hero sections: hard height required (children are position: absolute) */
 .h-screen-safe {
   height: 100vh;
-  height: -webkit-fill-available;
-  height: 100dvh;
+  height: 100svh;
 }
 
 .h-screen-stable {
   height: 100vh;
-  height: -webkit-fill-available;
   height: 100svh;
 }
 
+/* Content sections: min-height (flow content sizes naturally) */
 .min-h-50-stable {
   min-height: 50vh;
   min-height: 50svh;
@@ -185,10 +186,9 @@
   min-height: 70svh;
 }
 
-/* Portfolio hero heights */
+/* Portfolio hero: hard height (absolutely positioned images) */
 .h-portfolio-hero {
   height: 60vh;
-  height: -webkit-fill-available;
   height: 60svh;
 }
 
@@ -495,15 +495,11 @@
     transform: translateY(20px);
     transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                 transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    /* Hint to browser: will animate these properties */
-    will-change: opacity, transform;
   }
 
   .animate-on-scroll.is-visible {
     opacity: 1;
     transform: translateY(0);
-    /* Remove hint after animation completes to free GPU memory */
-    will-change: auto;
   }
 
   /* ========================================

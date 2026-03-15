@@ -23,6 +23,7 @@ pnpm-debug.log*
 # editor settings
 .idea/
 .cursor/
+.zed/
 
 # local / generated
 .axon/

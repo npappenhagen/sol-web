@@ -142,6 +142,12 @@ const pages = defineCollection({
       intro_headshot: z.string().optional(),
       stats: z.array(z.object({ number: z.string(), label: z.string() })),
       featured_slugs: z.array(z.string()),
+      testimonials: z.array(z.object({
+        quote: z.string(),
+        author: z.string(),
+        context: z.string().optional(),
+        image: z.string().optional(),
+      })).optional(),
     }),
     z.object({
       _page: z.literal('about'),

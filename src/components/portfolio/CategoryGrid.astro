@@ -31,7 +31,7 @@ const categories = [
     {categories.map(({ slug, label, image, position }) => (
       <a
         href={`/portfolio/${slug}`}
-        class="category-panel group relative block h-[50vh] min-h-[350px] lg:min-h-[400px] overflow-hidden rounded-sm"
+        class="category-panel group relative block min-h-50-stable min-h-[350px] lg:min-h-[400px] overflow-hidden rounded-sm"
       >
         {/* Responsive image with WebP support */}
         {hasVariants(image) ? (

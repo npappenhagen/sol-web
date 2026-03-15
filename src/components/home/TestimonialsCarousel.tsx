@@ -5,6 +5,7 @@ interface Testimonial {
   quote: string
   author: string
   context?: string
+  image?: string
 }
 
 interface Props {
@@ -146,23 +147,42 @@ export default function TestimonialsCarousel({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.4, ease: 'easeOut' }}
+              className="flex flex-col md:flex-row items-center gap-8 md:gap-12"
             >
-              {/* Quote */}
-              <blockquote className="font-display text-lg md:text-2xl lg:text-3xl text-white leading-relaxed italic">
-                &ldquo;{current.quote}&rdquo;
-              </blockquote>
+              {/* Portrait - polaroid style */}
+              {current.image && (
+                <div className="flex-shrink-0 -rotate-2 hover:rotate-0 transition-transform duration-500">
+                  <div className="bg-white p-2 pb-8 shadow-2xl shadow-black/30">
+                    <img
+                      src={current.image}
+                      alt={current.author}
+                      className="w-32 h-40 md:w-40 md:h-52 object-cover"
+                      loading="lazy"
+                    />
+                    <p className="text-center font-serif text-xs text-[var(--sol-charcoal)]/60 mt-2 italic">
+                      {current.author}
+                    </p>
+                  </div>
+                </div>
+              )}
 
-              {/* Author + context */}
-              <footer className="mt-6">
-                <p className="font-sans text-sm tracking-[0.15em] uppercase text-white/70">
-                  &mdash; {current.author}
-                  {current.context && (
-                    <span className="block mt-1 text-xs tracking-[0.1em] uppercase text-white/50">
-                      {current.context}
-                    </span>
-                  )}
-                </p>
-              </footer>
+              {/* Quote + attribution */}
+              <div className={current.image ? 'text-left' : 'text-center'}>
+                <blockquote className="font-display text-lg md:text-2xl lg:text-3xl text-white leading-relaxed italic">
+                  &ldquo;{current.quote}&rdquo;
+                </blockquote>
+
+                <footer className="mt-6">
+                  <p className="font-sans text-sm tracking-[0.15em] uppercase text-white/70">
+                    &mdash; {current.author}
+                    {current.context && (
+                      <span className="block mt-1 text-xs tracking-[0.1em] uppercase text-white/50">
+                        {current.context}
+                      </span>
+                    )}
+                  </p>
+                </footer>
+              </div>
             </motion.div>
           </AnimatePresence>
 

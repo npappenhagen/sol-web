@@ -14,11 +14,9 @@ const { services } = Astro.props
 
 // Service taglines for emotional storytelling
 const taglines: Record<string, string> = {
-  'Portrait': 'Moments that matter',
   'Portraits': 'Moments that matter',
   'Branding': 'How you want to be seen',
   'Retreats': 'Capture the journey',
-  'Events': 'Capture the journey',
 };
 ---
 
@@ -58,13 +56,13 @@ const taglines: Record<string, string> = {
             {/* Overlay - darkens on hover */}
             <div class="absolute inset-0 bg-black/25 group-hover:bg-black/40 transition-colors duration-300" />
 
-            {/* Text content */}
-            <div class="absolute inset-0 flex flex-col items-center justify-end pb-5 gap-1">
-              <p class="font-sans text-xs tracking-widest uppercase text-[var(--sol-cream)]">
+            {/* Text content - centered, large typography */}
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+              <h3 class="font-display text-4xl sm:text-5xl md:text-6xl font-light italic text-[var(--sol-cream)] tracking-wide drop-shadow-lg">
                 {name}
-              </p>
+              </h3>
               {taglines[name] && (
-                <p class="font-serif text-sm italic text-[var(--sol-cream)]/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <p class="font-sans text-xs sm:text-sm tracking-[0.2em] uppercase text-[var(--sol-cream)]/80 mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   {taglines[name]}
                 </p>
               )}

@@ -35,7 +35,7 @@ process:
       description: "Your gallery delivered within 2 weeks, ready to share and print."
 
 services:
-  - name: Portrait
+  - name: Portraits
     tagline: "Families. Couples. Maternity. Moments that matter."
     description: "Unhurried sessions that capture your people as they actually are. Laughing, connected, real. Whether it's a growing belly, a reunion, or just a Tuesday that deserves to be remembered."
     ideal_for:
@@ -60,7 +60,7 @@ services:
           - "Multiple locations"
           - "Private online gallery"
           - "Outfit changes"
-    image: /media/portfolio/portraits/2026-portrait-portfolio-75.jpg
+    image: /media/portfolio/family/2026-family-portfolio-54.jpg
     carousel_mode: auto
     carousel_count: 12
     portfolio_slug: portraits
@@ -155,7 +155,7 @@ services:
           - "Marketing assets"
           - "Expedited delivery available"
     what_to_expect: "It starts with a consultation and planning session to define the goals and vision of your retreat. Throughout the event, I document candid moments, connections, and the details that make your gathering special. You'll receive sneak peeks within 24 hours for social, with full gallery delivery in 2-3 weeks."
-    image: /media/portfolio/events/2026-retreat-portfolio-27.jpg
+    image: /media/portfolio/events/2026-retreat-portfolio-46.jpg
     carousel_mode: auto
     carousel_count: 12
     portfolio_slug: events

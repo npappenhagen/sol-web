@@ -3,7 +3,7 @@ title: Retreats
 category: events
 date: 2026-01-01
 description: "Retreats, ceremonies, gatherings. The energy of people coming together, documented with warmth and intention."
-cover: /media/portfolio/events/2026-retreat-portfolio-1.jpg
+cover: /media/portfolio/events/2026-retreat-portfolio-46.jpg
 cover_position: top
 carousel_mode: auto
 carousel_count: 4
@@ -22,23 +22,20 @@ images:
   - src: /media/portfolio/events/2026-retreat-portfolio-10.jpg
     hidden: false
     date_taken: "2023-04-22"
-    hue: 25
+    hue: 31
     width: 3333
     height: 5000
     orientation: portrait
     tags:
       - beach
-      - bp
-      - feminine
       - food
       - goddess day
-      - recess
       - retreat
       - surf
   - src: /media/portfolio/events/2026-retreat-portfolio-11.jpg
     hidden: false
     date_taken: "2023-04-22"
-    hue: 31
+    hue: 24
     width: 3333
     height: 5000
     orientation: portrait
@@ -59,33 +56,20 @@ images:
       - beach
       - food
       - goddess day
+      - recess
       - retreat
       - surf
   - src: /media/portfolio/events/2026-retreat-portfolio-13.jpg
     hidden: false
-    date_taken: "2023-04-22"
-    hue: 24
-    width: 3333
-    height: 5000
-    orientation: portrait
-    tags:
-      - beach
-      - food
-      - goddess day
-      - recess
-      - retreat
-      - surf
-  - src: /media/portfolio/events/2026-retreat-portfolio-14.jpg
-    hidden: false
     date_taken: "2023-07-20"
-    hue: 38
+    hue: 30
     width: 3333
     height: 5000
     orientation: portrait
     tags:
       - fave
       - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-15.jpg
+  - src: /media/portfolio/events/2026-retreat-portfolio-14.jpg
     hidden: false
     date_taken: "2025-05-17"
     hue: 23
@@ -95,7 +79,7 @@ images:
     tags:
       - feminine
       - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-16.jpg
+  - src: /media/portfolio/events/2026-retreat-portfolio-15.jpg
     hidden: false
     date_taken: "2025-05-17"
     hue: 26
@@ -104,7 +88,7 @@ images:
     orientation: portrait
     tags:
       - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-17.jpg
+  - src: /media/portfolio/events/2026-retreat-portfolio-16.jpg
     hidden: false
     date_taken: "2025-05-17"
     hue: 28
@@ -113,7 +97,7 @@ images:
     orientation: landscape
     tags:
       - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-18.jpg
+  - src: /media/portfolio/events/2026-retreat-portfolio-17.jpg
     hidden: false
     date_taken: "2025-05-17"
     hue: 29
@@ -122,8 +106,9 @@ images:
     orientation: landscape
     tags:
       - bp
+      - fp
       - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-19.jpg
+  - src: /media/portfolio/events/2026-retreat-portfolio-18.jpg
     hidden: false
     date_taken: "2025-11-16"
     hue: 24
@@ -132,6 +117,18 @@ images:
     orientation: portrait
     tags:
       - lp
+      - retreat
+  - src: /media/portfolio/events/2026-retreat-portfolio-19.jpg
+    hidden: false
+    date_taken: "2025-11-16"
+    hue: 22
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+      - maternity
+      - maternity portfolio
       - retreat
   - src: /media/portfolio/events/2026-retreat-portfolio-2.jpg
     hidden: false
@@ -142,22 +139,11 @@ images:
     tags:
       - baby
       - beach
-      - family
       - lp
       - recess
       - retreat
       - sunset
   - src: /media/portfolio/events/2026-retreat-portfolio-20.jpg
-    hidden: false
-    date_taken: "2025-11-16"
-    hue: 22
-    width: 3333
-    height: 5000
-    orientation: portrait
-    tags:
-      - lp
-      - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-21.jpg
     hidden: false
     date_taken: "2025-11-16"
     hue: 28
@@ -167,43 +153,51 @@ images:
     tags:
       - lp
       - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-22.jpg
+  - src: /media/portfolio/events/2026-retreat-portfolio-21.jpg
     hidden: false
     date_taken: "2025-11-16"
     hue: 21
-    width: 3333
-    height: 5000
-    orientation: portrait
+    width: 5000
+    height: 3333
+    orientation: landscape
     tags:
       - bp
+      - retreat
+  - src: /media/portfolio/events/2026-retreat-portfolio-22.jpg
+    hidden: false
+    date_taken: "2025-11-16"
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
       - retreat
   - src: /media/portfolio/events/2026-retreat-portfolio-23.jpg
     hidden: false
     date_taken: "2025-11-16"
     hue: 21
-    width: 5000
-    height: 3333
-    orientation: landscape
-    tags:
-      - bp
-      - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-24.jpg
-    hidden: false
-    date_taken: "2025-11-16"
-    width: 5000
-    height: 3333
-    orientation: landscape
-    tags:
-      - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-25.jpg
-    hidden: false
-    date_taken: "2025-11-16"
-    hue: 21
     width: 3333
     height: 5000
     orientation: portrait
     tags:
       - bp
+      - lp
+      - retreat
+  - src: /media/portfolio/events/2026-retreat-portfolio-24.jpg
+    hidden: false
+    date_taken: "2025-11-16"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - lp
+      - retreat
+  - src: /media/portfolio/events/2026-retreat-portfolio-25.jpg
+    hidden: false
+    date_taken: "2025-11-16"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
       - lp
       - retreat
   - src: /media/portfolio/events/2026-retreat-portfolio-26.jpg
@@ -218,30 +212,30 @@ images:
   - src: /media/portfolio/events/2026-retreat-portfolio-27.jpg
     hidden: false
     date_taken: "2025-11-16"
-    width: 3333
-    height: 5000
-    orientation: portrait
-    tags:
-      - lp
-      - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-28.jpg
-    hidden: false
-    date_taken: "2025-11-16"
-    width: 3333
-    height: 5000
-    orientation: portrait
-    tags:
-      - lp
-      - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-29.jpg
-    hidden: false
-    date_taken: "2025-11-16"
     hue: 57
     width: 5000
     height: 3333
     orientation: landscape
     tags:
       - lp
+      - retreat
+  - src: /media/portfolio/events/2026-retreat-portfolio-28.jpg
+    hidden: false
+    date_taken: "2025-12-04"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - retreat
+  - src: /media/portfolio/events/2026-retreat-portfolio-29.jpg
+    hidden: false
+    date_taken: "2026-03-04"
+    hue: 27
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
       - retreat
   - src: /media/portfolio/events/2026-retreat-portfolio-3.jpg
     hidden: false
@@ -256,24 +250,6 @@ images:
       - retreat
   - src: /media/portfolio/events/2026-retreat-portfolio-30.jpg
     hidden: false
-    date_taken: "2025-12-04"
-    width: 3333
-    height: 5000
-    orientation: portrait
-    tags:
-      - bp
-      - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-31.jpg
-    hidden: false
-    date_taken: "2026-03-04"
-    hue: 27
-    width: 5000
-    height: 3333
-    orientation: landscape
-    tags:
-      - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-32.jpg
-    hidden: false
     date_taken: "2026-03-04"
     hue: 23
     width: 5000
@@ -281,7 +257,7 @@ images:
     orientation: landscape
     tags:
       - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-33.jpg
+  - src: /media/portfolio/events/2026-retreat-portfolio-31.jpg
     hidden: false
     date_taken: "2026-03-04"
     hue: 27
@@ -290,7 +266,7 @@ images:
     orientation: portrait
     tags:
       - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-34.jpg
+  - src: /media/portfolio/events/2026-retreat-portfolio-32.jpg
     hidden: false
     date_taken: "2026-03-05"
     hue: 29
@@ -299,7 +275,7 @@ images:
     orientation: portrait
     tags:
       - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-35.jpg
+  - src: /media/portfolio/events/2026-retreat-portfolio-33.jpg
     hidden: false
     date_taken: "2026-03-05"
     hue: 23
@@ -308,7 +284,7 @@ images:
     orientation: portrait
     tags:
       - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-36.jpg
+  - src: /media/portfolio/events/2026-retreat-portfolio-34.jpg
     hidden: false
     date_taken: "2026-03-05"
     hue: 17
@@ -317,16 +293,16 @@ images:
     orientation: landscape
     tags:
       - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-37.jpg
+  - src: /media/portfolio/events/2026-retreat-portfolio-35.jpg
     hidden: false
     date_taken: "2026-03-05"
-    hue: 11
+    hue: 16
     width: 3333
     height: 5000
     orientation: portrait
     tags:
       - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-38.jpg
+  - src: /media/portfolio/events/2026-retreat-portfolio-36.jpg
     hidden: false
     date_taken: "2026-03-05"
     hue: 14
@@ -335,10 +311,28 @@ images:
     orientation: portrait
     tags:
       - retreat
-  - src: /media/portfolio/events/2026-retreat-portfolio-39.jpg
+  - src: /media/portfolio/events/2026-retreat-portfolio-37.jpg
     hidden: false
     date_taken: "2026-03-06"
     hue: 19
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - retreat
+  - src: /media/portfolio/events/2026-retreat-portfolio-38.jpg
+    hidden: false
+    date_taken: "2026-03-06"
+    hue: 25
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - retreat
+  - src: /media/portfolio/events/2026-retreat-portfolio-39.jpg
+    hidden: false
+    date_taken: "2026-03-06"
+    hue: 37
     width: 3333
     height: 5000
     orientation: portrait
@@ -360,7 +354,7 @@ images:
   - src: /media/portfolio/events/2026-retreat-portfolio-40.jpg
     hidden: false
     date_taken: "2026-03-06"
-    hue: 25
+    hue: 26
     width: 3333
     height: 5000
     orientation: portrait
@@ -369,7 +363,7 @@ images:
   - src: /media/portfolio/events/2026-retreat-portfolio-41.jpg
     hidden: false
     date_taken: "2026-03-06"
-    hue: 37
+    hue: 29
     width: 3333
     height: 5000
     orientation: portrait
@@ -378,7 +372,7 @@ images:
   - src: /media/portfolio/events/2026-retreat-portfolio-42.jpg
     hidden: false
     date_taken: "2026-03-06"
-    hue: 26
+    hue: 25
     width: 3333
     height: 5000
     orientation: portrait
@@ -387,7 +381,6 @@ images:
   - src: /media/portfolio/events/2026-retreat-portfolio-43.jpg
     hidden: false
     date_taken: "2026-03-06"
-    hue: 29
     width: 3333
     height: 5000
     orientation: portrait
@@ -396,7 +389,7 @@ images:
   - src: /media/portfolio/events/2026-retreat-portfolio-44.jpg
     hidden: false
     date_taken: "2026-03-06"
-    hue: 25
+    hue: 18
     width: 3333
     height: 5000
     orientation: portrait
@@ -412,8 +405,8 @@ images:
       - retreat
   - src: /media/portfolio/events/2026-retreat-portfolio-46.jpg
     hidden: false
-    date_taken: "2026-03-06"
-    hue: 18
+    date_taken: "2026-03-08"
+    hue: 29
     width: 3333
     height: 5000
     orientation: portrait
@@ -421,7 +414,8 @@ images:
       - retreat
   - src: /media/portfolio/events/2026-retreat-portfolio-47.jpg
     hidden: false
-    date_taken: "2026-03-06"
+    date_taken: "2026-03-08"
+    hue: 24
     width: 3333
     height: 5000
     orientation: portrait
@@ -429,18 +423,13 @@ images:
       - retreat
   - src: /media/portfolio/events/2026-retreat-portfolio-48.jpg
     hidden: false
-    date_taken: "2026-03-07"
-    hue: 18
-    width: 3333
-    height: 5000
-    orientation: portrait
-  - src: /media/portfolio/events/2026-retreat-portfolio-49.jpg
-    hidden: false
     date_taken: "2026-03-08"
-    hue: 19
-    width: 3333
-    height: 5000
-    orientation: portrait
+    hue: 25
+    width: 5000
+    height: 3333
+    orientation: landscape
+    tags:
+      - retreat
   - src: /media/portfolio/events/2026-retreat-portfolio-5.jpg
     hidden: false
     date_taken: "2023-04-22"
@@ -502,7 +491,7 @@ images:
   - src: /media/portfolio/events/2026-retreat-portfolio-9.jpg
     hidden: false
     date_taken: "2023-04-22"
-    hue: 34
+    hue: 25
     width: 3333
     height: 5000
     orientation: portrait
@@ -519,18 +508,21 @@ tags:
   - baby
   - beach
   - bp
-  - family
   - fave
   - feminine
   - food
+  - fp
   - goddess day
   - lp
+  - maternity
+  - maternity portfolio
   - recess
   - retreat
   - sunset
   - surf
 featured: true
 ---
+
 
 
 

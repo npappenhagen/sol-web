@@ -21,7 +21,7 @@ interface Props {
   currentUrl?: string
 }
 
-export default function NavDropdown({ label, href, items, isActive, currentUrl }: Props) {
+export default function NavDropdown({ label, items, isActive, currentUrl }: Props) {
   // Track current URL in state to handle View Transitions
   const [activeUrl, setActiveUrl] = useState(currentUrl ?? '')
 
@@ -69,14 +69,6 @@ export default function NavDropdown({ label, href, items, isActive, currentUrl }
         sideOffset={8}
         className="bg-[var(--sol-cream)] border-[var(--sol-sage)]/40 min-w-[140px]"
       >
-        <DropdownMenuItem asChild>
-          <a
-            href={href}
-            className="font-sans text-xs tracking-widest text-[var(--sol-charcoal)] hover:text-[var(--sol-caramel)] hover:bg-[var(--sol-sage)]/20 cursor-pointer"
-          >
-            View All
-          </a>
-        </DropdownMenuItem>
         {items.map((item) => (
           <DropdownMenuItem key={item.href} asChild>
             <a
