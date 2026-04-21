@@ -201,6 +201,52 @@ Consider adding P0 items to tech debt tracker for visibility.
 
 ---
 
+## 7. Session 2026-04-15 — Field-Test Fixes
+
+User reported five issues after a field test. All addressed in this session except where explicitly deferred.
+
+### 🦄 Testimonial images load slow — DONE
+`TestimonialsCarousel.tsx` was rendering raw 4–8 MB JPGs at `<img>` with lazy-loading. WebP variants (400/800/1200/1920w) already existed on disk but were unused.
+- `src/lib/image-url.ts` — `hasVariants()` extended to recognize `/media/testimonials/` and `/media/pages/`.
+- `src/components/home/TestimonialsCarousel.tsx` — portrait + background `<img>` swapped to `ResponsiveImage` (picture + srcset + sizes).
+- **Impact:** portrait drops from ~5 MB → ~20 KB (400w WebP); background uses 1920w WebP via srcset.
+
+### 🦄 About page photos huge / slow — DONE
+Framed by user as Chrome-vs-Brave; root cause was browser-agnostic — 5–6 MB raw JPGs with no variants for `/media/pages/`.
+- Generated WebP variants for all 11 files in `public/media/pages/` (43 variants total).
+- `scripts/sync-photos.py` — removed the `headshots` exclusion from variant generation so future syncs keep the variants in sync.
+- `src/pages/about.astro` — collage + single-headshot `<img>` replaced with inline `<picture>` using `getSrcSet()` / `getDefaultSrc()`.
+- **Impact:** Laurel-headshot-3 drops from 5.9 MB → 198 KB (1200w WebP) or 37 KB (400w).
+
+### 🦄 Chrome Nav → Services → Retreats lands at footer — DONE
+Not a Chrome bug. Href (`/services#events`) and target (`id="events"`) match. Root cause: Astro View Transitions navigates + browser scrolls to anchor *before* lazy-loaded images above the target finish loading. Page height grows after scroll → target falls below viewport. Brave Shields strips enough requests that timing differs.
+- `src/styles/global.css` — `:target { scroll-margin-top }` bumped `5rem → 6rem` (match the 96px desktop nav).
+- `src/layouts/Layout.astro` — added inline `retryHashScroll()` script that re-applies `scrollIntoView` on `astro:page-load` and after images above the target finish loading (safety-capped at 1.5s).
+- **Impact:** fix is browser-agnostic. Brave/Chrome/Safari should all land below the nav.
+
+### 🦄 Logo refresh from new `Sol Photo Logo Assets/` pack — DONE (with one deferred)
+New assets moved into `public/media/site/logos/2026/` (14 SVGs + 14 @3x PNGs).
+- `public/favicon.svg` replaced with `Sol_Photo_Symbol_Black_Small.svg`.
+- `public/favicon.ico` regenerated as multi-size (16/32/48) from Symbol_Black_Lrg@3x.
+- `public/apple-touch-icon.png` regenerated at 180×180 with cream background.
+- `public/media/site/og-image.jpg` regenerated: Lockup_Centered_Black composited on 1200×630 cream. Old file preserved at `og-image-pre2026.jpg`.
+- `src/content/pages/site.yaml` — `footer_logo` → `Sol_Photo_Lockup_Centered_White.svg`; `nav_logo` / `nav_logo_white` → Symbol SVGs (primed for C4).
+- **Deferred (C4):** nav wordmark currently stays typography-only. Adding the small symbol glyph left of "SOL / PHOTOGRAPHY" is a visible identity change — flagged for Laurel sign-off before merging.
+
+### 🟡 Testimonial creative redesign — OPEN (Phase D)
+Editorial art-house direction agreed (asymmetric magazine spread, rectangular portrait block, oversized opening quote glyph as graphic mark, № 01 / 05 metadata strip, hairline pagination rule). Plan saved at `.claude/plans/jazzy-kindling-sky.md` §Phase D. Flagged for Laurel review.
+
+---
+
+## 8. Known Open Issues — Deferred
+
+Preserving detail so we can revisit without re-discovering.
+
+### Brave mobile — viewport displaces 90px on scroll
+Only reproduces on Brave mobile. Scrolling causes the viewport to jump ~90px, likely tied to Brave's address-bar show/hide behavior interacting with our `svh` hero heights or `overscroll-behavior`. Investigated previously; no conclusive root cause. **Keep this note — do not delete.** Next time it surfaces, check: (a) Brave's bottom-bar gesture mode, (b) whether `dvh` is still referenced anywhere (should be `svh`), (c) Brave Shields fingerprinting-protection interactions with ResizeObserver.
+
+---
+
 ## 5. Screenshot Reference
 
 | # | File | What it shows |

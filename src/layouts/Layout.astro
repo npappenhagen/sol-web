@@ -196,6 +196,133 @@ const ogImageUrl = new URL(image, Astro.site);
 document.addEventListener('astro:page-load', initScrollAnimations)
     </script>
 
+    <!-- Cross-page hash navigation — hash-stripping approach.
+
+         The browser's default hash scroll fires at an unstable moment (after
+         DOM swap, before images/hydration settle). Fighting it reactively
+         caused the earlier "jumps to footer" on initial nav AND a second-order
+         bug where corrective scrolls fired AFTER the user had already interacted.
+
+         This pass takes the hash out of the navigation URL entirely. We stash
+         the intended anchor, navigate to the bare path, and only after the
+         destination page is fully settled do we scroll to the anchor and
+         restore the hash in the URL. The browser never attempts its own
+         hash scroll because there's no hash in the URL during nav. -->
+    <script is:inline>
+      (function () {
+        if ('scrollRestoration' in history) {
+          history.scrollRestoration = 'manual'
+        }
+
+        const PENDING_KEY = '__sol_pending_hash__'
+
+        function instantScrollTo(target) {
+          try {
+            target.scrollIntoView({ block: 'start', behavior: 'instant' })
+          } catch {
+            target.scrollIntoView({ block: 'start' })
+          }
+        }
+
+        document.addEventListener(
+          'click',
+          function (e) {
+            if (e.defaultPrevented) return
+            if (e.button !== 0) return
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+
+            const anchor = e.target && e.target.closest ? e.target.closest('a[href]') : null
+            if (!anchor) return
+            if (anchor.target && anchor.target !== '' && anchor.target !== '_self') return
+
+            const href = anchor.getAttribute('href')
+            if (!href || href.indexOf('#') === -1) return
+
+            let url
+            try {
+              url = new URL(anchor.href, window.location.href)
+            } catch {
+              return
+            }
+            if (url.origin !== window.location.origin) return
+            if (!url.hash || url.hash.length < 2) return
+
+            const samePath = url.pathname === window.location.pathname
+            if (samePath) return
+
+            e.preventDefault()
+            try {
+              sessionStorage.setItem(PENDING_KEY, url.hash.slice(1))
+            } catch { /* private browsing */ }
+            window.location.assign(url.pathname + url.search)
+          },
+          true
+        )
+
+        function consumePendingHash() {
+          let hash = null
+          try {
+            hash = sessionStorage.getItem(PENDING_KEY)
+          } catch { /* private browsing */ }
+          if (!hash) {
+            const direct = window.location.hash
+            if (!direct || direct.length < 2) return
+            hash = direct.slice(1)
+          } else {
+            try { sessionStorage.removeItem(PENDING_KEY) } catch { /* private browsing */ }
+          }
+
+          const target = document.getElementById(decodeURIComponent(hash))
+          if (!target) return
+
+          let cancelled = false
+          const cancel = function () {
+            cancelled = true
+            window.removeEventListener('wheel', cancel)
+            window.removeEventListener('touchstart', cancel)
+            window.removeEventListener('keydown', cancel)
+            window.removeEventListener('mousedown', cancel)
+          }
+          window.addEventListener('wheel', cancel, { once: true, passive: true })
+          window.addEventListener('touchstart', cancel, { once: true, passive: true })
+          window.addEventListener('keydown', cancel, { once: true })
+          window.addEventListener('mousedown', cancel, { once: true })
+
+          let lastHeight = 0
+          let stableFrames = 0
+          const maxWaitMs = 1500
+          const start = performance.now()
+
+          function tick() {
+            if (cancelled) return
+            const h = document.documentElement.scrollHeight
+            if (h === lastHeight) {
+              stableFrames += 1
+            } else {
+              stableFrames = 0
+              lastHeight = h
+            }
+            if (stableFrames >= 3 || performance.now() - start > maxWaitMs) {
+              if (!cancelled) {
+                instantScrollTo(target)
+                try {
+                  const next = window.location.pathname + window.location.search + '#' + hash
+                  history.replaceState(history.state, '', next)
+                } catch { /* private browsing */ }
+              }
+              cancel()
+              return
+            }
+            requestAnimationFrame(tick)
+          }
+          requestAnimationFrame(tick)
+        }
+
+        consumePendingHash()
+        document.addEventListener('astro:page-load', consumePendingHash)
+      })()
+    </script>
+
     <!-- Scroll debug initialization (only active with ?debug=scroll) -->
     <script>
       import { initScrollDebug } from '@/lib/scroll-debug'

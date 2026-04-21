@@ -467,8 +467,8 @@ def sync_category(category: str, dry_run: bool = False, cover_tags: dict | None 
             if not (is_gallery and f.suffix.lower() in (".jpg", ".jpeg")):
                 shutil.copy2(f, target)
 
-        # Generate responsive variants for gallery and mood images (not logos/headshots)
-        if not dry_run and category not in ("logos", "headshots") and f.suffix.lower() in (".jpg", ".jpeg"):
+        # Generate responsive variants for gallery, mood, testimonial, and page images (not logos)
+        if not dry_run and category != "logos" and f.suffix.lower() in (".jpg", ".jpeg"):
             dest_base = dest / safe_stem
             variants = generate_variants(f, dest_base)
             variants_generated += len(variants)

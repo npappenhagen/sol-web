@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import ResponsiveImage from '@/components/shared/ResponsiveImage'
 
 interface Testimonial {
   quote: string
@@ -14,10 +15,12 @@ interface Props {
   autoPlayInterval?: number
 }
 
+const pad2 = (n: number) => String(n).padStart(2, '0')
+
 export default function TestimonialsCarousel({
   testimonials,
   backgroundImages = [],
-  autoPlayInterval = 8000,
+  autoPlayInterval = 10000,
 }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
@@ -33,21 +36,18 @@ export default function TestimonialsCarousel({
     setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length)
   }, [testimonials.length])
 
-  // Auto-advance
   useEffect(() => {
     if (isPaused || testimonials.length <= 1) return
     const timer = setInterval(goToNext, autoPlayInterval)
     return () => clearInterval(timer)
   }, [isPaused, goToNext, autoPlayInterval, testimonials.length])
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!containerRef.current) return
       const rect = containerRef.current.getBoundingClientRect()
       const inView = rect.top < window.innerHeight && rect.bottom > 0
       if (!inView) return
-
       if (e.key === 'ArrowLeft') {
         e.preventDefault()
         goToPrev()
@@ -58,31 +58,22 @@ export default function TestimonialsCarousel({
         setIsPaused(true)
       }
     }
-
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [goToNext, goToPrev])
 
-  // Touch/swipe handlers
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX
     touchEndX.current = e.touches[0].clientX
   }
-
   const handleTouchMove = (e: React.TouchEvent) => {
     touchEndX.current = e.touches[0].clientX
   }
-
   const handleTouchEnd = () => {
     const diff = touchStartX.current - touchEndX.current
-    const threshold = 50
-
-    if (Math.abs(diff) > threshold) {
-      if (diff > 0) {
-        goToNext()
-      } else {
-        goToPrev()
-      }
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) goToNext()
+      else goToPrev()
       setIsPaused(true)
     }
   }
@@ -90,129 +81,217 @@ export default function TestimonialsCarousel({
   const current = testimonials[currentIndex]
   if (!current) return null
 
-  // Each testimonial gets its own background image (cycling through available)
-  const bgImage = backgroundImages.length > 0
-    ? backgroundImages[currentIndex % backgroundImages.length]
-    : null
+  const bgImage =
+    backgroundImages.length > 0 ? backgroundImages[currentIndex % backgroundImages.length] : null
+
+  const categoryLabel = (current.context || 'Session').toUpperCase()
+  const issueNumber = `№ ${pad2(currentIndex + 1)} / ${pad2(testimonials.length)}`
 
   return (
     <section
       ref={containerRef}
-      className="py-16 px-6"
+      className="py-14 md:py-20 px-6"
       role="region"
       aria-label="Client testimonials"
       aria-roledescription="carousel"
     >
-      {/* Constrained card container - matches ServicePreview grid width */}
       <div
-        className="relative max-w-5xl mx-auto rounded-2xl overflow-hidden"
+        className="relative max-w-5xl mx-auto overflow-hidden rounded-sm"
+        style={{ minHeight: 'clamp(420px, 48vh, 520px)' }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Background image with overlay - crossfade between images */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={bgImage}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
-            className="absolute inset-0 z-0"
-          >
-            {bgImage ? (
-              <>
-                <img
+        {/* Mood background — full-bleed, real presence */}
+        <div className="absolute inset-0 overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={bgImage}
+              initial={{ opacity: 0, scale: 1.04 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="absolute inset-0"
+            >
+              {bgImage ? (
+                <ResponsiveImage
                   src={bgImage}
                   alt=""
                   className="absolute inset-0 w-full h-full object-cover"
                   loading="lazy"
+                  sizes="hero"
                 />
-                <div className="absolute inset-0 bg-black/50" />
-              </>
-            ) : (
-              <div className="absolute inset-0 bg-[var(--sol-forest)]" />
-            )}
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Content */}
-        <div className="relative z-10 px-8 py-16 md:px-16 md:py-20 text-center">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentIndex}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.4, ease: 'easeOut' }}
-              className="flex flex-col md:flex-row items-center gap-8 md:gap-12"
-            >
-              {/* Portrait - polaroid style */}
-              {current.image && (
-                <div className="flex-shrink-0 -rotate-2 hover:rotate-0 transition-transform duration-500">
-                  <div className="bg-white p-2 pb-8 shadow-2xl shadow-black/30">
-                    <img
-                      src={current.image}
-                      alt={current.author}
-                      className="w-32 h-40 md:w-40 md:h-52 object-cover"
-                      loading="lazy"
-                    />
-                    <p className="text-center font-serif text-xs text-[var(--sol-charcoal)]/60 mt-2 italic">
-                      {current.author}
-                    </p>
-                  </div>
-                </div>
+              ) : (
+                <div className="absolute inset-0 bg-[var(--sol-forest)]" />
               )}
-
-              {/* Quote + attribution */}
-              <div className={current.image ? 'text-left' : 'text-center'}>
-                <blockquote className="font-display text-lg md:text-2xl lg:text-3xl text-white leading-relaxed italic">
-                  &ldquo;{current.quote}&rdquo;
-                </blockquote>
-
-                <footer className="mt-6">
-                  <p className="font-sans text-sm tracking-[0.15em] uppercase text-white/70">
-                    &mdash; {current.author}
-                    {current.context && (
-                      <span className="block mt-1 text-xs tracking-[0.1em] uppercase text-white/50">
-                        {current.context}
-                      </span>
-                    )}
-                  </p>
-                </footer>
-              </div>
             </motion.div>
           </AnimatePresence>
+          {/* Left-weighted dark scrim for text contrast; keeps right side photo-visible */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(90deg, rgba(20,26,22,0.78) 0%, rgba(20,26,22,0.55) 45%, rgba(20,26,22,0.15) 100%)',
+            }}
+          />
+        </div>
 
-          {/* Dots */}
-          {testimonials.length > 1 && (
+        {/* Content grid */}
+        <div className="relative grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 items-center px-7 md:px-12 py-10 md:py-14">
+          {/* Portrait — rectangular editorial block, not a polaroid */}
+          {current.image && (
+            <div className="md:col-span-4">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`img-${currentIndex}`}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  className="relative max-w-[200px] md:max-w-none"
+                >
+                  <div
+                    className="relative overflow-hidden shadow-[0_20px_40px_-20px_rgba(0,0,0,0.6)]"
+                    style={{ aspectRatio: '3 / 4' }}
+                  >
+                    <ResponsiveImage
+                      src={current.image}
+                      alt={current.author}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      loading="lazy"
+                      sizes="(max-width: 768px) 200px, 260px"
+                    />
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          )}
+
+          {/* Typography column */}
+          <div className={current.image ? 'md:col-span-8' : 'md:col-span-12'}>
+            {/* Metadata strip */}
+            <div className="flex items-baseline gap-3 mb-5">
+              <span
+                className="font-sans text-[10px] md:text-[11px] text-white/60"
+                style={{ letterSpacing: '0.32em' }}
+              >
+                {issueNumber}
+              </span>
+              <span className="h-px flex-1 bg-white/25" />
+              <span
+                className="font-sans text-[10px] md:text-[11px] text-white/60"
+                style={{ letterSpacing: '0.32em' }}
+              >
+                {categoryLabel}
+              </span>
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentIndex}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.5, delay: 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
+              >
+                <blockquote
+                  className="font-display italic text-white leading-[1.2] text-xl md:text-[1.8rem] lg:text-[2rem]"
+                  style={{ maxWidth: '36ch' }}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="text-[var(--sol-caramel)]/70"
+                    style={{ marginRight: '0.12em' }}
+                  >
+                    &ldquo;
+                  </span>
+                  {current.quote}
+                  <span
+                    aria-hidden="true"
+                    className="text-[var(--sol-caramel)]/70"
+                    style={{ marginLeft: '0.08em' }}
+                  >
+                    &rdquo;
+                  </span>
+                </blockquote>
+
+                <footer className="mt-6 md:mt-7">
+                  <div className="h-px w-10 bg-white/35 mb-3" />
+                  <p
+                    className="font-sans text-[11px] md:text-xs text-white"
+                    style={{ letterSpacing: '0.24em' }}
+                  >
+                    {current.author.toUpperCase()}
+                  </p>
+                </footer>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Pagination — hairline rule with progress + counter, tucked to bottom edge */}
+        {testimonials.length > 1 && (
+          <div className="absolute left-7 right-7 md:left-12 md:right-12 bottom-5">
             <div
-              className="flex justify-center gap-2 mt-8"
-              role="tablist"
-              aria-label="Testimonial navigation"
+              className="flex items-center gap-4 font-sans text-[10px] text-white/55"
+              style={{ letterSpacing: '0.32em' }}
             >
-              {testimonials.map((_, index) => (
+              <button
+                type="button"
+                onClick={() => {
+                  goToPrev()
+                  setIsPaused(true)
+                }}
+                aria-label="Previous testimonial"
+                className="hover:text-white transition-colors"
+              >
+                &larr;
+              </button>
+              <div className="h-px flex-1 bg-white/20 relative overflow-hidden">
+                <motion.div
+                  key={`progress-${currentIndex}-${isPaused ? 'p' : 'r'}`}
+                  initial={{ width: '0%' }}
+                  animate={{ width: isPaused ? undefined : '100%' }}
+                  transition={{
+                    duration: isPaused ? 0 : autoPlayInterval / 1000,
+                    ease: 'linear',
+                  }}
+                  className="absolute inset-y-0 left-0 bg-[var(--sol-caramel)]"
+                />
+              </div>
+              <span aria-live="polite" className="tabular-nums">
+                {pad2(currentIndex + 1)} / {pad2(testimonials.length)}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  goToNext()
+                  setIsPaused(true)
+                }}
+                aria-label="Next testimonial"
+                className="hover:text-white transition-colors"
+              >
+                &rarr;
+              </button>
+            </div>
+            <div className="sr-only">
+              {testimonials.map((_, i) => (
                 <button
-                  key={index}
+                  key={i}
                   onClick={() => {
-                    setCurrentIndex(index)
+                    setCurrentIndex(i)
                     setIsPaused(true)
                   }}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    index === currentIndex
-                      ? 'bg-white w-6'
-                      : 'bg-white/30 hover:bg-white/50 w-1.5'
-                  }`}
+                  aria-label={`Go to testimonial ${i + 1}`}
+                  aria-selected={i === currentIndex}
                   role="tab"
-                  aria-selected={index === currentIndex}
-                  aria-label={`Testimonial ${index + 1}`}
                 />
               ))}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   )

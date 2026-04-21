@@ -78,11 +78,19 @@ const IMAGES_PER_MODULE = 5
  * Desktop bento grid that matches sibling content height.
  * Measures the adjacent content column and constrains itself to match.
  */
+// SSR default height. Pre-hydration, height: 'auto' lets the bento expand to
+// fit every image stacked (~5000px per block), which makes the SSR page
+// ~26000px tall. When JS measures + clamps post-hydration, the page collapses
+// massively and any scroll position above the new max gets stranded at the
+// footer. Seeding a sane initial height matches the typical sibling column
+// height so SSR layout ≈ hydrated layout.
+const SSR_DEFAULT_HEIGHT = 800
+
 export default function ServiceBento({ images, portfolioSlug }: Props) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const resizeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const [containerHeight, setContainerHeight] = useState<number | null>(null)
+  const [containerHeight, setContainerHeight] = useState<number>(SSR_DEFAULT_HEIGHT)
   const [canScroll, setCanScroll] = useState(false)
 
   // Measure sibling content column and match its height
@@ -160,7 +168,7 @@ export default function ServiceBento({ images, portfolioSlug }: Props) {
   // Check if content is scrollable (only on mount/resize, no scroll listener)
   useEffect(() => {
     const scrollContainer = scrollRef.current
-    if (!scrollContainer || containerHeight === null) return
+    if (!scrollContainer) return
 
     const hasOverflow = scrollContainer.scrollHeight > scrollContainer.clientHeight
     setCanScroll(hasOverflow)
@@ -183,7 +191,7 @@ export default function ServiceBento({ images, portfolioSlug }: Props) {
       <div
         ref={scrollRef}
         className="overflow-y-auto rounded-lg bento-scroll relative"
-        style={{ height: containerHeight ? `${containerHeight}px` : 'auto' }}
+        style={{ height: `${containerHeight}px` }}
       >
         <div className="space-y-3 p-1">
           {modules.map((moduleImages, idx) => (

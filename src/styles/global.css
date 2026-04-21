@@ -135,15 +135,14 @@
     --sidebar-ring: oklch(0.556 0 0);
 }
 
-/* Smooth scrolling for anchor links only - not for page navigation */
-@media (prefers-reduced-motion: no-preference) {
-  html:has(:target) {
-    scroll-behavior: smooth;
-  }
-}
-
+/* Scroll-margin keeps :target anchors below the fixed nav.
+   Intentionally NOT setting html { scroll-behavior: smooth }: combined with
+   View Transitions + lazy-loaded content, smooth scroll causes the browser
+   to animate between a stale anchor offset and the final position, which
+   users perceive as "jumps to the footer, then scrolls up". JS in
+   Layout.astro handles corrective scrolls with behavior: 'instant'. */
 :target {
-  scroll-margin-top: 5rem;
+  scroll-margin-top: 6rem;
 }
 
 /* ========================================

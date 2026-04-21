@@ -1,6 +1,11 @@
 ---
 import { NAV_LINKS } from '@/lib/navigation'
 import NavDropdown from './NavDropdown'
+import { getEntry } from 'astro:content'
+
+const site = await getEntry('pages', 'site')
+const navLogoSrc = site.data.nav_logo
+const navLogoAlt = site.data.logo_alt ?? 'Sol Photography'
 
 const currentPath = Astro.url.pathname
 const currentUrl = Astro.url.pathname + Astro.url.search
@@ -24,19 +29,19 @@ const mobileLinkClass = (href: string) => [
 // Dropdown items for Portfolio and Services
 // `indent` marks sub-categories that belong under a parent
 const portfolioItems = [
+  { href: '/portfolio/events', label: 'Retreats' },
   { href: '/portfolio/portraits', label: 'Portraits' },
   { href: '/portfolio/portraits?filter=family', label: 'Family', indent: true },
   { href: '/portfolio/portraits?filter=maternity', label: 'Maternity', indent: true },
   { href: '/portfolio/portraits?filter=couples', label: 'Couples', indent: true },
   { href: '/portfolio/branding', label: 'Branding' },
-  { href: '/portfolio/events', label: 'Retreats' },
 ]
 
 const serviceItems = [
   { href: '/services', label: 'All Services' },
+  { href: '/services#events', label: 'Retreats' },
   { href: '/services#portraits', label: 'Portraits' },
   { href: '/services#branding', label: 'Branding' },
-  { href: '/services#events', label: 'Retreats' },
 ]
 
 // Split links for layout
@@ -65,9 +70,14 @@ const rightLinks = NAV_LINKS.slice(3); // SERVICES, INQUIRE
         </li>
       ))}
     </ul>
-    <a href="/" class="flex flex-col items-center nav-logo-hover group">
-      <span class="font-display text-2xl tracking-[0.4em] text-[var(--sol-charcoal)] group-hover:text-[var(--sol-caramel)] transition-colors">SOL</span>
-      <span class="font-sans text-[10px] tracking-[0.35em] text-[var(--sol-charcoal)]/70 -mt-0.5">PHOTOGRAPHY</span>
+    <a href="/" class="flex items-center justify-center nav-logo-hover group" aria-label={navLogoAlt}>
+      <img
+        src={navLogoSrc}
+        alt={navLogoAlt}
+        width={307}
+        height={76}
+        class="h-10 md:h-12 w-auto transition-opacity group-hover:opacity-80"
+      />
     </a>
     <ul class="flex gap-8 justify-end">
       {rightLinks.map(({ href, label, reload }) => (
@@ -98,9 +108,14 @@ const rightLinks = NAV_LINKS.slice(3); // SERVICES, INQUIRE
 
   <!-- Mobile nav -->
   <div class="md:hidden flex items-center justify-between px-6 h-14">
-    <a href="/" class="flex items-center gap-1.5 nav-logo-hover">
-      <span class="font-display text-lg tracking-[0.3em] text-[var(--sol-charcoal)]">SOL</span>
-      <span class="font-sans text-[9px] tracking-[0.25em] text-[var(--sol-charcoal)]/70">PHOTOGRAPHY</span>
+    <a href="/" class="flex items-center nav-logo-hover" aria-label={navLogoAlt}>
+      <img
+        src={navLogoSrc}
+        alt={navLogoAlt}
+        width={307}
+        height={76}
+        class="h-7 w-auto"
+      />
     </a>
     <button
       type="button"

@@ -3,7 +3,8 @@ import Layout from '@/layouts/Layout.astro'
 import Hero from '@/components/home/Hero.astro'
 import { getEntry } from 'astro:content'
 import { getAllMoodImages } from '@/lib/carousel-images'
-import { SITE_NAME, SITE_URL, SOCIAL_PROFILES, SERVICE_AREAS } from '@/lib/constants'
+import { SITE_NAME, SITE_URL, SOCIAL_PROFILES } from '@/lib/constants'
+import { getSrcSet, getDefaultSrc, hasVariants } from '@/lib/image-url'
 
 const about = await getEntry('pages', 'about')
 const {
@@ -78,34 +79,37 @@ const allMoodImages = getAllMoodImages()
         <div class="grid grid-cols-12 gap-3">
           <!-- Primary image - larger, anchored -->
           <div class="col-span-8 col-start-1">
-            <img
-              src={collageImages[1]}
-              alt={heading}
-              class="w-full aspect-[3/4] object-cover"
-              loading="lazy"
-              decoding="async"
-            />
+            {hasVariants(collageImages[1]) ? (
+              <picture>
+                <source type="image/webp" srcset={getSrcSet(collageImages[1])} sizes="(max-width: 768px) 67vw, 400px" />
+                <img src={getDefaultSrc(collageImages[1])} alt={heading} class="w-full aspect-[3/4] object-cover" loading="lazy" decoding="async" />
+              </picture>
+            ) : (
+              <img src={collageImages[1]} alt={heading} class="w-full aspect-[3/4] object-cover" loading="lazy" decoding="async" />
+            )}
           </div>
           <!-- Secondary image - smaller, offset down -->
           <div class="col-span-5 col-start-8 -mt-[20%] relative z-10">
-            <img
-              src={collageImages[0]}
-              alt=""
-              class="w-full aspect-[3/4] object-cover"
-              loading="lazy"
-              decoding="async"
-            />
+            {hasVariants(collageImages[0]) ? (
+              <picture>
+                <source type="image/webp" srcset={getSrcSet(collageImages[0])} sizes="(max-width: 768px) 42vw, 250px" />
+                <img src={getDefaultSrc(collageImages[0])} alt="" class="w-full aspect-[3/4] object-cover" loading="lazy" decoding="async" />
+              </picture>
+            ) : (
+              <img src={collageImages[0]} alt="" class="w-full aspect-[3/4] object-cover" loading="lazy" decoding="async" />
+            )}
           </div>
         </div>
       </div>
     ) : (
-      <img
-        src={headshot}
-        alt={heading}
-        class="w-full aspect-[3/4] object-cover animate-on-scroll"
-        loading="lazy"
-        decoding="async"
-      />
+      hasVariants(headshot) ? (
+        <picture class="block animate-on-scroll">
+          <source type="image/webp" srcset={getSrcSet(headshot)} sizes="(max-width: 768px) 100vw, 500px" />
+          <img src={getDefaultSrc(headshot)} alt={heading} class="w-full aspect-[3/4] object-cover" loading="lazy" decoding="async" />
+        </picture>
+      ) : (
+        <img src={headshot} alt={heading} class="w-full aspect-[3/4] object-cover animate-on-scroll" loading="lazy" decoding="async" />
+      )
     )}
     <div class="animate-on-scroll" style="transition-delay: 0.1s;">
       <p class="font-sans text-xs tracking-widest uppercase text-[var(--sol-caramel)] mb-4">{subheading}</p>
@@ -120,6 +124,7 @@ const allMoodImages = getAllMoodImages()
         </svg>
       </a>
     </div>
+
   </section>
 
 </Layout>
