@@ -15,6 +15,7 @@ const { services } = Astro.props
 // Service taglines for emotional storytelling
 const taglines: Record<string, string> = {
   'Portraits': 'Moments that matter',
+  'Weddings & Elopements': 'Vows, witnessed',
   'Branding': 'How you want to be seen',
   'Retreats': 'Capture the journey',
 };
@@ -23,7 +24,7 @@ const taglines: Record<string, string> = {
 <section class="py-24 px-6">
   <div class="max-w-7xl mx-auto">
     <SectionLabel class="text-center block mb-12">What I shoot</SectionLabel>
-    <ul class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
+    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
       {services.map(({ name, image, portfolio_slug }) => (
         <li class="group relative aspect-[3/4] overflow-hidden">
           <a href={portfolio_slug ? `/portfolio/${portfolio_slug}` : '/services'}>
@@ -58,7 +59,7 @@ const taglines: Record<string, string> = {
 
             {/* Text content - centered, large typography */}
             <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-              <h3 class="font-display text-4xl sm:text-5xl md:text-6xl font-light italic text-[var(--sol-cream)] tracking-wide drop-shadow-lg">
+              <h3 class="font-display text-4xl sm:text-5xl lg:text-4xl xl:text-5xl font-light italic text-[var(--sol-cream)] tracking-wide drop-shadow-lg">
                 {name}
               </h3>
               {taglines[name] && (

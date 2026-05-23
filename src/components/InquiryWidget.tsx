@@ -389,7 +389,7 @@ export default function InquiryWidget() {
             }}
             aria-expanded={expanded}
             aria-controls="inquiry-form"
-            aria-label="Say hello — send a message"
+            aria-label="Say hello, send a message"
           >
             <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
             <Mail className="h-4 w-4 relative z-10" strokeWidth={1.5} />

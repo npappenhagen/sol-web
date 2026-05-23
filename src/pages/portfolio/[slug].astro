@@ -2,6 +2,7 @@
 import Layout from '@/layouts/Layout.astro'
 import GalleryGrid from '@/components/portfolio/GalleryGrid.tsx'
 import HeroCarousel from '@/components/home/HeroCarousel'
+import InlineTestimonial from '@/components/portfolio/InlineTestimonial.astro'
 import SectionLabel from '@/components/shared/SectionLabel.astro'
 import { getCollection } from 'astro:content'
 import { generateSelectionScript } from '@/lib/hero-selection'
@@ -166,6 +167,10 @@ const initialFilter: string | null = null
     </p>
   )}
 
+  {entry.data.testimonials && entry.data.testimonials.length > 0 && (
+    <InlineTestimonial testimonials={entry.data.testimonials} />
+  )}
+
   <div class="text-center pt-8 hero-text-cta">
     <a
       href={`#inquiry?context=${entry.slug}`}
@@ -200,4 +205,5 @@ const initialFilter: string | null = null
     category={category}
     initialFilter={initialFilter}
   />
+
 </Layout>

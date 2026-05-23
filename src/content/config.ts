@@ -35,7 +35,7 @@ const portfolio = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    category: z.enum(['portraits', 'family', 'maternity', 'couples', 'branding', 'events', 'architecture']),
+    category: z.enum(['portraits', 'family', 'maternity', 'couples', 'weddings', 'branding', 'events', 'architecture']),
     date: z.coerce.date(),
     description: z.string().optional(),
     cover: z.string(),
@@ -54,6 +54,12 @@ const portfolio = defineCollection({
     tags: z.array(z.string()).optional(),
     featured: z.boolean().default(false),
     sort_mode: z.enum(['manual', 'date_desc', 'rainbow_reverse', 'random', 'session_spread', 'color_spread']).default('manual'),
+    testimonials: z.array(z.object({
+      quote: z.string(),
+      author: z.string(),
+      context: z.string().optional(),
+      image: z.string().optional(),
+    })).optional(),
   }),
 })
 

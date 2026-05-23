@@ -90,14 +90,13 @@ export default function TestimonialsCarousel({
   return (
     <section
       ref={containerRef}
-      className="py-14 md:py-20 px-6"
+      className="py-10 md:py-14 px-6"
       role="region"
       aria-label="Client testimonials"
       aria-roledescription="carousel"
     >
       <div
-        className="relative max-w-5xl mx-auto overflow-hidden rounded-sm"
-        style={{ minHeight: 'clamp(420px, 48vh, 520px)' }}
+        className="relative max-w-4xl mx-auto overflow-hidden rounded-sm"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={handleTouchStart}
@@ -139,10 +138,10 @@ export default function TestimonialsCarousel({
         </div>
 
         {/* Content grid */}
-        <div className="relative grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 items-center px-7 md:px-12 py-10 md:py-14">
+        <div className="relative grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-8 items-center px-6 md:px-10 pt-8 pb-14 md:pt-10 md:pb-14">
           {/* Portrait — rectangular editorial block, not a polaroid */}
           {current.image && (
-            <div className="md:col-span-4">
+            <div className="md:col-span-3">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={`img-${currentIndex}`}
@@ -150,11 +149,11 @@ export default function TestimonialsCarousel({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  className="relative max-w-[200px] md:max-w-none"
+                  className="relative w-[160px] md:w-[200px] mx-auto md:mx-0"
                 >
                   <div
                     className="relative overflow-hidden shadow-[0_20px_40px_-20px_rgba(0,0,0,0.6)]"
-                    style={{ aspectRatio: '3 / 4' }}
+                    style={{ aspectRatio: '4 / 5' }}
                   >
                     <ResponsiveImage
                       src={current.image}
@@ -170,7 +169,7 @@ export default function TestimonialsCarousel({
           )}
 
           {/* Typography column */}
-          <div className={current.image ? 'md:col-span-8' : 'md:col-span-12'}>
+          <div className={current.image ? 'md:col-span-9' : 'md:col-span-12'}>
             {/* Metadata strip */}
             <div className="flex items-baseline gap-3 mb-5">
               <span
@@ -197,34 +196,31 @@ export default function TestimonialsCarousel({
                 transition={{ duration: 0.5, delay: 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
                 <blockquote
-                  className="font-display italic text-white leading-[1.2] text-xl md:text-[1.8rem] lg:text-[2rem]"
-                  style={{ maxWidth: '36ch' }}
+                  className="font-sans font-light text-white/95 text-[15px] md:text-base lg:text-[17px]"
+                  style={{
+                    maxWidth: '52ch',
+                    lineHeight: 1.75,
+                    letterSpacing: '0.005em',
+                  }}
                 >
-                  <span
-                    aria-hidden="true"
-                    className="text-[var(--sol-caramel)]/70"
-                    style={{ marginRight: '0.12em' }}
-                  >
-                    &ldquo;
-                  </span>
                   {current.quote}
-                  <span
-                    aria-hidden="true"
-                    className="text-[var(--sol-caramel)]/70"
-                    style={{ marginLeft: '0.08em' }}
-                  >
-                    &rdquo;
-                  </span>
                 </blockquote>
 
-                <footer className="mt-6 md:mt-7">
-                  <div className="h-px w-10 bg-white/35 mb-3" />
+                <footer className="mt-8 md:mt-10 flex items-baseline gap-4">
                   <p
-                    className="font-sans text-[11px] md:text-xs text-white"
-                    style={{ letterSpacing: '0.24em' }}
+                    className="font-display italic text-white text-lg md:text-xl"
                   >
-                    {current.author.toUpperCase()}
+                    {current.author}
                   </p>
+                  <span className="h-px flex-1 bg-white/25" />
+                  {current.context && (
+                    <p
+                      className="font-sans text-[10px] text-white/55"
+                      style={{ letterSpacing: '0.32em' }}
+                    >
+                      {current.context.toUpperCase()}
+                    </p>
+                  )}
                 </footer>
               </motion.div>
             </AnimatePresence>

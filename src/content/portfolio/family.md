@@ -84,6 +84,16 @@ images:
       - bp
       - family
       - lp
+  - src: /media/portfolio/family/2026-family-portfolio-16-copy.jpg
+    hidden: false
+    date_taken: "2025-01-04"
+    width: 3333
+    height: 5000
+    orientation: portrait
+    tags:
+      - bp
+      - family
+      - lp
   - src: /media/portfolio/family/2026-family-portfolio-16.jpg
     hidden: false
     date_taken: "2025-01-04"
@@ -685,6 +695,7 @@ tags:
   - testimonial
 featured: false
 ---
+
 
 
 

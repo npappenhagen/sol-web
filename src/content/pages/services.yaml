@@ -118,6 +118,31 @@ services:
     carousel_count: 12
     portfolio_slug: branding
 
+  - name: Weddings & Elopements
+    tagline: "Honest imagery. Your love story in focus."
+    description: "Intimate weddings and elopements throughout Costa Rica. I move quietly, observe before I capture, and bring a calm presence to a day that holds so much. No heavy posing. Just the two of you, the wild beauty of this country, and the love that brought you here."
+    ideal_for:
+      - "Elopements"
+      - "Intimate weddings"
+      - "Destination ceremonies in Costa Rica"
+      - "Couples who want presence over performance"
+    starting_note: "Weddings & elopements starting at $1500"
+    packages:
+      - name: "Custom"
+        duration: "Shaped around your day"
+        starting_price: 1500
+        includes:
+          - "Custom coverage shaped to your day"
+          - "Professionally edited gallery"
+          - "Private online gallery"
+          - "Travel within Guanacaste included"
+          - "Add-ons available: second shooter, rush delivery, fine art prints, albums"
+    what_to_expect: "Every couple's story is unique, and packages are tailored to the shape of yours, whether that's a quiet beach ceremony, a private waterfall elopement, or a full day with the people you love most. We start with a call to talk through your vision. On the day, I'm fully present: observing, gently guiding when you want it, and looking for the moments between the moments. The way you look at each other when no one's watching."
+    image: /media/portfolio/weddings/2026-wedding-portfolio-19.jpg
+    carousel_mode: auto
+    carousel_count: 12
+    portfolio_slug: weddings
+
   - name: Retreats
     tagline: "The energy of people coming together."
     description: "Retreats, ceremonies, and gatherings documented with warmth and intention. I blend into the background so you can focus on the moments that matter."

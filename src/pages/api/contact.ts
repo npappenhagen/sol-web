@@ -28,7 +28,7 @@ export const POST: APIRoute = async ({ request }) => {
     from: import.meta.env.CONTACT_FROM ?? 'onboarding@resend.dev',
     to: import.meta.env.CONTACT_TO,
     replyTo: email,
-    subject: `Sol Photography — message from ${name}`,
+    subject: `Sol Photography: message from ${name}`,
     text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
   })
 

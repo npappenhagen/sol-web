@@ -1,0 +1,26 @@
+---
+interface Testimonial {
+  quote: string
+  author: string
+  context?: string
+}
+interface Props {
+  testimonials: Testimonial[]
+}
+const { testimonials } = Astro.props
+
+// Build-time random pick. Re-shuffles on every deploy.
+// (Two quotes today, scales fine as more land.)
+const pick = testimonials[Math.floor(Math.random() * testimonials.length)]
+---
+
+{pick && (
+  <figure class="max-w-2xl mx-auto px-6 pt-10 text-center">
+    <blockquote class="font-display italic text-[var(--sol-charcoal)]/75 text-lg md:text-xl leading-relaxed">
+      <span aria-hidden="true" class="text-[var(--sol-caramel)]/70 mr-[0.1em]">&ldquo;</span>{pick.quote}<span aria-hidden="true" class="text-[var(--sol-caramel)]/70 ml-[0.05em]">&rdquo;</span>
+    </blockquote>
+    <figcaption class="mt-3 font-sans text-[11px] tracking-[0.28em] uppercase text-[var(--sol-charcoal)]/55">
+      {pick.author}{pick.context ? `, ${pick.context}` : ''}
+    </figcaption>
+  </figure>
+)}

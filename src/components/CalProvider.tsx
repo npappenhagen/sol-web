@@ -91,7 +91,7 @@ export default function CalProvider() {
               Booking confirmed
             </p>
             <p className="font-serif text-sm text-[var(--sol-charcoal)]/70">
-              {bookingConfirmed} — check your email for details
+              {bookingConfirmed}. Check your email for details.
             </p>
           </div>
           <button

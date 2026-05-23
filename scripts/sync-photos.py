@@ -45,6 +45,7 @@ SOURCES = {
     "family": Path("/Volumes/sol/family-portfolio"),
     "maternity": Path("/Volumes/sol/maternity-portfolio"),
     "couples": Path("/Volumes/sol/couples-portfolio"),
+    "weddings": Path("/Volumes/sol/wedding-portfolio"),
     "branding": Path("/Volumes/sol/branding-portfolio/web size"),
     "events": Path("/Volumes/sol/retreat-portfolio/web size"),
     "mood": Path("/Volumes/sol/mood-portfolio"),
